@@ -108,7 +108,9 @@ const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
 // Modo do narrador: 'misto' (padrão: falas prontas nos eventos repetitivos, Claude/OpenAI nos especiais),
 // 'fixo' (só falas prontas, sem LLM) ou 'ia' (sempre LLM).
-const NARRATOR_MODE = (process.env.NARRATOR_MODE || 'misto').toLowerCase();
+// NARRATOR_MODE: 0 = sem IA (só falas prontas), 1 = híbrido (prontas + IA em vitória/boas-vindas/convite), 2 = tudo IA.
+// Também aceita os nomes: fixo, misto, ia. Padrão: 0.
+const NARRATOR_MODE = ({ '0': 'fixo', fixo: 'fixo', '1': 'misto', misto: 'misto', hibrido: 'misto', 'híbrido': 'misto', '2': 'ia', ia: 'ia' })[String(process.env.NARRATOR_MODE ?? '0').trim().toLowerCase()] || 'fixo';
 // Limite de gasto ESTIMADO do ElevenLabs (por caracteres). Não é a cobrança real da sua conta.
 const ELEVENLABS_BUDGET_USD = parseFloat(process.env.ELEVENLABS_BUDGET_USD || '1');
 const ELEVENLABS_USD_PER_1K = parseFloat(process.env.ELEVENLABS_USD_PER_1K_CHARS || '0.30');
@@ -170,8 +172,7 @@ const FIXED_LINES = {
   ],
 };
 // No modo 'misto', estes eventos usam o LLM (falas mais personalizadas). Os demais usam falas prontas.
-// Vazio por padrão: todas as falas são prontas (baratas e sempre combinam com o momento). Para o Claude escrever alguma, ponha o evento aqui.
-const AI_EVENTS = new Set([]);
+const AI_EVENTS = new Set(['battle_ring_winner', 'battle_ring_viewers_welcome', 'battle_ring_invite_friends']);
 const recentFixedLines = [];
 function fixedLine(eventType, data) {
   const pool = FIXED_LINES[eventType];
