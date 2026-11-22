@@ -1750,7 +1750,9 @@ async function createPlayer(viewer) {
 
   const hash = hashCode(viewer.uniqueId);
   const color = CHAR_COLORS[hash % CHAR_COLORS.length];
-  const meshyIds = Object.keys(meshyTemplates);
+  // Soldier não tem golpes: só entra no sorteio se não houver outro lutador carregado
+  const _allMeshy = Object.keys(meshyTemplates);
+  const meshyIds = _allMeshy.filter(id => id !== 'Soldier').length ? _allMeshy.filter(id => id !== 'Soldier') : _allMeshy;
 
   let model, mixer = null;
   const animations = {};
@@ -2092,8 +2094,8 @@ function updateAnimations(dt) {
 
 // ===== PHYSICS =====
 const WALK_SPEED = 1.8;       // Auto-walk speed toward opponents
-const ENGAGE_DIST = 1.8;      // Distance to stop and face opponent
-const PUNCH_RANGE = 2.2;      // Max range for like-to-punch
+const ENGAGE_DIST = 1.2;      // Distance to stop and face opponent
+const PUNCH_RANGE = 1.7;      // Max range for like-to-punch
 const DODGE_FORCE = 4.0;      // Dodge sidestep force
 const AUTO_PUNCH_INTERVAL = 1.8; // seconds between auto punches
 const AUTO_PUNCH_FORCE = 0.4;    // auto punch = 40% of manual punch
@@ -2194,6 +2196,8 @@ function updatePhysics(dt) {
           target.vz += nz * force;
           target.lastPushedBy = p.uniqueId;
           p.aimAngle = Math.atan2(dx, dz);
+          // Passo à frente: o soco chega de verdade no oponente
+          p.vx += nx * 1.6; p.vz += nz * 1.6;
           // Light hit — no stagger bounce, just push
           setPlayerAnim(p, 'punch', 1);
           p.punchTimer = getAnimDuration(p, 'punch');
