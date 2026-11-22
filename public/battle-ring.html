@@ -1191,7 +1191,8 @@ async function loadAssets() {
   for (const mc of MESHY_CHARACTERS) {
     try {
       const gltf = await loader.loadAsync(mc.path);
-      meshyTemplates[mc.id] = { path: mc.path, preloaded: true, animMap: mc.animMap, animDurations: mc.animDurations || {}, yawOffset: mc.yawOffset || 0 };
+      meshyTemplates[mc.id] = { path: mc.path, preloaded: true, animMap: mc.animMap, animDurations: mc.animDurations || {}, yawOffset: mc.yawOffset || 0, ...medirSoco(gltf, mc) };
+      console.log(`Soco ${mc.id}: alcance ${meshyTemplates[mc.id].punchReach.toFixed(2)} m, pico em ${meshyTemplates[mc.id].punchPeakSec.toFixed(2)} s`);
       updateProgress(`${mc.id} (${gltf.animations.length} anims: ${gltf.animations.map(a => a.name).join(', ')})`);
       console.log(`Meshy ${mc.id} preloaded OK — ${gltf.animations.length} animations`);
     } catch (e) { console.warn(`Meshy ${mc.id} failed:`, e.message); loaded++; }
@@ -1716,6 +1717,29 @@ function hideBanner() {
 const players = new Map();
 window.players = players;  // Expose untuk banter TTS
 
+// ===== Medição de golpes (diagnóstico) =====
+const HAND_BONE_RE = /^(mixamorig)?(Left|Right)Hand$|^hand_[lr]_\d+$/;
+window.golpeLog = [];
+function golpeInicio(p, target) {
+  if (!p._hands) p._hands = Object.entries(p.boneMap || {}).filter(([n]) => HAND_BONE_RE.test(n)).map(([, b]) => b);
+  p._golpe = { target, t0: performance.now(), centros: Math.hypot(target.x - p.x, target.z - p.z), minMao: Infinity, maoNoEmpurrao: null, dur: getAnimDuration(p, 'punch') };
+}
+function golpeAtualiza(p) {
+  const g = p._golpe;
+  if (!g || !p._hands || !p._hands.length) return;
+  const tx = g.target.x, tz = g.target.z;
+  let d = Infinity;
+  for (const h of p._hands) { const e = h.matrixWorld.elements; d = Math.min(d, Math.hypot(e[12] - tx, e[14] - tz)); }
+  if (g.maoNoEmpurrao === null && g.empurrou) g.maoNoEmpurrao = d;
+  if (d < g.minMao) { g.minMao = d; g.tMin = (performance.now() - g.t0) / 1000; }
+  if ((performance.now() - g.t0) / 1000 > g.dur + 0.05 || !p.alive) {
+    window.golpeLog.push({ quem: p._meshyId, alvo: g.target._meshyId, centros: +g.centros.toFixed(2), maoMinAlvo: +g.minMao.toFixed(2), noSeg: +(g.tMin || 0).toFixed(2), maoNoEmpurrao: g.maoNoEmpurrao == null ? null : +g.maoNoEmpurrao.toFixed(2), empurraoSeg: g.empurraoSeg ?? 0 });
+    if (window.golpeLog.length > 300) window.golpeLog.shift();
+    p._golpe = null;
+  }
+}
+window.golpeTabela = () => console.table(window.golpeLog);
+
 function hashCode(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -2057,6 +2081,8 @@ function applyUALFrame(player, time) {
 function updateAnimations(dt) {
   players.forEach(p => {
     if (p.mixer) p.mixer.update(dt);
+    resolverSoco(p);
+    golpeAtualiza(p);
 
     if (p.isMeshy) {
       // Meshy: mixer handles everything natively
@@ -2089,8 +2115,82 @@ function updateAnimations(dt) {
 
 // ===== PHYSICS =====
 const WALK_SPEED = 1.8;       // Auto-walk speed toward opponents
-const ENGAGE_DIST = 1.2;      // Distance to stop and face opponent
-const PUNCH_RANGE = 1.7;      // Max range for like-to-punch
+// Distâncias de luta (metros, de centro a centro). O alcance do soco é medido de cada modelo ao carregar.
+const BODY_RADIUS = 0.22;     // raio do corpo (ombro até o centro), medido nos modelos: 0,20 a 0,23
+const CONTACT_DIST = 2 * BODY_RADIUS + 0.06; // corpos encostam (colisão)
+const PUNCH_MARGIN = 0.05;    // o punho entra um pouco no corpo do alvo
+const PUNCH_WINDUP_MAX = 0.35; // o pico do soco chega no máximo 0,35 s depois do clique/curtida
+// Para e encara o oponente a esta distância: alcance do braço + corpo do alvo
+function engageDist(p) { const r = (meshyTemplates[p._meshyId] || {}).punchReach || p._punchReach || 0.6; p._punchReach = r; return Math.min(1.4, Math.max(CONTACT_DIST, r + BODY_RADIUS - PUNCH_MARGIN)); }
+// Soco automático só sai se o alvo estiver perto disso; curtida aceita um pouco mais (o lutador dá um passo)
+function autoPunchRange(p) { return engageDist(p) + 0.25; }
+function likePunchRange(p) { return engageDist(p) + 0.6; }
+const ENGAGE_DIST = 1.2;      // (antigo, não usado) Distance to stop and face opponent
+const PUNCH_RANGE = 1.7;      // (antigo, não usado) Max range for like-to-punch
+
+// Mede, numa cópia carregada do modelo, até onde a mão vai para a frente no soco e em que momento.
+function medirSoco(gltf, mc) {
+  const res = { punchReach: 0.6, punchPeakSec: 0.3, punchClipSec: 1 };
+  try {
+    const clipName = Object.keys(mc.animMap || {}).find(k => mc.animMap[k] === 'punch');
+    const clip = clipName && gltf.animations.find(a => a.name === clipName);
+    if (!clip) return res;
+    const scene = gltf.scene;
+    const hands = [];
+    const maoRe = /^(mixamorig)?(Left|Right)Hand$|^hand_[lr]_\d+$/;
+    scene.traverse(o => { if (o.isBone && maoRe.test(o.name)) hands.push(o); });
+    if (!hands.length) return res;
+    const yaw = mc.yawOffset || 0, fx = -Math.sin(yaw), fz = Math.cos(yaw);
+    const mixer = new THREE.AnimationMixer(scene);
+    const act = mixer.clipAction(clip); act.play();
+    let best = 0, tBest = 0;
+    const N = 60;
+    for (let i = 0; i <= N; i++) {
+      const t = clip.duration * i / N;
+      mixer.setTime(t); scene.updateMatrixWorld(true);
+      for (const h of hands) { const e = h.matrixWorld.elements; const f = e[12] * fx + e[14] * fz; if (f > best) { best = f; tBest = t; } }
+    }
+    act.stop(); mixer.uncacheRoot(scene);
+    res.punchReach = best; res.punchPeakSec = tBest; res.punchClipSec = clip.duration;
+  } catch (e) { console.warn('medirSoco', mc.id, e.message); }
+  return res;
+}
+
+// Começa o soco: a animação pula a preparação longa e o empurrão fica agendado para o pico do soco
+function iniciarSoco(p, target, opts) {
+  const tpl = meshyTemplates[p._meshyId] || {};
+  const peak = tpl.punchPeakSec ?? 0.3;
+  const offset = Math.max(0, peak - PUNCH_WINDUP_MAX);
+  setPlayerAnim(p, 'punch', 1);
+  const act = p.animations && p.animations.punch;
+  if (act) act.time = offset;
+  p.punchTimer = Math.max(0.3, getAnimDuration(p, 'punch') - offset);
+  p._socoPendente = { target, quando: performance.now() + (peak - offset) * 1000, ...opts };
+  golpeInicio(p, target);
+}
+// No pico do soco: se o alvo ainda está ao alcance, empurra. Se fugiu, o soco erra.
+function resolverSoco(p) {
+  const s = p._socoPendente;
+  if (!s || performance.now() < s.quando) return;
+  p._socoPendente = null;
+  const t = s.target;
+  if (!p.alive || !t || !t.alive) return;
+  const dx = t.x - p.x, dz = t.z - p.z, dist = Math.hypot(dx, dz) || 0.01;
+  if (p._golpe) { p._golpe.empurrou = true; p._golpe.empurraoSeg = +((performance.now() - p._golpe.t0) / 1000).toFixed(2); p._golpe.centrosNoEmpurrao = dist; }
+  if (dist > engageDist(p) + 0.35) return; // fugiu: errou
+  const nx = dx / dist, nz = dz / dist;
+  t.vx += nx * s.force; t.vz += nz * s.force;
+  t.lastPushedBy = p.uniqueId;
+  if (s.forte && t.hitTimer <= 0) {
+    setPlayerAnim(t, 'hit', 1);
+    t.hitTimer = getAnimDuration(t, 'hit');
+    t.vy = 1.5; t.onGround = false;
+    SFX.hit();
+  }
+  if (t.shieldHits > 0) { t.shieldHits--; t.vx *= 0.3; t.vz *= 0.3; }
+  if (s.forte) spawnPushParticles(t.x, 1, t.z);
+  SFX.punch();
+}
 const DODGE_FORCE = 4.0;      // Dodge sidestep force
 const AUTO_PUNCH_INTERVAL = 1.8; // seconds between auto punches
 const AUTO_PUNCH_FORCE = 0.4;    // auto punch = 40% of manual punch
@@ -2149,7 +2249,7 @@ function updatePhysics(dt) {
 
       // Chase opponent: strongest when safely inside, weakens near edge
       const { target, dist } = findNearestAlive(p);
-      if (target && dist > ENGAGE_DIST) {
+      if (target && dist > engageDist(p)) {
         const dx = target.x - p.x, dz = target.z - p.z;
         const chaseFactor = Math.max(0.1, 1.0 - survivalUrgency * 0.8); // weaken chase near edge
         moveX += (dx / dist) * chaseFactor;
@@ -2183,20 +2283,14 @@ function updatePhysics(dt) {
       if (p.autoPunchTimer <= 0) {
         p.autoPunchTimer = AUTO_PUNCH_INTERVAL + Math.random() * 0.5; // slight randomness
         const { target, dist } = findNearestAlive(p);
-        if (target && dist < PUNCH_RANGE) {
+        if (target && dist < autoPunchRange(p)) {
           const dx = target.x - p.x, dz = target.z - p.z;
           const nx = dx / dist, nz = dz / dist;
-          const force = BASE_PUSH * p.pushPower * AUTO_PUNCH_FORCE;
-          target.vx += nx * force;
-          target.vz += nz * force;
-          target.lastPushedBy = p.uniqueId;
           p.aimAngle = Math.atan2(dx, dz);
-          // Passo à frente: o soco chega de verdade no oponente
-          p.vx += nx * 1.6; p.vz += nz * 1.6;
-          // Light hit — no stagger bounce, just push
-          setPlayerAnim(p, 'punch', 1);
-          p.punchTimer = getAnimDuration(p, 'punch');
-          SFX.punch();
+          // Passo à frente só se ainda não está colado no alcance
+          if (dist > engageDist(p)) { p.vx += nx * 1.2; p.vz += nz * 1.2; }
+          // Soco leve: empurra no pico da animação, sem o tranco de "hit"
+          iniciarSoco(p, target, { force: BASE_PUSH * p.pushPower * AUTO_PUNCH_FORCE, forte: false });
         }
       }
     }
@@ -2261,9 +2355,9 @@ function updatePhysics(dt) {
         const a = arr[i], b = arr[j];
         const dx = b.x - a.x, dz = b.z - a.z;
         const dist = Math.sqrt(dx * dx + dz * dz);
-        if (dist < 1.2 && dist > 0.01) {
+        if (dist < CONTACT_DIST && dist > 0.01) {
           const nx = dx / dist, nz = dz / dist;
-          const overlap = (1.2 - dist) * 0.5;
+          const overlap = (CONTACT_DIST - dist) * 0.5;
           // Push apart
           a.x -= nx * overlap; a.z -= nz * overlap;
           b.x += nx * overlap; b.z += nz * overlap;
@@ -2369,33 +2463,16 @@ async function handleLike(data) {
 
   // Find nearest opponent and PUNCH them
   const { target, dist } = findNearestAlive(p);
-  if (target && dist < PUNCH_RANGE) {
-    // In range — punch the opponent!
+  if (target && dist < likePunchRange(p)) {
+    // In range — punch the opponent! O empurrão e a reação do alvo saem no pico do soco.
     const dx = target.x - p.x, dz = target.z - p.z;
     const nx = dx / dist, nz = dz / dist;
     const force = BASE_PUSH * p.pushPower * (p.speedBoost > 0 ? 1.5 : 1) * count;
-
-    // Knockback on target
-    target.vx += nx * force;
-    target.vz += nz * force;
-    target.lastPushedBy = p.uniqueId;
-
-    // Hit animation on target + small stagger bounce
-    if (target.hitTimer <= 0) {
-      setPlayerAnim(target, 'hit', 1);
-      target.hitTimer = getAnimDuration(target, 'hit');
-      SFX.hit();
-      // Stagger bounce — makes hit visually clear
-      target.vy = 1.5;
-      target.onGround = false;
-    }
-    if (target.shieldHits > 0) { target.shieldHits--; target.vx *= 0.3; target.vz *= 0.3; }
-
-    // Face the opponent
     p.aimAngle = Math.atan2(dx, dz);
-
-    spawnPushParticles(target.x, 1, target.z);
-    SFX.punch();
+    // Dá um passo até o alcance do braço
+    if (dist > engageDist(p)) { const passo = Math.min(3.0, (dist - engageDist(p)) * 6); p.vx += nx * passo; p.vz += nz * passo; }
+    if (p.punchTimer <= 0) iniciarSoco(p, target, { force, forte: true });
+    else p._socoPendente = { target, quando: performance.now() + 150, force, forte: true };
     addNotification(`<strong>${p.nickname}</strong> trombou em <strong>${target.nickname}</strong>!`);
   } else {
     // No one in range — lunge forward
@@ -2405,7 +2482,7 @@ async function handleLike(data) {
     spawnPushParticles(p.x + Math.sin(p.aimAngle) * 0.8, 1, p.z + Math.cos(p.aimAngle) * 0.8);
   }
 
-  // Punch animation on attacker
+  // Punch animation on attacker (soco no vazio; o soco com alvo já começou em iniciarSoco)
   if (p.punchTimer <= 0) {
     setPlayerAnim(p, 'punch', 1);
     p.punchTimer = getAnimDuration(p, 'punch');
