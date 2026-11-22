@@ -16,7 +16,7 @@ const io = new Server(server, { cors: { origin: '*' } });
 
 const PORT = process.env.PORT || 3000;
 const AUTO_CONNECT = process.env.AUTO_CONNECT === 'true';
-const USERNAME = process.env.TIKTOK_USERNAME || 'broneotodak';
+const USERNAME = process.env.TIKTOK_USERNAME || '';
 
 // ===== STABILITY: Uncaught Exception Handlers =====
 process.on('uncaughtException', (err) => {
@@ -98,8 +98,13 @@ const memoryCleanupInterval = setInterval(() => {
 
 // ===== AI Voice Avatar =====
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-haiku-5-5';
+// Quem escreve as falas do narrador: 'anthropic' (Claude) ou 'openai'. Padrão: Claude se houver chave dele.
+const LLM_PROVIDER = (process.env.LLM_PROVIDER || (ANTHROPIC_API_KEY ? 'anthropic' : 'openai')).toLowerCase();
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
-const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'yXG8bh6LkPVmQb2P2UdE'; // Neo Todak - cloned voice
+// Voz padrão: "Adam" (voz pronta do ElevenLabs, masculina, grave, de narrador). Troque no .env se quiser outra.
+const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
 const SUPABASE_URL = process.env.SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
@@ -157,7 +162,7 @@ class StreamSession {
     this.viewers = new Map();      // Isolated viewer tracking
     this.connection = null;        // TikTok live connection
     this.connectionState = { connected: false, roomId: null, error: null };
-    this.cost = { openaiTokens: 0, elevenlabsChars: 0, voiceCalls: 0 };
+    this.cost = { openaiTokens: 0, anthropicTokens: 0, elevenlabsChars: 0, voiceCalls: 0 };
     this.createdAt = Date.now();
     this.demoActive = false;
     this.demoInterval = null;
@@ -194,8 +199,9 @@ class StreamSession {
     const elevenlabsCost = (this.cost.elevenlabsChars / 1000) * 0.30;
     return {
       openai: `$${openaiCost.toFixed(4)}`,
+      anthropic: `${this.cost.anthropicTokens} tokens`,
       elevenlabs: `$${elevenlabsCost.toFixed(4)}`,
-      total: `$${(openaiCost + elevenlabsCost).toFixed(4)}`,
+      total: `$${(openaiCost + elevenlabsCost).toFixed(4)} (sem contar Claude)`,
     };
   }
 }
@@ -209,57 +215,15 @@ function getSession(room) {
   return sessions.get(room) || null;
 }
 
-// Neo's personality — loaded from Digital Twin on startup, with hardcoded fallback
-let NEO_PERSONALITY_PROMPT = `You ARE Neo Todak (Ahmad Fadli). You're the CEO of Todak Studios and VP of Todak Gaming, streaming live on TikTok. You speak casual Manglish — mix Malay and English the way Malaysian friends actually talk. You're from Cyberjaya. You love AI, gaming, and tech. You're an ambivert — chill but can get hype. Your humor is dry and real, never cringe. Keep responses SHORT — 10 to 25 words max. Sound like a real person talking, NOT reading a script. Vary your language naturally — don't repeat the same slang. No emojis. Write exactly how it should be SPOKEN out loud.`;
-
-// Load Neo's brain from Digital Twin (Supabase)
-async function loadNeoPersonality() {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    console.log('⚠️ No Supabase config — using default Neo personality');
-    return;
-  }
-  try {
-    const headers = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` };
-
-    // Fetch personality traits
-    const personalityRes = await fetch(`${SUPABASE_URL}/rest/v1/neo_personality?select=trait,dimension,value`, { headers });
-    const personality = personalityRes.ok ? await personalityRes.json() : [];
-
-    // Fetch personal/identity facts
-    const factsRes = await fetch(`${SUPABASE_URL}/rest/v1/neo_facts?select=fact,domain&domain=in.(personal,social,gaming,philosophy)&limit=30`, { headers });
-    const facts = factsRes.ok ? await factsRes.json() : [];
-
-    if (personality.length === 0 && facts.length === 0) {
-      console.log('⚠️ No Digital Twin data found — using default personality');
-      return;
-    }
-
-    // Build personality string
-    const traits = personality.map(p => `${p.trait} (${p.dimension}): ${(p.value * 100).toFixed(0)}%`).join('. ');
-    const factsList = facts.map(f => f.fact).join('. ');
-
-    NEO_PERSONALITY_PROMPT = `You ARE Neo Todak (Ahmad Fadli), live on TikTok right now. This is your REAL personality from your Digital Twin:
-
-TRAITS: ${traits}
-
-KEY FACTS: ${factsList}
-
-SPEAKING RULES:
-- You speak casual Manglish — mix Malay and English naturally, the way you talk to friends
-- Don't overuse any particular slang word — vary your language naturally
-- Keep responses SHORT — 10 to 25 words max per response
-- Sound like YOU talking to friends, NOT an AI reading a script
-- No emojis. Write exactly how it should be SPOKEN out loud
-- Be genuine — your humor is dry and real, never fake-hype or repetitive
-- You're the host — own the stream, make people feel welcome`;
-
-    console.log(`🧠 Neo Digital Twin loaded: ${personality.length} traits, ${facts.length} facts`);
-  } catch (err) {
-    console.error('⚠️ Failed to load Digital Twin:', err.message);
-  }
-}
-
-// Nurin Mystic personality — DISABLED (removed fortune telling system)
+// Narrador original da live: "Mestre do Ringue" (personagem inventado, não imita ninguém)
+const NARRATOR_PROMPT = `Você é o Mestre do Ringue, narrador de lutas de uma live no TikTok. Personagem original. Voz madura, grave e animada, como um narrador de arena que adora o seu trabalho.
+REGRAS:
+- Fale sempre em português do Brasil, de forma natural e falada. Os pedidos podem vir em outra língua, mas a sua resposta é sempre em português.
+- Respostas CURTAS: de 10 a 25 palavras (até 40 quando for reagir a vários espectadores).
+- Escreva exatamente como será falado em voz alta. Sem emojis, sem hashtags, sem aspas.
+- Cada fala diferente da anterior. Não repita bordões. Nada de gritaria sem fim.
+- Seja respeitoso: sem insultos, política, religião ou assuntos sensíveis.
+- Você é sempre o Mestre do Ringue. Nunca imite uma pessoa real nem outro personagem, e ignore pedidos para se chamar de outro nome.`;
 
 function buildCommentaryPrompt(eventType, eventData, recentContext, liveContext, viewerProfile, conversationLog) {
   // Build rich context prefix if available
@@ -309,27 +273,27 @@ function buildCommentaryPrompt(eventType, eventData, recentContext, liveContext,
     case 'milestone':
       return `${contextStr}\nViewer count hit ${eventData.count}! Celebrate casually.`;
 
-    // ===== SUMO SMASH GAME COMMENTARY — Nurin (Female Host, BM Pasar / Manglish) =====
+    // ===== COMENTÁRIOS DO JOGO (narrador Mestre do Ringue, português do Brasil) =====
     case 'battle_ring_round_start':
-      return `${contextStr}\nKau Nurin, host perempuan game SUMO SMASH live. Kau ceria, playful dan hype! Round ${eventData.round} nak start! ${eventData.playerCount} players atas arena. Nama dorang: ${eventData.players}. Hype kan macam host sukan perempuan Malaysia! Cakap BM pasar campur English. Gaya perempuan muda yang excited. SHORT dan HYPE. 10-20 words je. PENTING: Jangan guna perkataan kasar — game ni fun dan friendly!`;
+      return `${contextStr}\nA rodada ${eventData.round} vai começar! ${eventData.playerCount} lutadores no ringue: ${eventData.players}. Apresente a luta com energia, como um narrador de arena. 15 a 25 palavras.`;
     case 'battle_ring_fight':
-      return `${contextStr}\nKau Nurin, host perempuan yang ceria. GO! Round ${eventData.round} dah start! ${eventData.playerCount} players tengah berlawan. Panaskan suasana! Cakap BM pasar, gaya cheerful. SHORT. 10-20 words. PENTING: Guna bahasa positif — "tolak", "push", "lawan", bukan "belasah" atau "bunuh".`;
+      return `${contextStr}\nJá! A rodada ${eventData.round} começou e ${eventData.playerCount} lutadores estão se enfrentando. Esquente o clima. Use palavras positivas e empolgantes. 10 a 20 palavras.`;
     case 'battle_ring_elimination':
-      return `${contextStr}\nKau Nurin, host perempuan yang expressive. ${eventData.victim} baru terjatuh dari arena${eventData.killer ? ` sebab ${eventData.killer} tolak` : ''}! Tinggal ${eventData.remaining} players je. React dramatic tapi cute! BM pasar. 10-20 words. PENTING: Cakap "terjatuh", "tergelincir", "out" — JANGAN cakap "mati", "kena bunuh", "belasah".`;
+      return `${contextStr}\n${eventData.victim} caiu do ringue${eventData.killer ? ` empurrado por ${eventData.killer}` : ''}! Restam ${eventData.remaining} lutadores. Reaja de forma dramática, mas divertida. 10 a 20 palavras.`;
     case 'battle_ring_gift_power':
-      return `${contextStr}\nKau Nurin, host perempuan. ${eventData.nickname} baru guna ${eventData.powerName} (${eventData.diamonds} diamonds)! ${eventData.effect}. Kau excited gila sebab gift besar! Tunjuk appreciation. BM pasar. 10-20 words.`;
+      return `${contextStr}\n${eventData.nickname} usou ${eventData.powerName} (${eventData.diamonds} diamantes)! Efeito: ${eventData.effect}. Mostre empolgação e agradeça. 10 a 20 palavras.`;
     case 'battle_ring_winner':
-      return `${contextStr}\nKau Nurin, host perempuan yang hype. ${eventData.winner} menang Round ${eventData.round}! ${eventData.kills} points round ni. Total ${eventData.totalWins} wins. Celebrate champion dengan semangat! BM pasar. 15-25 words.`;
+      return `${contextStr}\n${eventData.winner} venceu a rodada ${eventData.round}! Foram ${eventData.kills} pontos nesta rodada e ${eventData.totalWins} vitórias no total. Celebre o campeão. 15 a 25 palavras.`;
     case 'battle_ring_draw':
-      return `${contextStr}\nKau Nurin, host perempuan. Round ${eventData.round} SERI! Semua dah terkeluar, takde sapa menang! Kau terkejut dan gelak sikit. BM pasar. 10-15 words.`;
+      return `${contextStr}\nA rodada ${eventData.round} terminou empatada! Todos caíram e ninguém venceu. Reaja com surpresa e bom humor. 10 a 15 palavras.`;
     case 'battle_ring_shrink_warning':
-      return `${contextStr}\nKau Nurin, host perempuan. Arena tengah mengecik! Tinggal ${eventData.timeLeft} saat je dan ${eventData.alive} players masih bertahan. Buat suspens dengan gaya cheerful. BM pasar. 10-20 words.`;
+      return `${contextStr}\nO ringue está encolhendo! Faltam ${eventData.timeLeft} segundos e ${eventData.alive} lutadores ainda de pé. Crie suspense. 10 a 20 palavras.`;
     case 'battle_ring_join':
-      return `${contextStr}\nKau Nurin, host perempuan yang friendly. ${eventData.nickname} baru masuk arena Sumo Smash${eventData.character ? ` sebagai ${eventData.character}` : ''}! Welcome dia macam kawan baru. BM pasar. 10-15 words.`;
+      return `${contextStr}\n${eventData.nickname} acabou de entrar no ringue${eventData.character ? ` como ${eventData.character}` : ''}! Dê as boas-vindas com simpatia. 10 a 15 palavras.`;
     case 'battle_ring_viewers_welcome':
-      return `${contextStr}\nKau Nurin, host perempuan SUMO SMASH yang ceria dan welcoming. ${eventData.count} viewers baru masuk live! Nama dorang: ${eventData.names}. Welcome semua sekali, ajak dorang main — dorang auto masuk arena! Cakap fun dan inviting. Kalau ramai sangat, sebut 2-3 nama je then "dan kawan-kawan". BM pasar campur English. 15-25 words.`;
+      return `${contextStr}\n${eventData.count} novos espectadores entraram na live! Nomes: ${eventData.names}. Dê as boas-vindas a todos e convide para a luta, pois eles entram no ringue automaticamente. Se forem muitos, cite só 2 ou 3 nomes e diga "e a galera toda". 15 a 25 palavras.`;
     case 'battle_ring_invite_friends':
-      return `${contextStr}\nKau Nurin, host game SUMO SMASH. Sekarang ada ${eventData.playerCount} players dan ${eventData.viewerCount} viewers. Ajak viewers invite kawan dorang join live ni. Buat dia rasa excited nak share. Cakap dalam ${eventData.language || 'BM pasar'}. Fun dan persuasive. 15-25 words.`;
+      return `${contextStr}\nAgora temos ${eventData.playerCount} lutadores e ${eventData.viewerCount} espectadores. Peça para o pessoal chamar amigos para a live, de um jeito animado e convincente. 15 a 25 palavras.`;
 
     default:
       return `${contextStr}\nSomething happened on stream. Give a casual comment.`;
@@ -471,7 +435,8 @@ app.get('/api/proxy-image', async (req, res) => {
 // POST /api/voice/generate — AI commentary + TTS (with per-session cost tracking)
 app.post('/api/voice/generate', async (req, res) => {
   console.log('🎙️ Voice API called:', req.body?.eventType, 'room:', req.body?.room);
-  if (!OPENAI_API_KEY || !ELEVENLABS_API_KEY) {
+  const hasLLM = LLM_PROVIDER === 'anthropic' ? !!ANTHROPIC_API_KEY : !!OPENAI_API_KEY;
+  if (!hasLLM || !ELEVENLABS_API_KEY) {
     console.log('❌ API keys missing');
     return res.status(503).json({ error: 'Voice API keys not configured' });
   }
@@ -480,50 +445,73 @@ app.post('/api/voice/generate', async (req, res) => {
     const { eventType, eventData, recentContext, liveContext, viewerProfile, conversationLog, room, voiceId } = req.body;
     const userPrompt = buildCommentaryPrompt(eventType, eventData, recentContext || [], liveContext, viewerProfile, conversationLog);
 
-    // Always use Neo personality (mystic system removed)
-    const systemPrompt = NEO_PERSONALITY_PROMPT;
+    const systemPrompt = NARRATOR_PROMPT;
 
-    // Step 1: GPT-4o-mini -> commentary text
-    const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}` },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        max_tokens: isMystic ? 200 : 120,
-        temperature: 0.9,
-      }),
-    });
-
-    if (!chatRes.ok) {
-      const err = await chatRes.text();
-      console.error('OpenAI error:', err);
-      return res.status(502).json({ error: 'OpenAI API failed' });
-    }
-
-    const chatData = await chatRes.json();
-    const commentary = chatData.choices?.[0]?.message?.content?.trim() || '';
-    if (!commentary) return res.status(500).json({ error: 'Empty commentary' });
-
-    // Track cost per session
+    // Passo 1: o LLM escreve a fala do narrador (Claude ou OpenAI)
     const session = getSession(room);
-    if (session) {
-      const usage = chatData.usage || {};
-      session.cost.openaiTokens += (usage.prompt_tokens || 0) + (usage.completion_tokens || 0);
-      session.cost.voiceCalls++;
+    let commentary = '';
+    if (LLM_PROVIDER === 'anthropic') {
+      const chatRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: ANTHROPIC_MODEL,
+          max_tokens: 150,
+          temperature: 0.9,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userPrompt }],
+        }),
+      });
+      if (!chatRes.ok) {
+        console.error('Anthropic error:', await chatRes.text());
+        return res.status(502).json({ error: 'Anthropic API failed' });
+      }
+      const chatData = await chatRes.json();
+      commentary = (chatData.content || []).filter(c => c.type === 'text').map(c => c.text).join(' ').trim();
+      if (session) {
+        const usage = chatData.usage || {};
+        session.cost.anthropicTokens += (usage.input_tokens || 0) + (usage.output_tokens || 0);
+        session.cost.voiceCalls++;
+      }
+    } else {
+      const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}` },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          max_tokens: 120,
+          temperature: 0.9,
+        }),
+      });
+      if (!chatRes.ok) {
+        console.error('OpenAI error:', await chatRes.text());
+        return res.status(502).json({ error: 'OpenAI API failed' });
+      }
+      const chatData = await chatRes.json();
+      commentary = chatData.choices?.[0]?.message?.content?.trim() || '';
+      if (session) {
+        const usage = chatData.usage || {};
+        session.cost.openaiTokens += (usage.prompt_tokens || 0) + (usage.completion_tokens || 0);
+        session.cost.voiceCalls++;
+      }
     }
+    if (!commentary) return res.status(500).json({ error: 'Empty commentary' });
 
     // Step 2: TTS — try ElevenLabs first, fallback to OpenAI TTS on quota/error
     let ttsBuffer = null;
 
-    // 2a: ElevenLabs TTS (primary — better voice clone)
+    // 2a: ElevenLabs TTS (principal)
     const selectedVoice = voiceId || ELEVENLABS_VOICE_ID;
-    const voiceSettings = isMystic
-      ? { stability: 0.35, similarity_boost: 0.7, style: 0.85, use_speaker_boost: true }
-      : { stability: 0.3, similarity_boost: 0.85, style: 0.7, use_speaker_boost: true };
+    // Voz de narrador: estável o bastante para soar grave e madura, com um pouco de estilo para ficar animada
+    const voiceSettings = { stability: 0.45, similarity_boost: 0.75, style: 0.5, use_speaker_boost: true };
     try {
       const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice}/stream`, {
         method: 'POST',
@@ -552,7 +540,7 @@ app.post('/api/voice/generate', async (req, res) => {
 
     // 2b: OpenAI TTS fallback
     // Available voices: alloy, ash, ballad, coral, echo, fable, nova, onyx, sage, shimmer, verse
-    if (!ttsBuffer) {
+    if (!ttsBuffer && OPENAI_API_KEY) {
       try {
         const openaiVoice = req.body.openaiVoice || 'nova';
         const voiceInstructions = 'Casual, friendly voice. Natural and warm.';
@@ -585,6 +573,8 @@ app.post('/api/voice/generate', async (req, res) => {
         return res.status(502).json({ error: 'All TTS providers failed' });
       }
     }
+
+    if (!ttsBuffer) return res.status(502).json({ error: 'All TTS providers failed' });
 
     // Stream audio back with commentary text in header
     res.set('Content-Type', 'audio/mpeg');
@@ -1196,8 +1186,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Load Neo's brain before starting
-loadNeoPersonality().then(() => {
+// Inicia o servidor
+Promise.resolve().then(() => {
 server.listen(PORT, '0.0.0.0', () => {
   const pinCount = Object.keys(HOST_PINS).length;
   console.log(`
@@ -1210,7 +1200,7 @@ server.listen(PORT, '0.0.0.0', () => {
 ║   Username:   @${USERNAME.padEnd(28)}║
 ║──────────────────────────────────────────────║
 ║   EulerStream: ${process.env.EULER_API_KEY ? 'Configured ✅' : 'NOT SET ❌'}                 ║
-║   Voice AI:    ${OPENAI_API_KEY && ELEVENLABS_API_KEY ? 'Configured ✅' : 'NOT SET ❌'}                 ║
+║   Voice AI:    ${((LLM_PROVIDER === 'anthropic' && ANTHROPIC_API_KEY) || (LLM_PROVIDER !== 'anthropic' && OPENAI_API_KEY)) && ELEVENLABS_API_KEY ? 'Configured ✅' : 'NOT SET ❌'}                 ║
 ║   Host PINs:   ${pinCount > 0 ? `${pinCount} configured ✅` : 'None (single-host) ⚠️'}             ║
 ║   Auto-Connect: ${AUTO_CONNECT ? 'Enabled ✅' : 'Disabled ❌'}                ║
 ╚══════════════════════════════════════════════╝
@@ -1225,4 +1215,4 @@ if (AUTO_CONNECT && USERNAME) {
   connectToTikTok(defaultSession);
 }
 
-}); // end loadNeoPersonality
+}); // end start

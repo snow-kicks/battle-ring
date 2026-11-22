@@ -5062,7 +5062,7 @@ const voiceRecentContext = [];
 const MAX_VOICE_CONTEXT = 5;
 const MAX_VOICE_QUEUE = 4;
 const VOICE_COOLDOWN = 3000; // min gap between API calls
-const SUMO_VOICE_ID = 'INmScOFtmeMGA4p0XRr1'; // Nurin — Malaysian female, upbeat & cheerful
+const SUMO_VOICE_ID = null; // null = o servidor usa ELEVENLABS_VOICE_ID do .env (narrador padrão)
 let lastVoiceTime = 0;
 let voiceSubtitleTimer = null;
 
@@ -5263,7 +5263,7 @@ function updateInviteTimer(dt) {
     inviteTimer = INVITE_INTERVAL;
 
     // Pick a random language to invite in
-    const languages = ['BM pasar', 'English casual', 'Bahasa Indonesia santai', 'Thai friendly'];
+    const languages = ['português do Brasil'];
     const lang = languages[Math.floor(Math.random() * languages.length)];
 
     queueVoiceEvent('battle_ring_invite_friends', {
