@@ -336,7 +336,7 @@
     <button class="dbtn" onclick="window._debugAction('gift')">Gift (B)</button>
     <button class="dbtn" onclick="window._debugAction('kill')">Kill (K)</button>
     <button class="dbtn" onclick="window._debugAction('round')">Start (R)</button>
-    <button class="dbtn" onclick="window._debugAction('auto')">Auto (A)</button>
+    <button class="dbtn" id="autoPlayBtn" onclick="window._debugAction('auto')" style="border-left:3px solid #44dd77;">Auto (A): OFF</button>
     <button class="dbtn" onclick="window._debugAction('shrink')">Shrink (S)</button>
     <button class="dbtn" id="autoCamBtn" onclick="window._debugAction('autocam')" style="border-left:3px solid #44aaff;">AutoCam: ON</button>
     <div class="debug-title" style="margin-top:8px;">NARRADOR</div>
@@ -3739,6 +3739,13 @@ function shakeCamera(duration = 0.3) {
 
 // ===== AUTO-PLAY / BOT SYSTEM =====
 let autoPlay = false;
+function updateAutoPlayBtn() {
+  const b = document.getElementById('autoPlayBtn');
+  if (!b) return;
+  b.textContent = autoPlay ? 'Auto (A): ON' : 'Auto (A): OFF';
+  b.style.background = autoPlay ? '#44dd77' : '#222';
+  b.style.color = autoPlay ? '#000' : '#ccc';
+}
 let autoTimer = 0;
 
 function updateAutoPlay(dt) {
@@ -3826,6 +3833,7 @@ document.addEventListener('keydown', (e) => {
     case 'A':
       autoPlay = !autoPlay;
       addNotification(autoPlay ? 'Jogo automático ligado' : 'Jogo automático desligado');
+      updateAutoPlayBtn();
       break;
     case 'C': {
       // Simulate chat — if players exist, send chat bubble; otherwise join
@@ -5032,6 +5040,7 @@ window._debugAction = function(action) {
     case 'auto':
       autoPlay = !autoPlay;
       addNotification(autoPlay ? 'Jogo automático ligado' : 'Jogo automático desligado');
+      updateAutoPlayBtn();
       break;
     case 'shrink':
       arenaRadius = Math.max(ARENA_END_RADIUS, arenaRadius - 2);

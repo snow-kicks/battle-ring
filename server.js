@@ -117,6 +117,8 @@ const NARRATOR_MODE = ({ '0': 'fixo', fixo: 'fixo', '1': 'misto', misto: 'misto'
 // Limite de gasto ESTIMADO do ElevenLabs (por caracteres). Não é a cobrança real da sua conta.
 const ELEVENLABS_BUDGET_USD = parseFloat(process.env.ELEVENLABS_BUDGET_USD || '1');
 const ELEVENLABS_USD_PER_1K = parseFloat(process.env.ELEVENLABS_USD_PER_1K_CHARS || '0.30');
+// ELEVENLABS_CACHE_ONLY=1: só toca falas já salvas no cache. Nunca chama o ElevenLabs (gasto zero). Bom para ensaiar.
+const ELEVENLABS_CACHE_ONLY = /^(1|true|sim)$/i.test(process.env.ELEVENLABS_CACHE_ONLY || '');
 const VOICE_CACHE_DIR = join(__dirname, 'voice-cache');
 const VOICE_BUDGET_FILE = join(VOICE_CACHE_DIR, 'budget.json');
 if (!existsSync(VOICE_CACHE_DIR)) mkdirSync(VOICE_CACHE_DIR, { recursive: true });
@@ -561,6 +563,7 @@ async function synthPart(voiceId, text, prev, next, session, isName) {
   const key = voiceCacheKey(voiceId, isName ? text + '|' + (prev || '').slice(-40) + '|' + (next || '').slice(0, 40) : text);
   const file = join(VOICE_CACHE_DIR, key + '.mp3');
   if (existsSync(file)) { try { return { buf: readFileSync(file), hit: true }; } catch (e) { /* gera de novo */ } }
+  if (ELEVENLABS_CACHE_ONLY) throw { nocache: true };
   const projected = ((voiceBudget.chars + text.length) / 1000) * ELEVENLABS_USD_PER_1K;
   if (projected > ELEVENLABS_BUDGET_USD) throw { budget: true };
   const body = { text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.45, similarity_boost: 0.75, style: 0.5, use_speaker_boost: true } };
@@ -591,7 +594,7 @@ function shortenLine(t) {
 
 // GET /api/voice/budget — quanto do limite de teste já foi usado
 app.get('/api/voice/budget', (req, res) => {
-  res.json({ mode: NARRATOR_MODE, llm: LLM_PROVIDER, spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD, chars: voiceBudget.chars });
+  res.json({ cacheOnly: ELEVENLABS_CACHE_ONLY, mode: NARRATOR_MODE, llm: LLM_PROVIDER, spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD, chars: voiceBudget.chars });
 });
 
 // POST /api/voice/generate — fala do narrador (pronta ou escrita pelo LLM) + voz, com cache em disco e limite de gasto
@@ -651,10 +654,13 @@ app.post('/api/voice/generate', async (req, res) => {
           console.log(`🔊 TTS por partes: ${bufs.length} trechos, ${allHit ? 'tudo em cache' : 'gasto estimado $' + voiceSpentUsd().toFixed(3)}`);
         }
       } catch (e) {
+        if (e && e.nocache) { console.log('🔇 Só cache: fala sem áudio salvo, pulada:', commentary); return res.status(204).end(); }
         if (e && e.budget) return res.status(402).json({ error: 'budget', spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD });
         console.warn('⚠️ TTS por partes falhou, tentando a frase inteira:', e.message || e);
       }
     }
+
+    if (!ttsBuffer && ELEVENLABS_CACHE_ONLY) { console.log('🔇 Só cache: fala sem áudio salvo, pulada:', commentary); return res.status(204).end(); }
 
     if (!ttsBuffer) {
       // Limite de gasto estimado do ElevenLabs
