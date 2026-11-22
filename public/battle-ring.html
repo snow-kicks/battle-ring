@@ -5199,6 +5199,10 @@ async function processVoiceQueue() {
       }),
     });
 
+    if (res.status === 204) { // modo só cache: fala sem áudio salvo. Não ocupa a vez nem corta outra fala
+      narradorLog(event.id, 'pulado', { tipo: event.eventType, obs: 'sem áudio salvo' });
+      return;
+    }
     if (res.status === 402) {
       // Limite de gasto de teste do ElevenLabs atingido: desliga o narrador
       console.warn('Limite de gasto do narrador atingido');
