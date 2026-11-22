@@ -110,6 +110,9 @@ const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFm
 // 'fixo' (só falas prontas, sem LLM) ou 'ia' (sempre LLM).
 // NARRATOR_MODE: 0 = sem IA (só falas prontas), 1 = híbrido (prontas + IA em vitória/boas-vindas/convite), 2 = tudo IA.
 // Também aceita os nomes: fixo, misto, ia. Padrão: 0.
+// Tamanho das falas escritas pela IA (modos 1 e 2). Fala longa atrasa a narração.
+const NARRATOR_MAX_WORDS = parseInt(process.env.NARRATOR_MAX_WORDS || '12', 10);
+const NARRATOR_MAX_CHARS = parseInt(process.env.NARRATOR_MAX_CHARS || '90', 10);
 const NARRATOR_MODE = ({ '0': 'fixo', fixo: 'fixo', '1': 'misto', misto: 'misto', hibrido: 'misto', 'híbrido': 'misto', '2': 'ia', ia: 'ia' })[String(process.env.NARRATOR_MODE ?? '0').trim().toLowerCase()] || 'fixo';
 // Limite de gasto ESTIMADO do ElevenLabs (por caracteres). Não é a cobrança real da sua conta.
 const ELEVENLABS_BUDGET_USD = parseFloat(process.env.ELEVENLABS_BUDGET_USD || '1');
@@ -309,7 +312,7 @@ function getSession(room) {
 const NARRATOR_PROMPT = `Você é o Mestre do Ringue, narrador de lutas de uma live no TikTok. Personagem original. Voz madura, grave e animada, como um narrador de arena que adora o seu trabalho.
 REGRAS:
 - Fale sempre em português do Brasil, de forma natural e falada. Os pedidos podem vir em outra língua, mas a sua resposta é sempre em português.
-- Respostas MUITO CURTAS: no máximo 12 palavras, uma frase só. A luta é rápida, e fala longa atrasa a narração.
+- Respostas MUITO CURTAS: no máximo ${NARRATOR_MAX_WORDS} palavras, uma frase só. A luta é rápida, e fala longa atrasa a narração.
 - Escreva exatamente como será falado em voz alta. Sem emojis, sem hashtags, sem aspas.
 - Cada fala diferente da anterior. Não repita bordões. Nada de gritaria sem fim.
 - Seja respeitoso: sem insultos, política, religião ou assuntos sensíveis.
@@ -365,25 +368,25 @@ function buildCommentaryPrompt(eventType, eventData, recentContext, liveContext,
 
     // ===== COMENTÁRIOS DO JOGO (narrador Mestre do Ringue, português do Brasil) =====
     case 'battle_ring_round_start':
-      return `${contextStr}\nA rodada ${eventData.round} vai começar! ${eventData.playerCount} lutadores no ringue: ${eventData.players}. Apresente a luta com energia, como um narrador de arena. No máximo 12 palavras.`;
+      return `${contextStr}\nA rodada ${eventData.round} vai começar! ${eventData.playerCount} lutadores no ringue: ${eventData.players}. Apresente a luta com energia, como um narrador de arena. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_fight':
-      return `${contextStr}\nJá! A rodada ${eventData.round} começou e ${eventData.playerCount} lutadores estão se enfrentando. Esquente o clima. Use palavras positivas e empolgantes. No máximo 12 palavras.`;
+      return `${contextStr}\nJá! A rodada ${eventData.round} começou e ${eventData.playerCount} lutadores estão se enfrentando. Esquente o clima. Use palavras positivas e empolgantes. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_elimination':
-      return `${contextStr}\n${eventData.victim} caiu do ringue${eventData.killer ? ` empurrado por ${eventData.killer}` : ''}! Restam ${eventData.remaining} lutadores. Reaja de forma dramática, mas divertida. No máximo 12 palavras.`;
+      return `${contextStr}\n${eventData.victim} caiu do ringue${eventData.killer ? ` empurrado por ${eventData.killer}` : ''}! Restam ${eventData.remaining} lutadores. Reaja de forma dramática, mas divertida. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_gift_power':
-      return `${contextStr}\n${eventData.nickname} usou ${eventData.powerName} (${eventData.diamonds} diamantes)! Efeito: ${eventData.effect}. Mostre empolgação e agradeça. No máximo 12 palavras.`;
+      return `${contextStr}\n${eventData.nickname} usou ${eventData.powerName} (${eventData.diamonds} diamantes)! Efeito: ${eventData.effect}. Mostre empolgação e agradeça. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_winner':
-      return `${contextStr}\n${eventData.winner} venceu a rodada ${eventData.round}! Foram ${eventData.kills} pontos nesta rodada e ${eventData.totalWins} vitórias no total. Celebre o campeão. No máximo 12 palavras.`;
+      return `${contextStr}\n${eventData.winner} venceu a rodada ${eventData.round}! Foram ${eventData.kills} pontos nesta rodada e ${eventData.totalWins} vitórias no total. Celebre o campeão. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_draw':
-      return `${contextStr}\nA rodada ${eventData.round} terminou empatada! Todos caíram e ninguém venceu. Reaja com surpresa e bom humor. No máximo 12 palavras.`;
+      return `${contextStr}\nA rodada ${eventData.round} terminou empatada! Todos caíram e ninguém venceu. Reaja com surpresa e bom humor. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_shrink_warning':
-      return `${contextStr}\nO ringue está encolhendo! Faltam ${eventData.timeLeft} segundos e ${eventData.alive} lutadores ainda de pé. Crie suspense. No máximo 12 palavras.`;
+      return `${contextStr}\nO ringue está encolhendo! Faltam ${eventData.timeLeft} segundos e ${eventData.alive} lutadores ainda de pé. Crie suspense. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_join':
-      return `${contextStr}\n${eventData.nickname} acabou de entrar no ringue${eventData.character ? ` como ${eventData.character}` : ''}! Dê as boas-vindas com simpatia. No máximo 12 palavras.`;
+      return `${contextStr}\n${eventData.nickname} acabou de entrar no ringue${eventData.character ? ` como ${eventData.character}` : ''}! Dê as boas-vindas com simpatia. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_viewers_welcome':
-      return `${contextStr}\n${eventData.count} novos espectadores entraram na live! Nomes: ${eventData.names}. Dê as boas-vindas a todos e convide para a luta, pois eles entram no ringue automaticamente. Se forem muitos, cite só 2 ou 3 nomes e diga "e a galera toda". No máximo 12 palavras.`;
+      return `${contextStr}\n${eventData.count} novos espectadores entraram na live! Nomes: ${eventData.names}. Dê as boas-vindas a todos e convide para a luta, pois eles entram no ringue automaticamente. Se forem muitos, cite só 2 ou 3 nomes e diga "e a galera toda". No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_invite_friends':
-      return `${contextStr}\nAgora temos ${eventData.playerCount} lutadores e ${eventData.viewerCount} espectadores. Peça para o pessoal chamar amigos para a live, de um jeito animado e convincente. No máximo 12 palavras.`;
+      return `${contextStr}\nAgora temos ${eventData.playerCount} lutadores e ${eventData.viewerCount} espectadores. Peça para o pessoal chamar amigos para a live, de um jeito animado e convincente. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
 
     default:
       return `${contextStr}\nSomething happened on stream. Give a casual comment.`;
@@ -578,7 +581,6 @@ async function synthPart(voiceId, text, prev, next, session, isName) {
 }
 
 // Garante fala curta (até ~90 letras): corta na primeira frase completa ou no último espaço
-const NARRATOR_MAX_CHARS = 90;
 function shortenLine(t) {
   t = String(t || '').replace(/\s+/g, ' ').trim();
   if (t.length <= NARRATOR_MAX_CHARS) return t;
