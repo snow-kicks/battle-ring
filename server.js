@@ -309,7 +309,7 @@ function getSession(room) {
 const NARRATOR_PROMPT = `Você é o Mestre do Ringue, narrador de lutas de uma live no TikTok. Personagem original. Voz madura, grave e animada, como um narrador de arena que adora o seu trabalho.
 REGRAS:
 - Fale sempre em português do Brasil, de forma natural e falada. Os pedidos podem vir em outra língua, mas a sua resposta é sempre em português.
-- Respostas CURTAS: de 10 a 25 palavras (até 40 quando for reagir a vários espectadores).
+- Respostas MUITO CURTAS: no máximo 12 palavras, uma frase só. A luta é rápida, e fala longa atrasa a narração.
 - Escreva exatamente como será falado em voz alta. Sem emojis, sem hashtags, sem aspas.
 - Cada fala diferente da anterior. Não repita bordões. Nada de gritaria sem fim.
 - Seja respeitoso: sem insultos, política, religião ou assuntos sensíveis.
@@ -365,25 +365,25 @@ function buildCommentaryPrompt(eventType, eventData, recentContext, liveContext,
 
     // ===== COMENTÁRIOS DO JOGO (narrador Mestre do Ringue, português do Brasil) =====
     case 'battle_ring_round_start':
-      return `${contextStr}\nA rodada ${eventData.round} vai começar! ${eventData.playerCount} lutadores no ringue: ${eventData.players}. Apresente a luta com energia, como um narrador de arena. 15 a 25 palavras.`;
+      return `${contextStr}\nA rodada ${eventData.round} vai começar! ${eventData.playerCount} lutadores no ringue: ${eventData.players}. Apresente a luta com energia, como um narrador de arena. No máximo 12 palavras.`;
     case 'battle_ring_fight':
-      return `${contextStr}\nJá! A rodada ${eventData.round} começou e ${eventData.playerCount} lutadores estão se enfrentando. Esquente o clima. Use palavras positivas e empolgantes. 10 a 20 palavras.`;
+      return `${contextStr}\nJá! A rodada ${eventData.round} começou e ${eventData.playerCount} lutadores estão se enfrentando. Esquente o clima. Use palavras positivas e empolgantes. No máximo 12 palavras.`;
     case 'battle_ring_elimination':
-      return `${contextStr}\n${eventData.victim} caiu do ringue${eventData.killer ? ` empurrado por ${eventData.killer}` : ''}! Restam ${eventData.remaining} lutadores. Reaja de forma dramática, mas divertida. 10 a 20 palavras.`;
+      return `${contextStr}\n${eventData.victim} caiu do ringue${eventData.killer ? ` empurrado por ${eventData.killer}` : ''}! Restam ${eventData.remaining} lutadores. Reaja de forma dramática, mas divertida. No máximo 12 palavras.`;
     case 'battle_ring_gift_power':
-      return `${contextStr}\n${eventData.nickname} usou ${eventData.powerName} (${eventData.diamonds} diamantes)! Efeito: ${eventData.effect}. Mostre empolgação e agradeça. 10 a 20 palavras.`;
+      return `${contextStr}\n${eventData.nickname} usou ${eventData.powerName} (${eventData.diamonds} diamantes)! Efeito: ${eventData.effect}. Mostre empolgação e agradeça. No máximo 12 palavras.`;
     case 'battle_ring_winner':
-      return `${contextStr}\n${eventData.winner} venceu a rodada ${eventData.round}! Foram ${eventData.kills} pontos nesta rodada e ${eventData.totalWins} vitórias no total. Celebre o campeão. 15 a 25 palavras.`;
+      return `${contextStr}\n${eventData.winner} venceu a rodada ${eventData.round}! Foram ${eventData.kills} pontos nesta rodada e ${eventData.totalWins} vitórias no total. Celebre o campeão. No máximo 12 palavras.`;
     case 'battle_ring_draw':
-      return `${contextStr}\nA rodada ${eventData.round} terminou empatada! Todos caíram e ninguém venceu. Reaja com surpresa e bom humor. 10 a 15 palavras.`;
+      return `${contextStr}\nA rodada ${eventData.round} terminou empatada! Todos caíram e ninguém venceu. Reaja com surpresa e bom humor. No máximo 12 palavras.`;
     case 'battle_ring_shrink_warning':
-      return `${contextStr}\nO ringue está encolhendo! Faltam ${eventData.timeLeft} segundos e ${eventData.alive} lutadores ainda de pé. Crie suspense. 10 a 20 palavras.`;
+      return `${contextStr}\nO ringue está encolhendo! Faltam ${eventData.timeLeft} segundos e ${eventData.alive} lutadores ainda de pé. Crie suspense. No máximo 12 palavras.`;
     case 'battle_ring_join':
-      return `${contextStr}\n${eventData.nickname} acabou de entrar no ringue${eventData.character ? ` como ${eventData.character}` : ''}! Dê as boas-vindas com simpatia. 10 a 15 palavras.`;
+      return `${contextStr}\n${eventData.nickname} acabou de entrar no ringue${eventData.character ? ` como ${eventData.character}` : ''}! Dê as boas-vindas com simpatia. No máximo 12 palavras.`;
     case 'battle_ring_viewers_welcome':
-      return `${contextStr}\n${eventData.count} novos espectadores entraram na live! Nomes: ${eventData.names}. Dê as boas-vindas a todos e convide para a luta, pois eles entram no ringue automaticamente. Se forem muitos, cite só 2 ou 3 nomes e diga "e a galera toda". 15 a 25 palavras.`;
+      return `${contextStr}\n${eventData.count} novos espectadores entraram na live! Nomes: ${eventData.names}. Dê as boas-vindas a todos e convide para a luta, pois eles entram no ringue automaticamente. Se forem muitos, cite só 2 ou 3 nomes e diga "e a galera toda". No máximo 12 palavras.`;
     case 'battle_ring_invite_friends':
-      return `${contextStr}\nAgora temos ${eventData.playerCount} lutadores e ${eventData.viewerCount} espectadores. Peça para o pessoal chamar amigos para a live, de um jeito animado e convincente. 15 a 25 palavras.`;
+      return `${contextStr}\nAgora temos ${eventData.playerCount} lutadores e ${eventData.viewerCount} espectadores. Peça para o pessoal chamar amigos para a live, de um jeito animado e convincente. No máximo 12 palavras.`;
 
     default:
       return `${contextStr}\nSomething happened on stream. Give a casual comment.`;
@@ -529,7 +529,7 @@ async function writeLineWithLLM(userPrompt, session) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 150, system: NARRATOR_PROMPT, messages: [{ role: 'user', content: userPrompt }] }),
+        body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 60, system: NARRATOR_PROMPT, messages: [{ role: 'user', content: userPrompt }] }),
       });
       if (!r.ok) { console.error('Anthropic error:', await r.text()); return ''; }
       const j = await r.json();
@@ -539,7 +539,7 @@ async function writeLineWithLLM(userPrompt, session) {
     const r = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}` },
-      body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: NARRATOR_PROMPT }, { role: 'user', content: userPrompt }], max_tokens: 120, temperature: 0.9 }),
+      body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: NARRATOR_PROMPT }, { role: 'user', content: userPrompt }], max_tokens: 60, temperature: 0.9 }),
     });
     if (!r.ok) { console.error('OpenAI error:', await r.text()); return ''; }
     const j = await r.json();
@@ -577,6 +577,16 @@ async function synthPart(voiceId, text, prev, next, session, isName) {
   return { buf, hit: false };
 }
 
+// Garante fala curta (até ~90 letras): corta na primeira frase completa ou no último espaço
+const NARRATOR_MAX_CHARS = 90;
+function shortenLine(t) {
+  t = String(t || '').replace(/\s+/g, ' ').trim();
+  if (t.length <= NARRATOR_MAX_CHARS) return t;
+  const m = t.slice(0, NARRATOR_MAX_CHARS + 1).match(/^(.*[.!?])\s/);
+  if (m && m[1].length >= 25) return m[1];
+  return t.slice(0, NARRATOR_MAX_CHARS).replace(/\s+\S*$/, '') + '!';
+}
+
 // GET /api/voice/budget — quanto do limite de teste já foi usado
 app.get('/api/voice/budget', (req, res) => {
   res.json({ mode: NARRATOR_MODE, llm: LLM_PROVIDER, spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD, chars: voiceBudget.chars });
@@ -600,6 +610,7 @@ app.post('/api/voice/generate', async (req, res) => {
     if (wantAI && hasLLM) {
       const userPrompt = buildCommentaryPrompt(eventType, eventData || {}, recentContext || [], liveContext, viewerProfile, conversationLog);
       commentary = await writeLineWithLLM(userPrompt, session);
+      commentary = shortenLine(commentary);
     }
     let parts = null;
     if (!commentary) {
