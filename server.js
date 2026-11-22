@@ -183,7 +183,14 @@ function fixedLine(eventType, data) {
   const tpl = choices[Math.floor(Math.random() * choices.length)];
   recentFixedLines.push(tpl);
   if (recentFixedLines.length > 5) recentFixedLines.shift();
-  return tpl.replace(/\{(\w+)\}/g, (_, k) => String(d[k]).replace(/[^\p{L}\p{N} _.-]/gu, '').slice(0, 24));
+  const clean = k => String(d[k]).replace(/[^\p{L}\p{N} _.-]/gu, '').slice(0, 24);
+  const text = tpl.replace(/\{(\w+)\}/g, (_, k) => clean(k));
+  // Partes: trechos fixos (iguais para todo mundo, ficam em cache) e nomes (gerados uma vez por nome)
+  const parts = tpl.split(/(\{\w+\})/).filter(x => x !== '').map(x => {
+    const m = x.match(/^\{(\w+)\}$/);
+    return m ? { name: true, text: clean(m[1]) } : { name: false, text: x };
+  });
+  return { text, parts };
 }
 
 const SUPABASE_URL = process.env.SUPABASE_URL || '';
@@ -542,6 +549,31 @@ async function writeLineWithLLM(userPrompt, session) {
   }
 }
 
+// Gera (ou lê do cache) o áudio de um trecho. prev/next dão contexto ao ElevenLabs para a entonação combinar com o resto da frase.
+// Lança { budget: true } se estourar o limite de gasto estimado.
+async function synthPart(voiceId, text, prev, next, session) {
+  const key = voiceCacheKey(voiceId, text + '|' + (prev || '').slice(-40) + '|' + (next || '').slice(0, 40));
+  const file = join(VOICE_CACHE_DIR, key + '.mp3');
+  if (existsSync(file)) { try { return { buf: readFileSync(file), hit: true }; } catch (e) { /* gera de novo */ } }
+  const projected = ((voiceBudget.chars + text.length) / 1000) * ELEVENLABS_USD_PER_1K;
+  if (projected > ELEVENLABS_BUDGET_USD) throw { budget: true };
+  const body = { text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.45, similarity_boost: 0.75, style: 0.5, use_speaker_boost: true } };
+  if (prev) body.previous_text = prev;
+  if (next) body.next_text = next;
+  const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error('ElevenLabs: ' + (await r.text()).slice(0, 200));
+  const buf = Buffer.from(await r.arrayBuffer());
+  voiceBudget.chars += text.length;
+  saveVoiceBudget();
+  if (session) session.cost.elevenlabsChars += text.length;
+  try { writeFileSync(file, buf); } catch (e) { /* cache é opcional */ }
+  return { buf, hit: false };
+}
+
 // GET /api/voice/budget — quanto do limite de teste já foi usado
 app.get('/api/voice/budget', (req, res) => {
   res.json({ mode: NARRATOR_MODE, llm: LLM_PROVIDER, spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD, chars: voiceBudget.chars });
@@ -566,7 +598,11 @@ app.post('/api/voice/generate', async (req, res) => {
       const userPrompt = buildCommentaryPrompt(eventType, eventData || {}, recentContext || [], liveContext, viewerProfile, conversationLog);
       commentary = await writeLineWithLLM(userPrompt, session);
     }
-    if (!commentary) commentary = fixedLine(eventType, eventData);
+    let parts = null;
+    if (!commentary) {
+      const fl = fixedLine(eventType, eventData);
+      if (fl) { commentary = fl.text; parts = fl.parts; }
+    }
     if (!commentary) return res.status(503).json({ error: 'Sem fala disponível para este evento' });
     commentary = commentary.slice(0, 300);
 
@@ -577,6 +613,31 @@ app.post('/api/voice/generate', async (req, res) => {
     let cacheHit = false;
     if (existsSync(cacheFile)) {
       try { ttsBuffer = readFileSync(cacheFile); cacheHit = true; console.log('🔊 TTS: cache (grátis)'); } catch (e) { ttsBuffer = null; }
+    }
+
+    // Falas prontas com nome: trechos fixos em cache + só o nome gerado, tudo colado em um áudio
+    if (!ttsBuffer && parts && parts.some(x => x.name) && parts.length > 1 && !voiceId) {
+      try {
+        const bufs = []; let allHit = true;
+        for (let i = 0; i < parts.length; i++) {
+          const t = parts[i].text.trim();
+          if (!/[\p{L}\p{N}]/u.test(t)) continue;
+          const prev = parts.slice(0, i).map(x => x.text).join('');
+          const next = parts.slice(i + 1).map(x => x.text).join('');
+          const r = await synthPart(selectedVoice, t, prev, next, session);
+          if (!r.hit) allHit = false;
+          bufs.push(r.buf);
+        }
+        if (bufs.length) {
+          ttsBuffer = Buffer.concat(bufs);
+          cacheHit = allHit;
+          try { writeFileSync(cacheFile, ttsBuffer); } catch (e) { /* opcional */ }
+          console.log(`🔊 TTS por partes: ${bufs.length} trechos, ${allHit ? 'tudo em cache' : 'gasto estimado $' + voiceSpentUsd().toFixed(3)}`);
+        }
+      } catch (e) {
+        if (e && e.budget) return res.status(402).json({ error: 'budget', spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD });
+        console.warn('⚠️ TTS por partes falhou, tentando a frase inteira:', e.message || e);
+      }
     }
 
     if (!ttsBuffer) {
