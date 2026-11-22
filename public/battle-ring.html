@@ -465,7 +465,15 @@ const MESHY_CHARACTERS = [
     }
   },
   { id: 'Soldier', path: '/assets/characters/Soldier/Soldier.glb', animMap: { 'Idle': 'idle', 'Walk': 'walk', 'Run': 'run', 'TPose': 'punch', 'Idle': 'hit', 'Idle': 'death', 'Idle': 'dance', 'Idle': 'slam', 'Idle': 'dodge', 'Idle': 'block', 'Idle': 'spin', 'Idle': 'tantrum', 'Idle': 'kick', 'Idle': 'groundslam' }, animDurations: { punch: 2.0, hit: 2.0, death: 2.0, dance: 2.0, slam: 2.0, dodge: 2.0, block: 2.0, spin: 2.0, tantrum: 2.0, kick: 2.0, groundslam: 2.0 } },
-];
+  {
+    id: 'RICK', // TESTE local: o arquivo Rick.glb NÃO vai no GitHub (personagem de série). Se não existir, o jogo ignora este item.
+    path: '/assets/characters/RICK/Rick.glb',
+    animMap: { idle:'idle', walk:'walk', run:'run', punch:'punch', hit:'hit', death:'death',
+      dance:'dance', slam:'slam', dodge:'dodge', block:'block', spin:'spin', tantrum:'tantrum',
+      kick:'kick', groundslam:'groundslam' },
+    animDurations: { punch:0.83, hit:0.33, death:2.38, dance:1.0, slam:0.46, dodge:1.46,
+      block:1.21, spin:4.33, tantrum:2.5, kick:1.0, groundslam:1.25 }
+  },];
 // Loaded Meshy data: { path, preloaded, animMap } keyed by id
 const meshyTemplates = {};
 
