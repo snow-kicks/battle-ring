@@ -192,9 +192,9 @@
     <!-- Loading Screen -->
     <div id="loadingScreen">
       <h1>BATTLE RING</h1>
-      <div class="subtitle">Dorong mereka keluar dari arena!</div>
+      <div class="subtitle">Empurre todo mundo para fora da arena!</div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      <div id="loadingText">Memuat aset...</div>
+      <div id="loadingText">Carregando...</div>
     </div>
 
     <!-- HUD -->
@@ -202,14 +202,14 @@
       <div class="top-pill live">
         <div class="live-dot"></div>
         <span id="playerCount">0</span>
-        <span class="label">players</span>
+        <span class="label">jogadores</span>
       </div>
       <div class="top-center">
-        <div class="round-pill" id="roundInfo">MENUNGGU</div>
+        <div class="round-pill" id="roundInfo">AGUARDANDO</div>
         <div class="timer-pill" id="roundTimer">--</div>
       </div>
       <div class="top-pill">
-        <span class="label">alive</span>
+        <span class="label">vivos</span>
         <span id="aliveCount">0</span>
       </div>
       <button id="dashboardBtn" class="top-pill dashboard-btn" style="cursor:pointer;transition:all 0.2s;pointer-events:auto;z-index:9999;border:1px solid rgba(37,244,238,0.4);position:relative;padding:5px 8px;" title="Dashboard">
@@ -227,13 +227,13 @@
         </svg>
       </button>
       <div id="connectPopup" onclick="event.stopPropagation()" style="display:none;position:fixed;top:50px;right:12px;z-index:99999;pointer-events:auto;;background:rgba(0,0,0,0.9);border:1px solid rgba(0,255,136,0.4);border-radius:12px;padding:16px;min-width:220px;backdrop-filter:blur(10px);">
-        <div style="color:#fff;font-size:14px;font-weight:600;margin-bottom:12px;">Connect TikTok</div>
+        <div style="color:#fff;font-size:14px;font-weight:600;margin-bottom:12px;">Conectar ao TikTok</div>
         <div style="display:flex;gap:8px;align-items:center;">
           <span style="color:#888;font-size:16px;">@</span>
           <input type="text" id="connectUsername" placeholder="username" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:8px 10px;color:#fff;font-size:14px;outline:none;">
         </div>
         <div style="display:flex;gap:8px;margin-top:12px;">
-          <button onclick="event.stopPropagation(); connectFromGame()" style="flex:1;background:rgba(0,255,136,0.2);border:1px solid rgba(0,255,136,0.4);border-radius:6px;padding:8px;color:#00ff88;font-size:13px;font-weight:600;cursor:pointer;">Connect</button>
+          <button onclick="event.stopPropagation(); connectFromGame()" style="flex:1;background:rgba(0,255,136,0.2);border:1px solid rgba(0,255,136,0.4);border-radius:6px;padding:8px;color:#00ff88;font-size:13px;font-weight:600;cursor:pointer;">Conectar</button>
           <button onclick="event.stopPropagation(); toggleConnectPopup()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:8px 12px;color:#888;font-size:13px;cursor:pointer;">✕</button>
         </div>
         <div id="connectStatus" style="margin-top:8px;font-size:13px;color:#888;text-align:center;"></div>
@@ -242,7 +242,7 @@
 
     <!-- Leaderboard -->
     <div id="leaderboard">
-      <div class="lb-title">Wins / Points</div>
+      <div class="lb-title">Vitórias / Pontos</div>
       <div id="lbRows"></div>
     </div>
 
@@ -259,43 +259,43 @@
     <div id="guidePanel">
       <div class="guide-item" style="border-color: rgba(68,255,68,0.4); background: rgba(68,255,68,0.15);">
         <div class="guide-icon">🎮</div>
-        <div><div class="guide-label" style="color:#44ff44;">AUTO JOIN</div><div class="guide-desc">enter live = play!</div></div>
+        <div><div class="guide-label" style="color:#44ff44;">AUTO JOIN</div><div class="guide-desc">entrou na live = joga!</div></div>
       </div>
       <div class="guide-item">
         <div class="guide-icon">❤️</div>
-        <div><div class="guide-label">LIKE</div><div class="guide-desc">DORONG Super!</div></div>
+        <div><div class="guide-label">LIKE</div><div class="guide-desc">Empurrão forte!</div></div>
       </div>
       <div class="guide-item">
         <div class="guide-icon">💬</div>
-        <div><div class="guide-label">CHAT</div><div class="guide-desc">Hindar!</div></div>
+        <div><div class="guide-label">CHAT</div><div class="guide-desc">Esquiva!</div></div>
       </div>
       <div class="guide-item">
         <div class="guide-icon">➕</div>
-        <div><div class="guide-label">FOLLOW</div><div class="guide-desc">+Kekuatan</div></div>
+        <div><div class="guide-label">FOLLOW</div><div class="guide-desc">+Força</div></div>
       </div>
       <div class="guide-item">
         <div class="guide-icon">🔄</div>
-        <div><div class="guide-label">SHARE</div><div class="guide-desc">Perisai</div></div>
+        <div><div class="guide-label">SHARE</div><div class="guide-desc">Escudo</div></div>
       </div>
       <div class="guide-divider"></div>
       <div class="guide-gift">
-        <span class="g-emoji">🌹</span><span class="g-label">= Power Up</span>
+        <span class="g-emoji">🌹</span><span class="g-label">= Força extra</span>
       </div>
       <div class="guide-gift">
-        <span class="g-emoji">🍩</span><span class="g-label">= Slam</span>
+        <span class="g-emoji">🍩</span><span class="g-label">= Pancada</span>
       </div>
       <div class="guide-gift">
-        <span class="g-emoji">🦁</span><span class="g-label">= Shockwave</span>
+        <span class="g-emoji">🦁</span><span class="g-label">= Onda de choque</span>
       </div>
       <div class="guide-gift">
-        <span class="g-emoji">🐋</span><span class="g-label">= Meteor!</span>
+        <span class="g-emoji">🐋</span><span class="g-label">= Meteoro!</span>
       </div>
     </div>
 
     <!-- Voice Commentary Indicator -->
     <div id="voiceIndicator" style="display:none; position:absolute; bottom:12px; left:50%; transform:translateX(-50%); z-index:50; background:rgba(0,0,0,0.7); border:1px solid #ec4899; border-radius:20px; padding:6px 14px; font-size:12px; color:#ec4899; pointer-events:none; white-space:nowrap;">
       <span id="voiceSpeakerIcon" style="margin-right:4px;">🎙️</span>
-      <span id="voiceStatusText">Voice Ready</span>
+      <span id="voiceStatusText">Narrador pronto</span>
     </div>
 
     <!-- Voice Commentary Text (shows what AI is saying) -->
@@ -307,51 +307,62 @@
 
   <!-- Debug Panel — outside game frame, hidden on TikTok stream -->
   <div id="debugPanel">
-    <div class="debug-title">SPAWN</div>
+    <div class="debug-title">STATUS</div>
+    <div id="statusBox"></div>
+    <div class="debug-title" style="margin-top:8px;">SPAWN</div>
     <div id="spawnButtons"></div>
     <div class="debug-title" style="margin-top:8px;">BOTS</div>
     <button class="dbtn" onclick="spawnBots()" style="border-left:3px solid #44aaff;">+3 Bot</button>
-    <button class="dbtn" onclick="removeBots()" style="border-left:3px solid #ff4444;">Hapus Bot</button>
-    <div class="debug-title" style="margin-top:8px;">TEST GIFT</div>
+    <button class="dbtn" onclick="removeBots()" style="border-left:3px solid #ff4444;">Remover bots</button>
+    <div class="debug-title" style="margin-top:8px;">PRESENTES (TESTE)</div>
     <button class="dbtn" onclick="testGift('small')" style="border-left:3px solid #44ff44;">🌹 Small</button>
     <button class="dbtn" onclick="testGift('medium')" style="border-left:3px solid #ffaa00;">⚡ Medium</button>
     <button class="dbtn" onclick="testGift('big')" style="border-left:3px solid #ff4400;">🌪️ Big</button>
     <button class="dbtn" onclick="testGift('vip')" style="border-left:3px solid #ff00ff;">☄️ VIP</button>
     <div class="debug-title" style="margin-top:8px;">ARENA</div>
-    <button class="dbtn" onclick="applyArenaTheme('blue_sky')" style="border-left:3px solid #87CEEB;">☀️ Langit</button>
+    <button class="dbtn" onclick="applyArenaTheme('blue_sky')" style="border-left:3px solid #87CEEB;">☀️ Céu</button>
     <button class="dbtn" onclick="applyArenaTheme('sunset')" style="border-left:3px solid #ff6b35;">🌅 Sunset</button>
-    <button class="dbtn" onclick="applyArenaTheme('night')" style="border-left:3px solid #1a1a4e;">🌙 Malam</button>
-    <button class="dbtn" onclick="applyArenaTheme('forest')" style="border-left:3px solid #4a7c2e;">🌲 Hutan</button>
-    <button class="dbtn" onclick="applyArenaTheme('desert')" style="border-left:3px solid #ff8c42;">🏜️ Gurun</button>
+    <button class="dbtn" onclick="applyArenaTheme('night')" style="border-left:3px solid #1a1a4e;">🌙 Noite</button>
+    <button class="dbtn" onclick="applyArenaTheme('forest')" style="border-left:3px solid #4a7c2e;">🌲 Floresta</button>
+    <button class="dbtn" onclick="applyArenaTheme('desert')" style="border-left:3px solid #ff8c42;">🏜️ Deserto</button>
     <div class="debug-title" style="margin-top:8px;">FOCUS</div>
     <div id="focusButtons"></div>
     <div id="animSection" style="display:none;">
       <div class="debug-title" style="margin-top:6px;">ANIMATIONS</div>
       <div id="animButtons"></div>
     </div>
-    <div class="debug-title" style="margin-top:8px;">ACTIONS</div>
+    <div class="debug-title" style="margin-top:8px;">AÇÕES</div>
     <button class="dbtn" onclick="window._debugAction('like')">Like (L)</button>
     <button class="dbtn" onclick="window._debugAction('gift')">Gift (B)</button>
     <button class="dbtn" onclick="window._debugAction('kill')">Kill (K)</button>
     <button class="dbtn" onclick="window._debugAction('round')">Start (R)</button>
-    <button class="dbtn" onclick="window._debugAction('auto')">Auto (A)</button>
+    <button class="dbtn" id="autoPlayBtn" onclick="window._debugAction('auto')" style="border-left:3px solid #44dd77;">Auto (A): OFF</button>
     <button class="dbtn" onclick="window._debugAction('shrink')">Shrink (S)</button>
     <button class="dbtn" id="autoCamBtn" onclick="window._debugAction('autocam')" style="border-left:3px solid #44aaff;">AutoCam: ON</button>
-    <div class="debug-title" style="margin-top:8px;">VOICE</div>
+    <div class="debug-title" style="margin-top:8px;">NARRADOR</div>
+    <button class="dbtn" id="voiceToggleBtn" onclick="toggleVoiceCommentary()" style="border-left:3px solid #ec4899;">Voice: OFF</button>
+    <button class="dbtn" onclick="testVoice()" style="border-left:3px solid #ec4899;">Testar narrador</button>
+    <div class="debug-title" style="margin-top:8px;">VOZES DO NAVEGADOR</div>
     <button class="dbtn" id="ttsToggleBtn" onclick="toggleTTS()" style="border-left:3px solid #ff8800;">Announcer: ON</button>
-    <button class="dbtn" onclick="testAnnouncer()" style="border-left:3px solid #ff8800;">Test Announcer</button>
+    <button class="dbtn" onclick="testAnnouncer()" style="border-left:3px solid #ff8800;">Testar anunciante</button>
+    <button class="dbtn" id="banterToggleBtn" onclick="toggleBanter()" style="border-left:3px solid #ff8800;">Conversa dos lutadores: OFF</button>
   </div>
   <style>
     #debugPanel {
       position: fixed; right: 10px; top: 50%; transform: translateY(-50%);
       z-index: 9999; display: flex; flex-direction: column; gap: 4px;
       background: rgba(20,20,20,0.95); border: 1px solid #333; border-radius: 10px;
-      padding: 10px; width: 110px; max-height: 80vh; overflow-y: auto;
+      padding: 10px; width: 190px; max-height: 92vh; overflow-y: auto;
     }
-    .debug-title { font-size: 12px; color: #ff8800; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 2px; }
+    #debugPanel > *, #debugPanel .dbtn { flex-shrink: 0; }
+    #spawnButtons, #focusButtons, #animButtons { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+    #statusBox { background: #111; border: 1px solid #333; border-radius: 6px; padding: 8px; font-size: 13px; line-height: 1.5; color: #ddd; }
+    #statusBox b { color: #fff; }
+    #statusBox .ok { color: #44dd77; } #statusBox .off { color: #ff7777; } #statusBox .warn { color: #ffcc44; }
+    .debug-title { font-size: 13px; color: #ff8800; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 2px; }
     .dbtn {
       background: #222; color: #ccc; border: 1px solid #444; border-radius: 6px;
-      padding: 6px 8px; font-size: 13px; cursor: pointer; text-align: left;
+      padding: 9px 10px; font-size: 15px; min-height: 36px; cursor: pointer; text-align: left;
       transition: background 0.15s;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
@@ -464,8 +475,18 @@ const MESHY_CHARACTERS = [
       dodge: 2.2, block: 2.6, spin: 4.0, tantrum: 5.0, kick: 1.6, groundslam: 3.3
     }
   },
-  { id: 'Soldier', path: '/assets/characters/Soldier/Soldier.glb', animMap: { 'Idle': 'idle', 'Walk': 'walk', 'Run': 'run', 'TPose': 'punch', 'Idle': 'hit', 'Idle': 'death', 'Idle': 'dance', 'Idle': 'slam', 'Idle': 'dodge', 'Idle': 'block', 'Idle': 'spin', 'Idle': 'tantrum', 'Idle': 'kick', 'Idle': 'groundslam' }, animDurations: { punch: 2.0, hit: 2.0, death: 2.0, dance: 2.0, slam: 2.0, dodge: 2.0, block: 2.0, spin: 2.0, tantrum: 2.0, kick: 2.0, groundslam: 2.0 } },
-];
+  // Soldier (modelo de exemplo): só tem as animações Idle, Walk e Run. Sem soco, usa o "parado".
+  // yawOffset: este modelo foi feito olhando para o lado oposto dos outros, por isso gira 180°.
+  { id: 'Soldier', path: '/assets/characters/Soldier/Soldier.glb', yawOffset: Math.PI, animMap: { 'Idle': 'idle', 'Walk': 'walk', 'Run': 'run' }, animDurations: { punch: 1.0, hit: 1.0, death: 1.0, dance: 2.0, slam: 1.0, dodge: 1.0, block: 1.0, spin: 1.0, tantrum: 1.0, kick: 1.0, groundslam: 1.0 } },
+  {
+    id: 'RICK', // TESTE local: o arquivo Rick.glb NÃO vai no GitHub (personagem de série). Se não existir, o jogo ignora este item.
+    path: '/assets/characters/RICK/Rick.glb',
+    animMap: { idle:'idle', walk:'walk', run:'run', punch:'punch', hit:'hit', death:'death',
+      dance:'dance', slam:'slam', dodge:'dodge', block:'block', spin:'spin', tantrum:'tantrum',
+      kick:'kick', groundslam:'groundslam' },
+    animDurations: { punch:0.83, hit:0.33, death:2.38, dance:1.0, slam:0.46, dodge:1.46,
+      block:1.21, spin:4.33, tantrum:2.5, kick:1.0, groundslam:1.25 }
+  },];
 // Loaded Meshy data: { path, preloaded, animMap } keyed by id
 const meshyTemplates = {};
 
@@ -1170,7 +1191,8 @@ async function loadAssets() {
   for (const mc of MESHY_CHARACTERS) {
     try {
       const gltf = await loader.loadAsync(mc.path);
-      meshyTemplates[mc.id] = { path: mc.path, preloaded: true, animMap: mc.animMap, animDurations: mc.animDurations || {} };
+      meshyTemplates[mc.id] = { path: mc.path, preloaded: true, animMap: mc.animMap, animDurations: mc.animDurations || {}, yawOffset: mc.yawOffset || 0, ...medirSoco(gltf, mc) };
+      console.log(`Soco ${mc.id}: alcance ${meshyTemplates[mc.id].punchReach.toFixed(2)} m, pico em ${meshyTemplates[mc.id].punchPeakSec.toFixed(2)} s`);
       updateProgress(`${mc.id} (${gltf.animations.length} anims: ${gltf.animations.map(a => a.name).join(', ')})`);
       console.log(`Meshy ${mc.id} preloaded OK — ${gltf.animations.length} animations`);
     } catch (e) { console.warn(`Meshy ${mc.id} failed:`, e.message); loaded++; }
@@ -1190,29 +1212,21 @@ let botsEnabled = false;
 let botRespawnCount = 0;
 let botsReady = false;
 const BOT_NAMES = [
-  // Nama Indonesia populer
-  'Budi', 'Andi', 'Sari', 'Rizky', 'Putri', 'Agus', 'Rina', 'Dimas', 'Lestari',
-  'Bayu', 'Citra', 'Eka', 'Fitri', 'Gilang', 'Hana', 'Irfan', 'Joko', 'Kartika', 'Lukman',
-  'Maya', 'Nanda', 'Oscar', 'Putra', 'Qori', 'Sinta', 'Tono', 'Ulya', 'Vina',
-  'Wawan', 'Xena', 'Yoga', 'Zahra', 'Aldi', 'Bella', 'Cahya', 'Danu', 'Fajar',
-  'Gita', 'Hadi', 'Indra', 'Jihan', 'Kurnia', 'Lia', 'Mega', 'Nia', 'Omar', 'Prita',
-  // Nama tambahan Indonesia
-  'Adit', 'Bima', 'Citra', 'Deni', 'Eko', 'Fina', 'Gilang', 'Hendra', 'Imam', 'Jarwo',
-  'Kevin', 'Laras', 'Melati', 'Niko', 'Owi', 'Putri', 'Rahmat', 'Salsa', 'Tari', 'Udin',
-  'Vino', 'Wati', 'Yanti', 'Zidan', 'Amel', 'Bram', 'Cakra', 'Dian', 'Ervan', 'Farhan',
-  'Ghina', 'Hana', 'Ica', 'Jaka', 'Kania', 'Leo', 'Mega', 'Nabil', 'Opik', 'Putra',
-  // Nama panggilan/gaul
-  'Abe', 'Bowo', 'Coki', 'Dede', 'Emon', 'Fafa', 'Gugun', 'Hengky', 'Iwan', 'Jeki',
-  'Koko', 'Luki', 'Memet', 'Nopal', 'Ojon', 'Pepeng', 'Rian', 'Sultan', 'Tegar', 'Ucok',
-  'Vicky', 'Wira', 'Yusuf', 'Zaki', 'Aji', 'Beni', 'Candra', 'Dwiki', 'Erik', 'Fadli',
-  'Gerry', 'Heri', 'Ilham', 'Joni', 'Kiki', 'Lutfi', 'Maman', 'Nando', 'Opung', 'Pandu',
-  // Nama karakter/fun
-  'Raja_Banteng', 'Ratu_Lebah', 'Si_Ganteng', 'Si_Cantik', 'Jagoan_Kampung',
-  'Pemain_Pro', 'Master_Gaming', 'Sultan_Battle', 'Raja_Arena', 'Dewa_Fight',
-  'Pahlawan', 'Penantang', 'Petarung', 'Juara', 'Legenda',
-  'Ksatria_Hitam', 'Naga_Api', 'Elang_Laut', 'Harimau_Sumatra', 'Gajah_Perkasa',
-  'Serigala_Malam', 'Rajawali_Emas', 'Macan_Tutul', 'Burung_Garuda', 'Kuda_Lumping',
-  'Si_Badak', 'Kapten_Arena', 'Ratu_Selatan', 'Pangeran_Timur', 'Putri_Barat'
+  // Nomes brasileiros comuns
+  'Ana', 'Bruno', 'Carla', 'Diego', 'Eduarda', 'Felipe', 'Gabriela', 'Henrique', 'Isabela',
+  'João', 'Karina', 'Lucas', 'Mariana', 'Nicolas', 'Olívia', 'Pedro', 'Rafaela', 'Samuel',
+  'Tatiane', 'Vinícius', 'Yasmin', 'Arthur', 'Beatriz', 'Caio', 'Daniela', 'Enzo', 'Fernanda',
+  'Gustavo', 'Helena', 'Igor', 'Júlia', 'Larissa', 'Matheus', 'Natália', 'Otávio', 'Paula',
+  'Rodrigo', 'Sofia', 'Thiago', 'Valentina', 'Wesley', 'Alice', 'Breno', 'Camila', 'Davi',
+  'Elisa', 'Fábio', 'Giovana', 'Hugo', 'Ingrid', 'Juliano', 'Lívia', 'Marcelo', 'Nina',
+  // Apelidos
+  'Biel', 'Duda', 'Gui', 'Juju', 'Lelê', 'Malu', 'Nando', 'Rafa', 'Tavinho', 'Zé',
+  'Bia', 'Cadu', 'Dani', 'Fefe', 'Gabi', 'Lulu', 'Mari', 'Pepê', 'Teté', 'Vivi',
+  // Nomes de lutador
+  'Rei_da_Arena', 'Rainha_do_Ringue', 'Fera_Brava', 'Trovão', 'Tufão',
+  'Jogador_Pro', 'Mestre_dos_Games', 'Lenda_Viva', 'Campeão', 'Desafiante',
+  'Cavaleiro_Negro', 'Dragão_de_Fogo', 'Águia_Dourada', 'Onça_Pintada', 'Touro_Bravo',
+  'Lobo_da_Noite', 'Tubarão', 'Jacaré_Valente', 'Capitão_Arena', 'Furacão'
 ];
 let botCount = 0;
 let roundTimer = 0;
@@ -1231,10 +1245,10 @@ function setRoundState(state) {
       botsEnabled = false; // Reset supaya bot bisa spawn lagi
       botsReady = false;
       botRespawnCount = 0; // Reset respawn counter
-      info.textContent = 'MENUNGGU';
+      info.textContent = 'AGUARDANDO';
       timer.textContent = '--';
       timer.classList.remove('urgent');
-      showBanner('MENUNGGU', `Menunggu pemain...`);
+      showBanner('AGUARDANDO', `Esperando jogadores...`);
       arenaRadius = ARENA_START_RADIUS;
       updateArenaVisuals();
       waitingTimer = 0; // Reset timer
@@ -1242,9 +1256,10 @@ function setRoundState(state) {
 
     case 'COUNTDOWN':
       roundNumber++;
+      clearStaleVoice(); // não deixa falas da rodada anterior tocarem na nova
       countdownValue = ROUND_COUNTDOWN;
-      info.textContent = `RONDE ${roundNumber}`;
-      showBanner(String(ROUND_COUNTDOWN), 'Bersiap!');
+      info.textContent = `RODADA ${roundNumber}`;
+      showBanner(String(ROUND_COUNTDOWN), 'Preparem-se!');
       announcer.announceRoundStart(roundNumber);
       // Voice: announce round start
       const pNames = [];
@@ -1278,10 +1293,10 @@ function setRoundState(state) {
       break;
 
     case 'ACTIVE':
-      info.textContent = `RONDE ${roundNumber}`;
+      info.textContent = `RODADA ${roundNumber}`;
       roundTimer = ROUND_DURATION;
       hideBanner();
-      showBanner('GO!', '');
+      showBanner('VALENDO!', '');
       SFX.fight();
       setTimeout(hideBanner, 1500);
       // Voice: round start call
@@ -1299,7 +1314,7 @@ function setRoundState(state) {
       if (winner) {
         winner.wins++;
         winner.score += 100;
-        showBanner(`${winner.nickname} MENANG!`, `${winner.wins} menang — ${winner.roundKills} poin`);
+        showBanner(`${winner.nickname} VENCEU!`, `${winner.wins} vitórias — ${winner.roundKills} pontos`);
         announcer.announceWinner(winner.nickname);
         // Teleport winner to arena center for victory dance
         winner.x = 0; winner.z = 0; winner.y = 0.25;
@@ -1360,7 +1375,7 @@ function setRoundState(state) {
           }, 2000);
         });
       } else {
-        showBanner('SERI!', 'Tidak ada yang selamat...');
+        showBanner('EMPATE!', 'Ninguém ficou na arena...');
         announcer.announceDraw();
         queueVoiceEvent('battle_ring_draw', { round: roundNumber }, 4);
         players.forEach(p => {
@@ -1384,7 +1399,7 @@ function setRoundState(state) {
 
     case 'INTERMISSION':
       roundTimer = INTERMISSION_TIME;
-      info.textContent = 'RONDE BERIKUTNYA';
+      info.textContent = 'PRÓXIMA RODADA';
       hideBanner();
       break;
   }
@@ -1401,7 +1416,7 @@ function spawnBot() {
     // random character
   };
   createPlayer(botData);
-  addNotification(`<strong>${name}</strong> masuk arena!`, 'power');
+  addNotification(`<strong>${name}</strong> entrou na arena!`, 'power');
   return botData;
 }
 
@@ -1412,7 +1427,7 @@ function spawnBots(count) {
   }
   botsEnabled = true;
   botsReady = true;
-  addNotification(`${actualCount} petarung masuk arena!`, 'power');
+  addNotification(`${actualCount} lutadores entraram na arena!`, 'power');
 }
 
 function removeBots() {
@@ -1428,14 +1443,14 @@ function removeBots() {
   botsEnabled = false;
   botCount = 0;
   updatePlayerCount();
-  addNotification('Bot dikeluarkan!', '');
+  addNotification('Bots removidos!', '');
 }
 
 // Test gift function
 function testGift(tier) {
   const alive = cachedAlivePlayers;
   if (alive.length === 0) {
-    addNotification('Tidak ada pemain!', '');
+    addNotification('Nenhum jogador!', '');
     return;
   }
   const target = alive[Math.floor(Math.random() * alive.length)];
@@ -1513,7 +1528,7 @@ function updateRoundState(dt) {
         const botsNeeded = MIN_PLAYERS_TO_START - alive;
         botsEnabled = true;
         spawnBots(botsNeeded);
-        addNotification(`${botsNeeded} bot masuk bantu!`, 'power');
+        addNotification(`${botsNeeded} bots entraram para ajudar!`, 'power');
       } else if (botsReady && countAlivePlayers() >= 1) {
         // Bot sudah siap + ada viewer, mulai
         setRoundState('COUNTDOWN');
@@ -1523,14 +1538,14 @@ function updateRoundState(dt) {
         // 5 detik habis, ga ada viewer → spawn bot aja
         botsEnabled = true;
         spawnBots(3);
-        addNotification('Bot masuk arena!', 'power');
+        addNotification('Bot entrou na arena!', 'power');
       } else if (botsReady) {
         // Bot sudah siap (walau ga ada viewer), mulai aja
         setRoundState('COUNTDOWN');
         waitingTimer = 0;
         botsReady = false;
       } else {
-        document.getElementById('roundTimer').textContent = botsEnabled ? 'Memuat...' : `Menunggu... (${Math.ceil(Math.max(0, 5 - waitingTimer))}s)`;
+        document.getElementById('roundTimer').textContent = botsEnabled ? 'Carregando...' : `Esperando... (${Math.ceil(Math.max(0, 5 - waitingTimer))}s)`;
       }
       break;
     }
@@ -1542,7 +1557,7 @@ function updateRoundState(dt) {
       } else {
         const v = Math.ceil(countdownValue);
         document.getElementById('roundTimer').textContent = v;
-        showBanner(String(v), v === 1 ? 'MAJU!' : 'Bersiap!');
+        showBanner(String(v), v === 1 ? 'VAI!' : 'Preparem-se!');
         SFX.countdown();
       }
       break;
@@ -1587,7 +1602,7 @@ function updateRoundState(dt) {
         if (botsNeeded > 0) {
           spawnBots(botsNeeded);
           botRespawnCount++;
-          addNotification(`${botsNeeded} petarung baru masuk!`, 'power');
+          addNotification(`${botsNeeded} novos lutadores entraram!`, 'power');
         }
       }
 
@@ -1613,7 +1628,7 @@ function updateRoundState(dt) {
           if (botsAlive === 0 && botRespawnCount < 5) {
             spawnBots(1 + Math.floor(Math.random() * 4));
             botRespawnCount++;
-            addNotification('Bot tambahan masuk!', 'power');
+            addNotification('Mais um bot entrou!', 'power');
           }
         }
       } else if (timeLeft <= 0) {
@@ -1647,7 +1662,7 @@ function updateRoundState(dt) {
           const botsNeeded = 3 - alive;
           spawnBots(botsNeeded);
           botsEnabled = true;
-          addNotification(`${botsNeeded} petarung baru masuk!`, 'power');
+          addNotification(`${botsNeeded} novos lutadores entraram!`, 'power');
         }
         if (countAlivePlayers() >= MIN_PLAYERS_TO_START || players.size >= MIN_PLAYERS_TO_START) {
           setRoundState('COUNTDOWN');
@@ -1702,6 +1717,29 @@ function hideBanner() {
 const players = new Map();
 window.players = players;  // Expose untuk banter TTS
 
+// ===== Medição de golpes (diagnóstico) =====
+const HAND_BONE_RE = /^(mixamorig)?(Left|Right)Hand$|^hand_[lr]_\d+$/;
+window.golpeLog = [];
+function golpeInicio(p, target) {
+  if (!p._hands) p._hands = Object.entries(p.boneMap || {}).filter(([n]) => HAND_BONE_RE.test(n)).map(([, b]) => b);
+  p._golpe = { target, t0: performance.now(), centros: Math.hypot(target.x - p.x, target.z - p.z), minMao: Infinity, maoNoEmpurrao: null, dur: getAnimDuration(p, 'punch') };
+}
+function golpeAtualiza(p) {
+  const g = p._golpe;
+  if (!g || !p._hands || !p._hands.length) return;
+  const tx = g.target.x, tz = g.target.z;
+  let d = Infinity;
+  for (const h of p._hands) { const e = h.matrixWorld.elements; d = Math.min(d, Math.hypot(e[12] - tx, e[14] - tz)); }
+  if (g.maoNoEmpurrao === null && g.empurrou) g.maoNoEmpurrao = d;
+  if (d < g.minMao) { g.minMao = d; g.tMin = (performance.now() - g.t0) / 1000; }
+  if ((performance.now() - g.t0) / 1000 > g.dur + 0.05 || !p.alive) {
+    window.golpeLog.push({ quem: p._meshyId, alvo: g.target._meshyId, centros: +g.centros.toFixed(2), maoMinAlvo: +g.minMao.toFixed(2), noSeg: +(g.tMin || 0).toFixed(2), maoNoEmpurrao: g.maoNoEmpurrao == null ? null : +g.maoNoEmpurrao.toFixed(2), empurraoSeg: g.empurraoSeg ?? 0 });
+    if (window.golpeLog.length > 300) window.golpeLog.shift();
+    p._golpe = null;
+  }
+}
+window.golpeTabela = () => console.table(window.golpeLog);
+
 function hashCode(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -1731,7 +1769,9 @@ async function createPlayer(viewer) {
 
   const hash = hashCode(viewer.uniqueId);
   const color = CHAR_COLORS[hash % CHAR_COLORS.length];
-  const meshyIds = Object.keys(meshyTemplates);
+  // Soldier não tem golpes: só entra no sorteio se não houver outro lutador carregado
+  const _allMeshy = Object.keys(meshyTemplates);
+  const meshyIds = _allMeshy.filter(id => id !== 'Soldier').length ? _allMeshy.filter(id => id !== 'Soldier') : _allMeshy;
 
   let model, mixer = null;
   const animations = {};
@@ -1904,7 +1944,7 @@ async function createPlayer(viewer) {
 
   players.set(viewer.uniqueId, player);
   updatePlayerCount();
-  addNotification(`<strong>${player.nickname}</strong> joined the arena!`);
+  addNotification(`<strong>${player.nickname}</strong> entrou na arena!`);
   setupFocusButtons(); // Refresh focus panel
   return player;
 }
@@ -2041,6 +2081,8 @@ function applyUALFrame(player, time) {
 function updateAnimations(dt) {
   players.forEach(p => {
     if (p.mixer) p.mixer.update(dt);
+    resolverSoco(p);
+    golpeAtualiza(p);
 
     if (p.isMeshy) {
       // Meshy: mixer handles everything natively
@@ -2073,8 +2115,82 @@ function updateAnimations(dt) {
 
 // ===== PHYSICS =====
 const WALK_SPEED = 1.8;       // Auto-walk speed toward opponents
-const ENGAGE_DIST = 1.8;      // Distance to stop and face opponent
-const PUNCH_RANGE = 2.2;      // Max range for like-to-punch
+// Distâncias de luta (metros, de centro a centro). O alcance do soco é medido de cada modelo ao carregar.
+const BODY_RADIUS = 0.22;     // raio do corpo (ombro até o centro), medido nos modelos: 0,20 a 0,23
+const CONTACT_DIST = 2 * BODY_RADIUS + 0.06; // corpos encostam (colisão)
+const PUNCH_MARGIN = 0.05;    // o punho entra um pouco no corpo do alvo
+const PUNCH_WINDUP_MAX = 0.35; // o pico do soco chega no máximo 0,35 s depois do clique/curtida
+// Para e encara o oponente a esta distância: alcance do braço + corpo do alvo
+function engageDist(p) { const r = (meshyTemplates[p._meshyId] || {}).punchReach || p._punchReach || 0.6; p._punchReach = r; return Math.min(1.4, Math.max(CONTACT_DIST, r + BODY_RADIUS - PUNCH_MARGIN)); }
+// Soco automático só sai se o alvo estiver perto disso; curtida aceita um pouco mais (o lutador dá um passo)
+function autoPunchRange(p) { return engageDist(p) + 0.25; }
+function likePunchRange(p) { return engageDist(p) + 0.6; }
+const ENGAGE_DIST = 1.2;      // (antigo, não usado) Distance to stop and face opponent
+const PUNCH_RANGE = 1.7;      // (antigo, não usado) Max range for like-to-punch
+
+// Mede, numa cópia carregada do modelo, até onde a mão vai para a frente no soco e em que momento.
+function medirSoco(gltf, mc) {
+  const res = { punchReach: 0.6, punchPeakSec: 0.3, punchClipSec: 1 };
+  try {
+    const clipName = Object.keys(mc.animMap || {}).find(k => mc.animMap[k] === 'punch');
+    const clip = clipName && gltf.animations.find(a => a.name === clipName);
+    if (!clip) return res;
+    const scene = gltf.scene;
+    const hands = [];
+    const maoRe = /^(mixamorig)?(Left|Right)Hand$|^hand_[lr]_\d+$/;
+    scene.traverse(o => { if (o.isBone && maoRe.test(o.name)) hands.push(o); });
+    if (!hands.length) return res;
+    const yaw = mc.yawOffset || 0, fx = -Math.sin(yaw), fz = Math.cos(yaw);
+    const mixer = new THREE.AnimationMixer(scene);
+    const act = mixer.clipAction(clip); act.play();
+    let best = 0, tBest = 0;
+    const N = 60;
+    for (let i = 0; i <= N; i++) {
+      const t = clip.duration * i / N;
+      mixer.setTime(t); scene.updateMatrixWorld(true);
+      for (const h of hands) { const e = h.matrixWorld.elements; const f = e[12] * fx + e[14] * fz; if (f > best) { best = f; tBest = t; } }
+    }
+    act.stop(); mixer.uncacheRoot(scene);
+    res.punchReach = best; res.punchPeakSec = tBest; res.punchClipSec = clip.duration;
+  } catch (e) { console.warn('medirSoco', mc.id, e.message); }
+  return res;
+}
+
+// Começa o soco: a animação pula a preparação longa e o empurrão fica agendado para o pico do soco
+function iniciarSoco(p, target, opts) {
+  const tpl = meshyTemplates[p._meshyId] || {};
+  const peak = tpl.punchPeakSec ?? 0.3;
+  const offset = Math.max(0, peak - PUNCH_WINDUP_MAX);
+  setPlayerAnim(p, 'punch', 1);
+  const act = p.animations && p.animations.punch;
+  if (act) act.time = offset;
+  p.punchTimer = Math.max(0.3, getAnimDuration(p, 'punch') - offset);
+  p._socoPendente = { target, quando: performance.now() + (peak - offset) * 1000, ...opts };
+  golpeInicio(p, target);
+}
+// No pico do soco: se o alvo ainda está ao alcance, empurra. Se fugiu, o soco erra.
+function resolverSoco(p) {
+  const s = p._socoPendente;
+  if (!s || performance.now() < s.quando) return;
+  p._socoPendente = null;
+  const t = s.target;
+  if (!p.alive || !t || !t.alive) return;
+  const dx = t.x - p.x, dz = t.z - p.z, dist = Math.hypot(dx, dz) || 0.01;
+  if (p._golpe) { p._golpe.empurrou = true; p._golpe.empurraoSeg = +((performance.now() - p._golpe.t0) / 1000).toFixed(2); p._golpe.centrosNoEmpurrao = dist; }
+  if (dist > engageDist(p) + 0.35) return; // fugiu: errou
+  const nx = dx / dist, nz = dz / dist;
+  t.vx += nx * s.force; t.vz += nz * s.force;
+  t.lastPushedBy = p.uniqueId;
+  if (s.forte && t.hitTimer <= 0) {
+    setPlayerAnim(t, 'hit', 1);
+    t.hitTimer = getAnimDuration(t, 'hit');
+    t.vy = 1.5; t.onGround = false;
+    SFX.hit();
+  }
+  if (t.shieldHits > 0) { t.shieldHits--; t.vx *= 0.3; t.vz *= 0.3; }
+  if (s.forte) spawnPushParticles(t.x, 1, t.z);
+  SFX.punch();
+}
 const DODGE_FORCE = 4.0;      // Dodge sidestep force
 const AUTO_PUNCH_INTERVAL = 1.8; // seconds between auto punches
 const AUTO_PUNCH_FORCE = 0.4;    // auto punch = 40% of manual punch
@@ -2133,7 +2249,7 @@ function updatePhysics(dt) {
 
       // Chase opponent: strongest when safely inside, weakens near edge
       const { target, dist } = findNearestAlive(p);
-      if (target && dist > ENGAGE_DIST) {
+      if (target && dist > engageDist(p)) {
         const dx = target.x - p.x, dz = target.z - p.z;
         const chaseFactor = Math.max(0.1, 1.0 - survivalUrgency * 0.8); // weaken chase near edge
         moveX += (dx / dist) * chaseFactor;
@@ -2167,18 +2283,14 @@ function updatePhysics(dt) {
       if (p.autoPunchTimer <= 0) {
         p.autoPunchTimer = AUTO_PUNCH_INTERVAL + Math.random() * 0.5; // slight randomness
         const { target, dist } = findNearestAlive(p);
-        if (target && dist < PUNCH_RANGE) {
+        if (target && dist < autoPunchRange(p)) {
           const dx = target.x - p.x, dz = target.z - p.z;
           const nx = dx / dist, nz = dz / dist;
-          const force = BASE_PUSH * p.pushPower * AUTO_PUNCH_FORCE;
-          target.vx += nx * force;
-          target.vz += nz * force;
-          target.lastPushedBy = p.uniqueId;
           p.aimAngle = Math.atan2(dx, dz);
-          // Light hit — no stagger bounce, just push
-          setPlayerAnim(p, 'punch', 1);
-          p.punchTimer = getAnimDuration(p, 'punch');
-          SFX.punch();
+          // Passo à frente só se ainda não está colado no alcance
+          if (dist > engageDist(p)) { p.vx += nx * 1.2; p.vz += nz * 1.2; }
+          // Soco leve: empurra no pico da animação, sem o tranco de "hit"
+          iniciarSoco(p, target, { force: BASE_PUSH * p.pushPower * AUTO_PUNCH_FORCE, forte: false });
         }
       }
     }
@@ -2223,7 +2335,7 @@ function updatePhysics(dt) {
     p.model.position.set(p.x, p.y, p.z);
 
     // Face aim direction (toward nearest opponent)
-    p.model.rotation.y = p.aimAngle;
+    p.model.rotation.y = p.aimAngle + (meshyTemplates[p._meshyId]?.yawOffset || 0);
 
 
     // Determine walk/run/idle anim based on velocity
@@ -2243,9 +2355,9 @@ function updatePhysics(dt) {
         const a = arr[i], b = arr[j];
         const dx = b.x - a.x, dz = b.z - a.z;
         const dist = Math.sqrt(dx * dx + dz * dz);
-        if (dist < 1.2 && dist > 0.01) {
+        if (dist < CONTACT_DIST && dist > 0.01) {
           const nx = dx / dist, nz = dz / dist;
-          const overlap = (1.2 - dist) * 0.5;
+          const overlap = (CONTACT_DIST - dist) * 0.5;
           // Push apart
           a.x -= nx * overlap; a.z -= nz * overlap;
           b.x += nx * overlap; b.z += nz * overlap;
@@ -2288,13 +2400,13 @@ function eliminatePlayer(player) {
       killer.kills++;
       killer.roundKills++;
       killer.score += 25;
-      addNotification(`<strong>${killer.nickname}</strong> pushed <strong>${player.nickname}</strong> out!`, 'out');
+      addNotification(`<strong>${killer.nickname}</strong> empurrou <strong>${player.nickname}</strong> para fora!`, 'out');
     } else {
-      addNotification(`<strong>${player.nickname}</strong> terjatuh!`, 'out');
+      addNotification(`<strong>${player.nickname}</strong> caiu!`, 'out');
     announcer.announceElimination(player.nickname);
     }
   } else {
-    addNotification(`<strong>${player.nickname}</strong> terjatuh!`, 'out');
+    addNotification(`<strong>${player.nickname}</strong> caiu!`, 'out');
     announcer.announceElimination(player.nickname);
   }
 
@@ -2334,7 +2446,7 @@ async function handleLike(data) {
       if (bots.length > 0) {
         const botToRemove = bots[0];
         removePlayer(botToRemove.uniqueId);
-        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} digantikan oleh ${data.nickname}!`, '');
+        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} foi substituído por ${data.nickname}!`, '');
       }
     }
     p = await createPlayer(data);
@@ -2351,34 +2463,17 @@ async function handleLike(data) {
 
   // Find nearest opponent and PUNCH them
   const { target, dist } = findNearestAlive(p);
-  if (target && dist < PUNCH_RANGE) {
-    // In range — punch the opponent!
+  if (target && dist < likePunchRange(p)) {
+    // In range — punch the opponent! O empurrão e a reação do alvo saem no pico do soco.
     const dx = target.x - p.x, dz = target.z - p.z;
     const nx = dx / dist, nz = dz / dist;
     const force = BASE_PUSH * p.pushPower * (p.speedBoost > 0 ? 1.5 : 1) * count;
-
-    // Knockback on target
-    target.vx += nx * force;
-    target.vz += nz * force;
-    target.lastPushedBy = p.uniqueId;
-
-    // Hit animation on target + small stagger bounce
-    if (target.hitTimer <= 0) {
-      setPlayerAnim(target, 'hit', 1);
-      target.hitTimer = getAnimDuration(target, 'hit');
-      SFX.hit();
-      // Stagger bounce — makes hit visually clear
-      target.vy = 1.5;
-      target.onGround = false;
-    }
-    if (target.shieldHits > 0) { target.shieldHits--; target.vx *= 0.3; target.vz *= 0.3; }
-
-    // Face the opponent
     p.aimAngle = Math.atan2(dx, dz);
-
-    spawnPushParticles(target.x, 1, target.z);
-    SFX.punch();
-    addNotification(`<strong>${p.nickname}</strong> menabrak <strong>${target.nickname}</strong>!`);
+    // Dá um passo até o alcance do braço
+    if (dist > engageDist(p)) { const passo = Math.min(3.0, (dist - engageDist(p)) * 6); p.vx += nx * passo; p.vz += nz * passo; }
+    if (p.punchTimer <= 0) iniciarSoco(p, target, { force, forte: true });
+    else p._socoPendente = { target, quando: performance.now() + 150, force, forte: true };
+    addNotification(`<strong>${p.nickname}</strong> trombou em <strong>${target.nickname}</strong>!`);
   } else {
     // No one in range — lunge forward
     const force = BASE_PUSH * 0.5 * count;
@@ -2387,7 +2482,7 @@ async function handleLike(data) {
     spawnPushParticles(p.x + Math.sin(p.aimAngle) * 0.8, 1, p.z + Math.cos(p.aimAngle) * 0.8);
   }
 
-  // Punch animation on attacker
+  // Punch animation on attacker (soco no vazio; o soco com alvo já começou em iniciarSoco)
   if (p.punchTimer <= 0) {
     setPlayerAnim(p, 'punch', 1);
     p.punchTimer = getAnimDuration(p, 'punch');
@@ -2413,7 +2508,7 @@ async function handleChat(data) {
     if (p) {
       const charLabel = p._meshyId ? ` as ${p._meshyId}` : '';
       SFX.join();
-      addNotification(`<strong>${p.nickname}</strong> joined${charLabel}! 🎮`, 'power');
+      addNotification(`<strong>${p.nickname}</strong> entrou${charLabel}! 🎮`, 'power');
       queueVoiceEvent('battle_ring_join', { nickname: p.nickname, character: p._meshyId || null }, 1);
     }
     if (!p) return;
@@ -2452,7 +2547,7 @@ async function handleChat(data) {
     p.punchTimer = getAnimDuration(p, 'dodge');
   }
   SFX.dodge();
-  addNotification(`<strong>${p.nickname}</strong> menghindar!`);
+  addNotification(`<strong>${p.nickname}</strong> esquivou!`);
 }
 
 // ===== GIFT MAPPING =====
@@ -2512,7 +2607,7 @@ async function handleGift(data) {
       if (bots.length > 0) {
         const botToRemove = bots[0];
         removePlayer(botToRemove.uniqueId);
-        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} digantikan oleh ${data.nickname}!`, '');
+        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} foi substituído por ${data.nickname}!`, '');
       }
     }
     p = await createPlayer(data);
@@ -2556,7 +2651,7 @@ async function handleGift(data) {
     }, 800); // Delay untuk efek dramatis
     
     SFX.giftVIP();
-    addNotification(`☄️ <strong>${p.nickname}</strong> memanggil METEOR!`, 'gift');
+    addNotification(`☄️ <strong>${p.nickname}</strong> chamou um METEORO!`, 'gift');
     // Spin animation on gifter + bright purple aura
     if (p.alive) { setPlayerAnim(p, 'spin', 5); p.punchTimer = getAnimDuration(p, 'spin'); }
     highlightGifter(p, 0xff00ff, 4.0);
@@ -2604,7 +2699,7 @@ async function handleGift(data) {
       shakeCamera(1.5);
     }, 500);
     
-    addNotification(`🌪️ <strong>${p.nickname}</strong> memanggil TORNADO!`, 'gift');
+    addNotification(`🌪️ <strong>${p.nickname}</strong> chamou um TORNADO!`, 'gift');
     showPowerFlash();
     showGiftBanner(p.nickname, '🌪️ SHOCKWAVE SLAM', '#ff4400', diamonds);
     announcer.announceGift(p.nickname, 'SHOCKWAVE SLAM', 'big');
@@ -2644,9 +2739,9 @@ async function handleGift(data) {
         }
       });
       SFX.giftMedium();
-      addNotification(`⚡ <strong>${p.nickname}</strong> menyerang <strong>${nearest.nickname}</strong>!`, 'gift');
+      addNotification(`⚡ <strong>${p.nickname}</strong> atacou <strong>${nearest.nickname}</strong>!`, 'gift');
     } else {
-      addNotification(`⚡ <strong>${p.nickname}</strong> menggunakan GROUND SLAM!`, 'gift');
+      addNotification(`⚡ <strong>${p.nickname}</strong> deu uma PANCADA NO CHÃO!`, 'gift');
     }
     showGiftBanner(p.nickname, '⚡ GROUND SLAM', '#ffaa00', diamonds);
     announcer.announceGift(p.nickname, 'GROUND SLAM', 'medium');
@@ -2664,7 +2759,7 @@ async function handleGift(data) {
     if (p.alive) { setPlayerAnim(p, 'tantrum', 2); p.punchTimer = getAnimDuration(p, 'tantrum', 4.0); }
     highlightGifter(p, 0x44ff44, 2.0);
     SFX.giftSmall();
-    addNotification(`❤️ <strong>${p.nickname}</strong> dapat POWER UP!`, 'power');
+    addNotification(`❤️ <strong>${p.nickname}</strong> ganhou FORÇA EXTRA!`, 'power');
     announcer.announceGift(p.nickname, 'POWER UP', 'small');
   }
 }
@@ -2678,11 +2773,11 @@ async function handleFollow(data) {
       if (bots.length > 0) {
         const botToRemove = bots[0];
         removePlayer(botToRemove.uniqueId);
-        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} digantikan oleh ${data.nickname}!`, '');
+        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} foi substituído por ${data.nickname}!`, '');
       }
     }
     p = await createPlayer(data);
-    if (p) addNotification(`<strong>${p.nickname}</strong> followed & joined! 👊`, 'power');
+    if (p) addNotification(`<strong>${p.nickname}</strong> seguiu e entrou! 👊`, 'power');
     if (!p) return;
   }
   p.score += 10;
@@ -2694,8 +2789,8 @@ async function handleFollow(data) {
   
   // Tantrum flex animation
   if (p.alive && p.punchTimer <= 0) { setPlayerAnim(p, 'tantrum', 2); p.punchTimer = getAnimDuration(p, 'tantrum', 4.0); }
-  addNotification(`⭐ <strong>${p.nickname}</strong> followed! +30% POWER!`, 'power');
-  announcer.announce(`${p.nickname} follow! Kekuatan naik!`);
+  addNotification(`⭐ <strong>${p.nickname}</strong> seguiu! +30% de FORÇA!`, 'power');
+  announcer.announce(`${p.nickname} seguiu! A força aumentou!`);
 }
 
 async function handleShare(data) {
@@ -2708,7 +2803,7 @@ async function handleShare(data) {
       if (bots.length > 0) {
         const botToRemove = bots[0];
         removePlayer(botToRemove.uniqueId);
-        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} digantikan oleh ${data.nickname}!`, '');
+        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} foi substituído por ${data.nickname}!`, '');
       }
     }
     p = await createPlayer(data);
@@ -2724,7 +2819,7 @@ async function handleShare(data) {
   
   // Block/shield animation
   if (p.alive && p.punchTimer <= 0) { setPlayerAnim(p, 'block', 2); p.punchTimer = getAnimDuration(p, 'block'); }
-  addNotification(`🛡️ <strong>${p.nickname}</strong> shared! Speed + Perisai!`, 'power');
+  addNotification(`🛡️ <strong>${p.nickname}</strong> compartilhou! Velocidade + Escudo!`, 'power');
 }
 
 function getLeader() {
@@ -3721,6 +3816,13 @@ function shakeCamera(duration = 0.3) {
 
 // ===== AUTO-PLAY / BOT SYSTEM =====
 let autoPlay = false;
+function updateAutoPlayBtn() {
+  const b = document.getElementById('autoPlayBtn');
+  if (!b) return;
+  b.textContent = autoPlay ? 'Auto (A): ON' : 'Auto (A): OFF';
+  b.style.background = autoPlay ? '#44dd77' : '#222';
+  b.style.color = autoPlay ? '#000' : '#ccc';
+}
 let autoTimer = 0;
 
 function updateAutoPlay(dt) {
@@ -3801,13 +3903,14 @@ document.addEventListener('keydown', (e) => {
         if (players.size >= MIN_PLAYERS_TO_START) {
           setRoundState('COUNTDOWN');
         } else {
-          addNotification(`Need at least ${MIN_PLAYERS_TO_START} players! (${players.size}/${MIN_PLAYERS_TO_START})`);
+          addNotification(`Precisa de pelo menos ${MIN_PLAYERS_TO_START} jogadores! (${players.size}/${MIN_PLAYERS_TO_START})`);
         }
       }
       break;
     case 'A':
       autoPlay = !autoPlay;
-      addNotification(autoPlay ? 'Auto-play ON' : 'Auto-play OFF');
+      addNotification(autoPlay ? 'Jogo automático ligado' : 'Jogo automático desligado');
+      updateAutoPlayBtn();
       break;
     case 'C': {
       // Simulate chat — if players exist, send chat bubble; otherwise join
@@ -3825,7 +3928,7 @@ document.addEventListener('keydown', (e) => {
     case 'S':
       arenaRadius = Math.max(ARENA_END_RADIUS, arenaRadius - 2);
       updateArenaVisuals();
-      addNotification(`Arena shrunk to ${arenaRadius.toFixed(1)}`);
+      addNotification(`Arena encolheu para ${arenaRadius.toFixed(1)}`);
       break;
     case 'V':
       window._debugAction('autocam');
@@ -3903,9 +4006,9 @@ function connectSocket() {
     socket.on('connection-status', (data) => {
       console.log('Connection status:', data);
       if (data.connected) {
-        addNotification(`Live terhubung! Room: ${data.roomId}`, 'power');
+        addNotification(`Live conectada! Sala: ${data.roomId}`, 'power');
       } else if (data.error) {
-        addNotification(`Koneksi: ${data.error}`, '');
+        addNotification(`Conexão: ${data.error}`, '');
       }
     });
 
@@ -3913,7 +4016,7 @@ function connectSocket() {
     socket.on('viewer-list', async (viewers) => {
       if (!viewers || viewers.length === 0) return;
       console.log(`Viewer list received: ${viewers.length} viewers`);
-      addNotification(`${viewers.length} penonton terdeteksi!`, 'power');
+      addNotification(`${viewers.length} espectadores encontrados!`, 'power');
       
       // Auto-join up to 5 viewers as players (if no players yet)
       const existingPlayers = players.size;
@@ -3922,7 +4025,7 @@ function connectSocket() {
         if (!players.has(viewer.uniqueId) && !pendingPlayers.has(viewer.uniqueId)) {
           const p = await createPlayer(viewer);
           if (p) {
-            addNotification(`${viewer.nickname} masuk arena!`, '');
+            addNotification(`${viewer.nickname} entrou na arena!`, '');
           }
         }
       }
@@ -3937,7 +4040,7 @@ function connectSocket() {
         if (!players.has(viewer.uniqueId) && !pendingPlayers.has(viewer.uniqueId)) {
           const p = await createPlayer(viewer);
           if (p) {
-            addNotification(`${viewer.nickname} masuk arena!`, '');
+            addNotification(`${viewer.nickname} entrou na arena!`, '');
           }
         }
       }
@@ -4015,7 +4118,7 @@ function animate() {
         if (now - p.lastActive > INACTIVE_MS) toRemove.push(p);
       });
       toRemove.forEach(p => {
-        addNotification(`<strong>${p.nickname}</strong> removed (inactive)`, '');
+        addNotification(`<strong>${p.nickname}</strong> saiu (inativo)`, '');
         removePlayer(p.uniqueId);
       });
     }
@@ -4025,11 +4128,26 @@ function animate() {
 }
 
 // ===== TTS ANNOUNCER - Gaya Pembaca Acara Tinju =====
+// Vozes do navegador (anunciante e conversa entre lutadores), em português do Brasil, grátis.
+// Ficam ligadas por padrão. Para desligar: adicione ?mudo=1 na URL ou use o botão "Announcer".
+const LEGACY_TTS_DEFAULT = !new URLSearchParams(location.search).has('mudo');
+// Escolhe vozes do navegador em português do Brasil (masculina e feminina quando existirem)
+function pickPtVoices(voices) {
+  const pt = voices.filter(v => /^pt/i.test(v.lang));
+  const list = pt.filter(v => /pt[-_]BR/i.test(v.lang));
+  const pool = list.length ? list : pt;
+  const fem = /luciana|fernanda|maria|francisca|joana|helena|female|feminin/i;
+  const mas = /felipe|daniel|antonio|ricardo|male|masculin|eddy/i;
+  const female = pool.find(v => fem.test(v.name));
+  const male = pool.find(v => mas.test(v.name) && !fem.test(v.name)) || pool.find(v => v !== female);
+  return { male: male || pool[0] || null, female: female || pool.find(v => v !== male) || pool[0] || null };
+}
+
 class AnnouncerTTS {
   constructor() {
     this.synth = window.speechSynthesis;
     this.voice = null;
-    this.enabled = true;
+    this.enabled = LEGACY_TTS_DEFAULT;
     this.queue = [];
     this.speaking = false;
     this.isBusy = false; // Flag untuk hindari bentrok
@@ -4041,12 +4159,8 @@ class AnnouncerTTS {
   
   loadVoice() {
     const voices = this.synth.getVoices();
-    // Prioritas: Indonesia laki-laki > Inggris laki-laki > apapun
-    this.voice = voices.find(v => 
-      v.lang.startsWith('id') && !v.name.includes('Female') && !v.name.includes('Perempuan')
-    ) || voices.find(v => 
-      v.lang.startsWith('id')
-    ) || voices.find(v => 
+    // Prioridade: português do Brasil (masculina) > inglês masculina > qualquer voz
+    this.voice = pickPtVoices(voices).male || voices.find(v => 
       v.name.includes('Google UK English Male') ||
       v.name.includes('Microsoft David') ||
       v.name.includes('Microsoft Mark') ||
@@ -4098,7 +4212,7 @@ class AnnouncerTTS {
       const utterance = new SpeechSynthesisUtterance(text);
       
       if (this.voice) utterance.voice = this.voice;
-      utterance.lang = this.voice?.lang || 'id-ID';
+      utterance.lang = this.voice?.lang || 'pt-BR';
       utterance.rate = 0.85;  // Lambat untuk efek dramatis (gaya tinju)
       utterance.pitch = 0.8;  // Rendah untuk suara berwibawa
       utterance.volume = 1.0;
@@ -4133,44 +4247,44 @@ class AnnouncerTTS {
   
   // Pembukaan (saat round dimulai)
   announceRoundStart(round) {
-    this.announce(`Ronde ${round}! Siap! Bertarung!`, { priority: true });
+    this.announce(`Rodada ${round}! Preparar! Lutar!`, { priority: true });
   }
   
   // Pemenang (dengan selamat dan dramatis)
   announceWinner(name) {
     // Sequence dramatis seperti pembaca tinju
-    this.announce(`Dan pemenangnya adalah...`, { priority: true, delay: 0 });
+    this.announce(`E o vencedor é...`, { priority: true, delay: 0 });
     this.announce(`${name}!`, { priority: false, delay: 1500 });
-    this.announce(`Selamat kepada ${name}! Juara Battle Ring!`, { priority: false, delay: 1000 });
+    this.announce(`Parabéns, ${name}! Campeão do Battle Ring!`, { priority: false, delay: 1000 });
   }
   
   // Seri
   announceDraw() {
-    this.announce(`Seri! Tidak ada yang selamat! Pertarungan berakhir imbang!`, { priority: true });
+    this.announce(`Empate! Ninguém sobreviveu! A luta terminou igual!`, { priority: true });
   }
   
   // Gift (dengan variasi berdasarkan efek game)
   announceGift(name, effectName, tier) {
     const messages = {
       'vip': [
-        `${name} aktifkan ${effectName}! Semua terbang!`,
-        `${name} dengan ${effectName}! Luar biasa!`,
-        `${name} gunakan ${effectName}! Kekuatan dahsyat!`
+        `${name} ativou ${effectName}! Todo mundo voando!`,
+        `${name} com ${effectName}! Inacreditável!`,
+        `${name} usou ${effectName}! Que poder!`
       ],
       'big': [
-        `${name} aktifkan ${effectName}! Kekuatan besar!`,
-        `${name} dengan ${effectName}! Dahsyat!`,
-        `${name} gunakan ${effectName}! Luar biasa!`
+        `${name} ativou ${effectName}! Que força!`,
+        `${name} com ${effectName}! Impressionante!`,
+        `${name} usou ${effectName}! Incrível!`
       ],
       'medium': [
-        `${name} aktifkan ${effectName}! Bagus!`,
-        `${name} dengan ${effectName}! Mantap!`,
-        `${name} gunakan ${effectName}! Serangan!`
+        `${name} ativou ${effectName}! Boa!`,
+        `${name} com ${effectName}! Mandou bem!`,
+        `${name} usou ${effectName}! Ataque!`
       ],
       'small': [
-        `${name} dapat ${effectName}!`,
-        `${name} dengan ${effectName}!`,
-        `${name} aktifkan ${effectName}!`
+        `${name} ganhou ${effectName}!`,
+        `${name} com ${effectName}!`,
+        `${name} ativou ${effectName}!`
       ]
     };
     
@@ -4182,10 +4296,10 @@ class AnnouncerTTS {
   // Eliminasi
   announceElimination(name) {
     const messages = [
-      `${name} tereliminasi!`,
-      `${name} keluar dari arena!`,
-      `${name} gugur!`,
-      `${name} jatuh! Tidak bisa bangun!`
+      `${name} foi eliminado!`,
+      `${name} saiu do ringue!`,
+      `${name} caiu!`,
+      `${name} caiu e não consegue levantar!`
     ];
     const msg = messages[Math.floor(Math.random() * messages.length)];
     this.announce(msg);
@@ -4200,7 +4314,7 @@ class AnnouncerTTS {
   
   // Viewer join
   announceJoin(name) {
-    this.announce(`${name} masuk arena!`);
+    this.announce(`${name} entrou no ringue!`);
   }
 }
 
@@ -4213,7 +4327,7 @@ class BanterTTS {
     this.synth = window.speechSynthesis;
     this.maleVoice = null;
     this.femaleVoice = null;
-    this.enabled = true;
+    this.enabled = false; // conversa entre lutadores: começa DESLIGADA (botão "Conversa dos lutadores")
     this.lastInteraction = Date.now();
     this.history = [];       // Track last 20 dialogue indices to avoid repeat
     this.maxHistory = 20;
@@ -4228,16 +4342,12 @@ class BanterTTS {
 
   loadVoices() {
     const voices = this.synth.getVoices();
-    // Suara laki-laki Indonesia
-    this.maleVoice = voices.find(v =>
-      v.lang.startsWith('id') && !v.name.includes('Female') && !v.name.includes('Perempuan')
-    ) || voices.find(v => v.lang.startsWith('id')) || voices.find(v =>
+    // Vozes em português do Brasil (masculina e feminina), com plano B em inglês
+    const pt = pickPtVoices(voices);
+    this.maleVoice = pt.male || voices.find(v =>
       v.name.includes('Google UK English Male') || v.name.includes('Microsoft David')
     );
-    // Suara perempuan Indonesia
-    this.femaleVoice = voices.find(v =>
-      v.lang.startsWith('id') && (v.name.includes('Female') || v.name.includes('Perempuan'))
-    ) || voices.find(v => v.lang.startsWith('id') && v !== this.maleVoice) || voices.find(v =>
+    this.femaleVoice = pt.female || voices.find(v =>
       v.name.includes('Google UK English Female') || v.name.includes('Microsoft Zira')
     );
     // Flag: kalau pakai voice yang sama, bedakan pakai pitch
@@ -4282,282 +4392,251 @@ class BanterTTS {
     const dominated = hp2 > hp1 * 1.5;
     const close = Math.abs(hp1 - hp2) < 10;
 
+    const d = (cat, male, female, cond) => ({ cat, type: 'dialog', male, female, cond });
+    const nr = (cat, text) => ({ cat, type: 'narrator', text });
+
     return [
-      // === KATEGORI 1: Sapaan (12) ===
-      { cat: 'sapaan', type: 'dialog', male: `Halo ${n2}! Siap bertarung?`, female: `Siap ${n1}! Aku tidak akan kalah!` },
-      { cat: 'sapaan', type: 'dialog', male: `${n2}! Kamu berani lawan aku?`, female: `Berani dong ${n1}! Ayo!` },
-      { cat: 'sapaan', type: 'dialog', male: `Wah ${n2} kelihatan kuat hari ini!`, female: `Terima kasih ${n1}! Kamu juga!` },
-      { cat: 'sapaan', type: 'dialog', male: `Selamat datang di arena, ${n2}!`, female: `Siap tempur, ${n1}!` },
-      { cat: 'sapaan', type: 'dialog', male: `${n2}! Lama tidak jumpa!`, female: `Iya ${n1}! Kangen bertarung!` },
-      { cat: 'sapaan', type: 'dialog', male: `Akhirnya kita bertemu lagi, ${n2}!`, female: `Siap ${n1}! Kali ini aku menang!` },
-      { cat: 'sapaan', type: 'dialog', male: `${n2}! Energimu hari ini beda!`, female: `Tentu ${n1}! Aku sudah siap seratus persen!` },
-      { cat: 'sapaan', type: 'dialog', male: `Halo ${n2}! Sudah pemanasan?`, female: `Sudah ${n1}! Otot-ototku siap!` },
-      { cat: 'sapaan', type: 'dialog', male: `${n2}! Senang bisa lawan kamu!`, female: `Sama ${n1}! Ini bakal seru!` },
-      { cat: 'sapaan', type: 'dialog', male: `Wah ${n2} datang dengan aura berbeda!`, female: `Percaya diri, ${n1}!` },
-      { cat: 'sapaan', type: 'dialog', male: `Hey ${n2}! Siap mental?`, female: `Mental baja, ${n1}!` },
-      { cat: 'sapaan', type: 'dialog', male: `${n2}! Ayo kita beri tontonan bagus!`, female: `Setuju ${n1}! Show time!` },
+      // === Saudação ===
+      d('saudacao', `Fala, ${n2}! Pronto para lutar?`, `Pronto, ${n1}! Não vou perder!`),
+      d('saudacao', `${n2}! Você tem coragem de me enfrentar?`, `Tenho de sobra, ${n1}! Vamos!`),
+      d('saudacao', `Nossa, ${n2} está com cara de forte hoje!`, `Obrigado, ${n1}! Você também!`),
+      d('saudacao', `Bem-vindo ao ringue, ${n2}!`, `Preparado para a briga, ${n1}!`),
+      d('saudacao', `${n2}! Quanto tempo!`, `Verdade, ${n1}! Que saudade de lutar!`),
+      d('saudacao', `Até que enfim nos encontramos de novo, ${n2}!`, `Dessa vez eu venço, ${n1}!`),
+      d('saudacao', `${n2}! Sua energia hoje está diferente!`, `Estou cem por cento, ${n1}!`),
+      d('saudacao', `Fala, ${n2}! Já se aqueceu?`, `Já, ${n1}! Os músculos estão prontos!`),
+      d('saudacao', `${n2}! Que bom lutar contra você!`, `Igualmente, ${n1}! Vai ser divertido!`),
+      d('saudacao', `${n2}! Vamos dar um show para a galera!`, `Combinado, ${n1}! Hora do show!`),
 
-      // === KATEGORI 2: Taunt / Tantangan (12) ===
-      { cat: 'taunt', type: 'dialog', male: `${n2}! Ayo maju! Jangan lari!`, female: `Aku tidak lari ${n1}! Siap-siap kalah!` },
-      { cat: 'taunt', type: 'dialog', male: `Siapa yang mau lawan aku?`, female: `Aku ${n1}! Ayo bertarung!` },
-      { cat: 'taunt', type: 'dialog', male: `${n2}! Bersiaplah!`, female: `Aku sudah siap ${n1}!` },
-      { cat: 'taunt', type: 'dialog', male: `${n2}! Kamu yakin mau lawan aku?`, female: `Yakin banget ${n1}!` },
-      { cat: 'taunt', type: 'dialog', male: `Aku tidak akan kasih ampun, ${n2}!`, female: `Jangan ${n1}! Aku juga tidak akan!` },
-      { cat: 'taunt', type: 'dialog', male: `${n2}! Lihat tinjuku!`, female: `Tinjuku lebih keras, ${n1}!` },
-      { cat: 'taunt', type: 'dialog', male: `Siapa yang kalah duluan ya?`, female: `Bukan aku, ${n1}!` },
-      { cat: 'taunt', type: 'dialog', male: `${n2}! Jangan sampai nangis ya!`, female: `Aku tidak pernah nangis, ${n1}!` },
-      { cat: 'taunt', type: 'dialog', male: `Hari ini aku yang menang, ${n2}!`, female: `Mimpi ${n1}! Ini hariku!` },
-      { cat: 'taunt', type: 'dialog', male: `${n2}! Kamu sudah siap mental?`, female: `Sudah ${n1}! Ayo buktikan!` },
-      { cat: 'taunt', type: 'dialog', male: `Aku tidak akan mundur, ${n2}!`, female: `Coba saja ${n1}!` },
-      { cat: 'taunt', type: 'dialog', male: `${n2}! Arena ini milikku!`, female: `Kita lihat saja, ${n1}!` },
+      // === Desafio ===
+      d('desafio', `${n2}! Vem pra cima! Não foge!`, `Não estou fugindo, ${n1}! Prepare-se para perder!`),
+      d('desafio', `Quem quer lutar comigo?`, `Eu, ${n1}! Vamos nessa!`),
+      d('desafio', `${n2}! Se prepara!`, `Já estou pronto, ${n1}!`),
+      d('desafio', `${n2}! Tem certeza que quer me enfrentar?`, `Certeza absoluta, ${n1}!`),
+      d('desafio', `Não vou ter piedade, ${n2}!`, `Nem eu, ${n1}!`),
+      d('desafio', `${n2}! Olha o meu soco!`, `O meu é mais forte, ${n1}!`),
+      d('desafio', `${n2}! Não vai chorar, hein!`, `Eu nunca choro, ${n1}!`),
+      d('desafio', `Hoje a vitória é minha, ${n2}!`, `Sonha, ${n1}! O dia é meu!`),
+      d('desafio', `${n2}! Esse ringue é meu!`, `Vamos ver, ${n1}!`),
+      d('desafio', `Não vou recuar, ${n2}!`, `Pode tentar, ${n1}!`),
 
-      // === KATEGORI 3: Obrolan Ringan (15) ===
-      { cat: 'ringan', type: 'dialog', male: `Cuaca bagus hari ini ya ${n2}!`, female: `Iya ${n1}! Cocok buat bertarung!` },
-      { cat: 'ringan', type: 'dialog', male: `${n2}! Mau makan apa nanti?`, female: `Mau makan kemenangan ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `Siapa yang menang ya hari ini?`, female: `Pasti aku ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `${n2}! Kamu sudah latihan?`, female: `Sudah ${n1}! Ayo buktikan!` },
-      { cat: 'ringan', type: 'dialog', male: `${n2}! Tadi lihat apa di jalan?`, female: `Aku lihat jalan menuju kemenangan, ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `Hari ini hari yang baik buat bertarung!`, female: `Setiap hari baik kalau lawan kamu, ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `${n2}! Kamu tim pagi atau malam?`, female: `Tim bertarung, ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `Tadi aku dengar lagu bagus!`, female: `Lagu kemenangan, ${n1}?` },
-      { cat: 'ringan', type: 'dialog', male: `${n2}! Sudah sarapan?`, female: `Sudah! Makan semangat, ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `Aku punya firasat bagus hari ini!`, female: `Firasat kalah, ${n1}? Haha!` },
-      { cat: 'ringan', type: 'dialog', male: `${n2}! Kamu percaya takdir?`, female: `Percaya! Takdirku menang, ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `Malam ini bintang-bintang mendukungku!`, female: `Bintang mendukung yang lebih kuat, ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `${n2}! Kamu pernah mimpi aneh?`, female: `Mimpi mengalahkan kamu, ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `Aku suka aroma arena ini!`, female: `Aroma kemenangan, ${n1}!` },
-      { cat: 'ringan', type: 'dialog', male: `${n2}! Siapa idolamu?`, female: `Pemenang, ${n1}! Seperti aku!` },
+      // === Conversa leve ===
+      d('conversa', `Que dia bonito, ${n2}!`, `Perfeito para uma briga, ${n1}!`),
+      d('conversa', `${n2}! O que vai comer depois?`, `Uma vitória bem temperada, ${n1}!`),
+      d('conversa', `Quem será que vence hoje?`, `Eu, ${n1}! Sem dúvida!`),
+      d('conversa', `${n2}! Você treinou?`, `Treinei, ${n1}! Vamos provar!`),
+      d('conversa', `${n2}! Você é do time da manhã ou da noite?`, `Do time da luta, ${n1}!`),
+      d('conversa', `Hoje estou com um bom pressentimento!`, `Pressentimento de derrota, ${n1}? Ha ha!`),
+      d('conversa', `${n2}! Você acredita em destino?`, `Acredito! E o meu é vencer, ${n1}!`),
+      d('conversa', `Hoje as estrelas estão do meu lado!`, `As estrelas preferem o mais forte, ${n1}!`),
+      d('conversa', `${n2}! Já teve um sonho estranho?`, `Sonhei que te derrotava, ${n1}!`),
+      d('conversa', `Adoro o cheiro desse ringue!`, `É cheiro de vitória, ${n1}!`),
+      d('conversa', `${n2}! Quem é o seu ídolo?`, `Os campeões, ${n1}! Como eu!`),
 
-      // === KATEGORI 4: Motivasi (10) ===
-      { cat: 'motivasi', type: 'dialog', male: `Ayo semangat ${n2}!`, female: `Semangat ${n1}! Kita bisa!` },
-      { cat: 'motivasi', type: 'dialog', male: `${n2}! Jangan menyerah!`, female: `Tidak akan ${n1}!` },
-      { cat: 'motivasi', type: 'dialog', male: `Siapa yang mau jadi juara?`, female: `Aku ${n1}! Pasti aku!` },
-      { cat: 'motivasi', type: 'dialog', male: `${n2}! Ayo tunjukkan kekuatanmu!`, female: `Siap ${n1}! Lihat ini!` },
-      { cat: 'motivasi', type: 'dialog', male: `Kita bertarung dengan terhormat!`, female: `Setuju ${n1}! Fair play!` },
-      { cat: 'motivasi', type: 'dialog', male: `${n2}! Berikan yang terbaik!`, female: `Selalu ${n1}! Seratus persen!` },
-      { cat: 'motivasi', type: 'dialog', male: `Yang kuat yang menang!`, female: `Aku yang paling kuat, ${n1}!` },
-      { cat: 'motivasi', type: 'dialog', male: `${n2}! Jangan ragu!`, female: `Tidak pernah ragu, ${n1}!` },
-      { cat: 'motivasi', type: 'dialog', male: `Ini saatnya membuktikan!`, female: `Sudah waktunya, ${n1}!` },
-      { cat: 'motivasi', type: 'dialog', male: `${n2}! Fight with honor!`, female: `Always, ${n1}!` },
+      // === Motivação ===
+      d('motivacao', `Bora, ${n2}! Com garra!`, `Com garra, ${n1}! Nós conseguimos!`),
+      d('motivacao', `${n2}! Não desiste!`, `Nunca, ${n1}!`),
+      d('motivacao', `Quem quer ser o campeão?`, `Eu, ${n1}! Com certeza eu!`),
+      d('motivacao', `${n2}! Mostra a sua força!`, `Olha só, ${n1}!`),
+      d('motivacao', `Vamos lutar com honra!`, `Concordo, ${n1}! Jogo limpo!`),
+      d('motivacao', `${n2}! Dá o seu melhor!`, `Sempre, ${n1}! Cem por cento!`),
+      d('motivacao', `Quem é forte vence!`, `Então eu venço, ${n1}!`),
+      d('motivacao', `${n2}! Sem medo!`, `Nunca tive medo, ${n1}!`),
 
-      // === KATEGORI 5: Reaksi Game / Pertarungan (15) - context-aware ===
-      { cat: 'reaksi', type: 'dialog', cond: dominated, male: `Wah ${n2} lagi dominan!`, female: `Memang aku kuat, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: lowHp, male: `${n2}! HP-mu tinggal sedikit!`, female: `Masih cukup buat kalahkan kamu, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: close, male: `Pertarungan ini seru banget!`, female: `Belum selesai, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `${n2}! Kok bisa sekuat itu!`, female: `Latihan keras, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `Wah hampir kena!`, female: `Beruntung ${n1}! Tapi tidak lama!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `${n2}! Pertahananmu bagus!`, female: `Tapi seranganmu juga, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: bothLow, male: `Siapa yang habis duluan ya?`, female: `Bukan aku, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: close, male: `${n2}! Kamu benar-benar tangguh!`, female: `Kamu juga ${n1}! Ini seimbang!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `Pukulan yang bagus, ${n2}!`, female: `Terima kasih ${n1}! Ini belum semua!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `Aku hampir jatuh tadi!`, female: `Hati-hati ${n1}! Tapi aku tidak kasih ampun!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `${n2}! Stamina-mu luar biasa!`, female: `Aku bisa seharian, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `Pertarungan ini bakal jadi legenda!`, female: `Sudah pasti, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `${n2}! Kok kamu tahan terus!`, female: `Keras kepala, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: true, male: `Wah serangan balik yang cepat!`, female: `Refleks ku, ${n1}!` },
-      { cat: 'reaksi', type: 'dialog', cond: close, male: `Siapa yang lebih kuat ya?`, female: `Sudah jelas, ${n1}! Aku!` },
+      // === Reação à luta (usa a situação do jogo) ===
+      d('reacao', `Nossa, ${n2} está dominando!`, `Eu sou forte mesmo, ${n1}!`, hp2 > hp1 * 1.5),
+      d('reacao', `${n2}! Sua vida está quase no fim!`, `Ainda dá para vencer você, ${n1}!`, lowHp),
+      d('reacao', `Que luta equilibrada!`, `Ainda não acabou, ${n1}!`, close),
+      d('reacao', `${n2}! Como você é forte!`, `Treino pesado, ${n1}!`),
+      d('reacao', `Foi por pouco!`, `Teve sorte, ${n1}! Mas não vai durar!`),
+      d('reacao', `${n2}! Que defesa boa!`, `O seu ataque também, ${n1}!`),
+      d('reacao', `Quem será que cai primeiro?`, `Não vou ser eu, ${n1}!`, bothLow),
+      d('reacao', `${n2}! Você é duro na queda!`, `Você também, ${n1}! Está equilibrado!`, close),
+      d('reacao', `Que soco bonito, ${n2}!`, `Obrigado, ${n1}! Ainda tem mais!`),
+      d('reacao', `Quase que eu caio!`, `Cuidado, ${n1}! Não vou pegar leve!`),
+      d('reacao', `${n2}! Que fôlego!`, `Aguento o dia todo, ${n1}!`),
+      d('reacao', `Essa luta vai virar lenda!`, `Com certeza, ${n1}!`),
+      d('reacao', `Que contra-ataque rápido!`, `Reflexo de campeão, ${n1}!`),
+      d('reacao', `Quem é mais forte, afinal?`, `Está na cara, ${n1}! Sou eu!`, close),
 
-      // === KATEGORI 6: Komentar Arena (8) - context-aware ===
-      { cat: 'arena', type: 'dialog', male: `Arena ini keren ya ${n2}!`, female: `Iya ${n1}! Cocok buat pertarungan epik!` },
-      { cat: 'arena', type: 'dialog', male: `${n2}! Kamu suka arena ini?`, female: `Suka! Tapi lebih suka menang, ${n1}!` },
-      { cat: 'arena', type: 'dialog', male: `Suasana di sini berbeda ya!`, female: `Lebih seru, ${n1}!` },
-      { cat: 'arena', type: 'dialog', male: `${n2}! Arena ini membawa hoki!`, female: `Hoki untuk siapa, ${n1}? Haha!` },
-      { cat: 'arena', type: 'dialog', male: `Wah cahayanya bagus!`, female: `Cocok buat pertarungan terakhir, ${n1}!` },
-      { cat: 'arena', type: 'dialog', male: `${n2}! Arena ini punya energi khusus!`, female: `Aku bisa merasakannya, ${n1}!` },
-      { cat: 'arena', type: 'dialog', male: `Aku suka suasana gelap!`, female: `Gelap tapi penuh semangat, ${n1}!` },
-      { cat: 'arena', type: 'dialog', male: `Terang bikin semangat!`, female: `Terang seperti masa depanku, ${n1}!` },
+      // === Arena ===
+      d('arena', `Que arena legal, ${n2}!`, `É boa para uma luta épica, ${n1}!`),
+      d('arena', `${n2}! Você gosta desta arena?`, `Gosto! Mas gosto mais de vencer, ${n1}!`),
+      d('arena', `O clima aqui é diferente!`, `Mais emocionante, ${n1}!`),
+      d('arena', `${n2}! Essa arena dá sorte!`, `Sorte para quem, ${n1}? Ha ha!`),
+      d('arena', `Que luz bonita!`, `Perfeita para a luta final, ${n1}!`),
+      d('arena', `${n2}! Essa arena tem uma energia especial!`, `Eu também sinto, ${n1}!`),
 
-      // === KATEGORI 7: Humor / Lucu (12) ===
-      { cat: 'humor', type: 'dialog', male: `${n2}! Kamu makan apa kok kuat banget?`, female: `Makan semangat, ${n1}!` },
-      { cat: 'humor', type: 'dialog', male: `Aku lupa bawa bekal!`, female: `Kekalahanmu jadi bekal, ${n1}! Haha!` },
-      { cat: 'humor', type: 'dialog', male: `${n2}! Kamu punya jurus andalan?`, female: `Ada! Jurus rahasia, ${n1}!` },
-      { cat: 'humor', type: 'dialog', male: `Kalau aku menang, kamu traktir!`, female: `Kalau aku menang, kamu yang traktir, ${n1}!` },
-      { cat: 'humor', type: 'dialog', male: `${n2}! Kamu pernah kalah?`, female: `Pernah! Tapi bukan dari kamu, ${n1}!` },
-      { cat: 'humor', type: 'dialog', male: `Aku baru ingat ada janji nanti!`, female: `Janji kalah, ${n1}? Haha!` },
-      { cat: 'humor', type: 'dialog', male: `${n2}! Kamu kok bisa secepat itu?`, female: `Rahasia, ${n1}! Tapi aku bisa lebih cepat!` },
-      { cat: 'humor', type: 'dialog', male: `Tadi aku hampir tertidur!`, female: `Tidur yang nyenyak setelah kalah, ${n1}!` },
-      { cat: 'humor', type: 'dialog', male: `${n2}! Kamu pakai sepatu apa?`, female: `Sepatu pemenang, ${n1}!` },
-      { cat: 'humor', type: 'dialog', male: `Aku dengar suara perutku!`, female: `Itu suara kekalahan mendekat, ${n1}!` },
-      { cat: 'humor', type: 'dialog', male: `${n2}! Kamu punya hobi?`, female: `Hobi menang, ${n1}!` },
-      { cat: 'humor', type: 'dialog', male: `Kalau kita tim, pasti tidak terkalahkan!`, female: `Tapi kita musuh, ${n1}! Jadi aku yang menang!` },
+      // === Humor ===
+      d('humor', `${n2}! O que você comeu para ficar tão forte?`, `Comi coragem, ${n1}!`),
+      d('humor', `Esqueci de trazer lanche!`, `A sua derrota vai ser o lanche, ${n1}! Ha ha!`),
+      d('humor', `${n2}! Tem algum golpe secreto?`, `Tenho! É segredo, ${n1}!`),
+      d('humor', `Se eu ganhar, você paga o lanche!`, `Se eu ganhar, quem paga é você, ${n1}!`),
+      d('humor', `${n2}! Você já perdeu alguma vez?`, `Já! Mas nunca para você, ${n1}!`),
+      d('humor', `Lembrei que tenho um compromisso mais tarde!`, `Compromisso com a derrota, ${n1}? Ha ha!`),
+      d('humor', `${n2}! Como você é tão rápido?`, `Segredo, ${n1}! Mas posso ser mais rápido ainda!`),
+      d('humor', `Quase dormi agora!`, `Descansa bem depois de perder, ${n1}!`),
+      d('humor', `${n2}! Que tênis é esse?`, `Tênis de campeão, ${n1}!`),
+      d('humor', `Se a gente fosse um time, ninguém ia nos vencer!`, `Mas somos rivais, ${n1}! Então eu venço!`),
 
-      // === KATEGORI 8: Penonton / Viewers (8) - context-aware ===
-      { cat: 'penonton', type: 'dialog', male: `Wah banyak yang nonton ya ${n2}!`, female: `Ayo kasih show bagus, ${n1}!` },
-      { cat: 'penonton', type: 'dialog', male: `${n2}! Sapa penonton dong!`, female: `Halo semuanya! Terima kasih sudah nonton!` },
-      { cat: 'penonton', type: 'dialog', male: `Penonton mau siapa yang menang?`, female: `Pasti pilih aku, ${n1}!` },
-      { cat: 'penonton', type: 'dialog', male: `${n2}! Kita performa buat mereka!`, female: `Sudah pasti, ${n1}! Give them a show!` },
-      { cat: 'penonton', type: 'dialog', male: `Wah ada yang baru masuk!`, female: `Selamat datang! Nikmati pertarungannya!` },
-      { cat: 'penonton', type: 'dialog', male: `${n2}! Viewers kita bertambah!`, female: `Karena pertarungan kita seru, ${n1}!` },
-      { cat: 'penonton', type: 'dialog', male: `Terima kasih sudah nonton!`, female: `Kalian membuat semangat kami!` },
-      { cat: 'penonton', type: 'dialog', male: `${n2}! Jangan kecewakan penonton!`, female: `Tidak akan! Ini untuk kalian!` },
+      // === Plateia ===
+      d('plateia', `Quanta gente assistindo, ${n2}!`, `Vamos dar um show, ${n1}!`),
+      d('plateia', `${n2}! Cumprimenta a galera!`, `Oi, pessoal! Obrigado por assistir!`),
+      d('plateia', `Quem a plateia quer que ganhe?`, `Vai escolher a mim, ${n1}!`),
+      d('plateia', `${n2}! Vamos lutar para eles!`, `Com certeza, ${n1}! Hora do espetáculo!`),
+      d('plateia', `Olha, chegou gente nova!`, `Bem-vindos! Aproveitem a luta!`),
+      d('plateia', `${n2}! Não vamos decepcionar a galera!`, `Jamais! É por vocês!`),
 
-      // === KATEGORI 9: Waktu / Durasi Live (8) - context-aware ===
-      { cat: 'waktu', type: 'dialog', cond: ctx.streamMinutes > 10, male: `Udah ${ctx.streamMinutes} menit nih!`, female: `Waktu berlalu cepat kalau seru, ${n1}!` },
-      { cat: 'waktu', type: 'dialog', cond: ctx.streamMinutes > 30, male: `${n2}! Masih kuat?`, female: `Selamanya, ${n1}!` },
-      { cat: 'waktu', type: 'dialog', cond: true, male: `Malam ini panjang ya!`, female: `Panjang dan seru, ${n1}!` },
-      { cat: 'waktu', type: 'dialog', male: `${n2}! Kita belum selesai!`, female: `Belum! Ini baru permulaan, ${n1}!` },
-      { cat: 'waktu', type: 'dialog', cond: ctx.streamMinutes > 60, male: `Aku mulai lelah!`, female: `Jangan menyerah, ${n1}! Kita bisa!` },
-      { cat: 'waktu', type: 'dialog', male: `${n2}! Sudah berapa ronde?`, female: `Tidak terhitung, ${n1}! Yang penting menang!` },
-      { cat: 'waktu', type: 'dialog', male: `Jam berapa sekarang?`, female: `Jam kemenangan, ${n1}!` },
-      { cat: 'waktu', type: 'dialog', cond: ctx.streamMinutes > 45, male: `${n2}! Ini marathon ya?`, female: `Sprint menuju kemenangan, ${n1}!` },
+      // === Tempo de live ===
+      d('tempo', `Já são ${ctx.streamMinutes} minutos de live!`, `O tempo voa quando é divertido, ${n1}!`, ctx.streamMinutes > 10),
+      d('tempo', `${n2}! Ainda aguenta?`, `Para sempre, ${n1}!`, ctx.streamMinutes > 30),
+      d('tempo', `Que noite longa!`, `Longa e emocionante, ${n1}!`),
+      d('tempo', `${n2}! A gente ainda não terminou!`, `Nem começamos, ${n1}!`),
+      d('tempo', `Estou ficando cansado!`, `Não desiste, ${n1}! A gente consegue!`, ctx.streamMinutes > 60),
+      d('tempo', `${n2}! Isso é uma maratona?`, `É uma corrida para a vitória, ${n1}!`, ctx.streamMinutes > 45),
 
-      // === KATEGORI 10: Makanan / Random Life (10) ===
-      { cat: 'random', type: 'dialog', male: `${n2}! Lapar ngga?`, female: `Lapar kemenangan, ${n1}!` },
-      { cat: 'random', type: 'dialog', male: `Tadi aku makan nasi goreng!`, female: `Nasi goreng energi, ${n1}?` },
-      { cat: 'random', type: 'dialog', male: `${n2}! Minum apa?`, female: `Minum semangat, ${n1}!` },
-      { cat: 'random', type: 'dialog', male: `Aku pengen kopi!`, female: `Kopi kemenangan, ${n1}!` },
-      { cat: 'random', type: 'dialog', male: `${n2}! Kamu suka musik?`, female: `Suka! Musik pertarungan, ${n1}!` },
-      { cat: 'random', type: 'dialog', male: `Tadi aku dengar lagu bagus!`, female: `Lagu tema kita, ${n1}!` },
-      { cat: 'random', type: 'dialog', male: `${n2}! Kamu punya hewan peliharaan?`, female: `Punya! Semangat juang, ${n1}!` },
-      { cat: 'random', type: 'dialog', male: `Aku mau liburan setelah ini!`, female: `Liburan sebagai juara, ${n1}!` },
-      { cat: 'random', type: 'dialog', male: `${n2}! Film favorit?`, female: `Film aksi! Seperti pertarungan kita, ${n1}!` },
-      { cat: 'random', type: 'dialog', male: `Aku suka hujan!`, female: `Hujan berkah, ${n1}!` },
+      // === Comida e cotidiano ===
+      d('cotidiano', `${n2}! Está com fome?`, `Fome de vitória, ${n1}!`),
+      d('cotidiano', `Hoje eu comi arroz com feijão!`, `Comida de campeão, ${n1}!`),
+      d('cotidiano', `${n2}! Quer tomar o quê?`, `Uma vitória geladinha, ${n1}!`),
+      d('cotidiano', `Estou com vontade de um café!`, `Café de campeão, ${n1}!`),
+      d('cotidiano', `${n2}! Você gosta de música?`, `Gosto! Música de luta, ${n1}!`),
+      d('cotidiano', `Ouvi uma música ótima hoje!`, `É o nosso tema, ${n1}!`),
+      d('cotidiano', `${n2}! Você tem bicho de estimação?`, `Tenho! O nome dele é garra, ${n1}!`),
+      d('cotidiano', `Quero viajar depois disso!`, `Viaje como campeão, ${n1}!`),
+      d('cotidiano', `${n2}! Qual é o seu filme favorito?`, `Filme de ação! Igual à nossa luta, ${n1}!`),
+      d('cotidiano', `Eu gosto de chuva!`, `Chuva dá sorte, ${n1}!`),
+      d('cotidiano', `${n2}! Que horas você acordou?`, `Na hora da vitória, ${n1}!`),
+      d('cotidiano', `Vi um gatinho fofo hoje!`, `Nenhum gato é mais fofo que eu, ${n1}!`),
+      d('cotidiano', `${n2}! Você prefere café ou chá?`, `Prefiro coragem, ${n1}!`),
+      d('cotidiano', `Acabei de treinar!`, `O melhor treino é lutar, ${n1}!`),
 
-      // === KATEGORI 11: Gaming References (8) ===
-      { cat: 'gaming', type: 'dialog', male: `${n2}! Ini seperti game fighting!`, female: `Lebih seru dari game, ${n1}!` },
-      { cat: 'gaming', type: 'dialog', male: `Kalau ini game, kita sudah boss fight!`, female: `Boss-nya aku, ${n1}!` },
-      { cat: 'gaming', type: 'dialog', male: `${n2}! Kamu main game apa?`, female: `Game kehidupan, ${n1}! Dan aku menang!` },
-      { cat: 'gaming', type: 'dialog', male: `Kita butuh combo attack!`, female: `Combo masing-masing, ${n1}!` },
-      { cat: 'gaming', type: 'dialog', male: `${n2}! Kamu player satu atau dua?`, female: `Player satu selalu, ${n1}!` },
-      { cat: 'gaming', type: 'dialog', male: `Ini seperti final boss!`, female: `Dan aku yang menang, ${n1}!` },
-      { cat: 'gaming', type: 'dialog', male: `${n2}! Kamu pakai cheat?`, female: `Cheat-nya latihan, ${n1}!` },
-      { cat: 'gaming', type: 'dialog', male: `Game over belum, ${n2}!`, female: `Belum! Masih ada continue, ${n1}!` },
+      // === Games ===
+      d('games', `${n2}! Parece um jogo de luta!`, `É melhor que um jogo, ${n1}!`),
+      d('games', `Se fosse um jogo, já estaríamos na luta do chefe!`, `O chefe sou eu, ${n1}!`),
+      d('games', `${n2}! Qual jogo você joga?`, `O jogo da vida, ${n1}! E eu estou ganhando!`),
+      d('games', `A gente precisa de um combo!`, `Cada um com o seu, ${n1}!`),
+      d('games', `${n2}! Você é o jogador um ou dois?`, `Sempre o jogador um, ${n1}!`),
+      d('games', `Isso parece o chefe final!`, `E eu vou vencer, ${n1}!`),
+      d('games', `${n2}! Está usando código de trapaça?`, `O meu código é treino, ${n1}!`),
+      d('games', `Ainda não acabou o jogo, ${n2}!`, `Ainda tem continue, ${n1}!`),
 
-      // === KATEGORI 12: Narrator / Single Voice (8) - context-aware ===
-      { cat: 'narrator', type: 'narrator', text: `Pertarungan semakin memanas! Siapa yang akan bertahan?` },
-      { cat: 'narrator', type: 'narrator', text: `Dua petarung saling berhadapan! Ini bakal epik!` },
-      { cat: 'narrator', type: 'narrator', text: `Penonton menahan napas! Siapa yang menyerang duluan?` },
-      { cat: 'narrator', type: 'narrator', text: `Wah! Pukulan yang luar biasa!` },
-      { cat: 'narrator', type: 'narrator', text: `Pertahanan kokoh! Tapi sampai kapan?` },
-      { cat: 'narrator', type: 'narrator', text: `Stamina mulai terkuras! Siapa yang lebih kuat?` },
-      { cat: 'narrator', type: 'narrator', text: `Ini adalah pertarungan terbaik malam ini!` },
-      { cat: 'narrator', type: 'narrator', text: `Penonton bersorak! Pertarungan belum selesai!` },
+      // === Narrador ===
+      nr('narrador', `A luta está esquentando! Quem vai ficar de pé?`),
+      nr('narrador', `Dois lutadores frente a frente! Vai ser épico!`),
+      nr('narrador', `A plateia prende a respiração! Quem ataca primeiro?`),
+      nr('narrador', `Uau! Que soco incrível!`),
+      nr('narrador', `Defesa firme! Mas até quando?`),
+      nr('narrador', `O fôlego está acabando! Quem é mais forte?`),
+      nr('narrador', `Essa é a melhor luta da noite!`),
+      nr('narrador', `A plateia vibra! A luta ainda não acabou!`),
 
-      // === KATEGORI 13: CTA / Call to Action (12) ===
-      { cat: 'cta', type: 'dialog', male: `${n2}! Follow ya biar nambah kekuatan!`, female: `Setuju ${n1}! Follow semuanya!` },
-      { cat: 'cta', type: 'dialog', male: `Eh ${n2}! Kalian belum follow?`, female: `Follow dulu ${n1}! Gratis kok!` },
-      { cat: 'cta', type: 'dialog', male: `${n2}! Ajak teman-temanmu nonton!`, female: `Makin rame makin seru, ${n1}!` },
-      { cat: 'cta', type: 'dialog', male: `Yang belum follow, follow ya!`, female: `Biar kalian bisa nonton terus, ${n1}!` },
-      { cat: 'cta', type: 'dialog', male: `${n2}! Share live ini dong!`, female: `Ayo ${n1}! Biar viral!` },
-      { cat: 'cta', type: 'dialog', male: `Eh ada yang baru masuk! Sapa dong!`, female: `Halo! Jangan lupa follow ya!` },
-      { cat: 'cta', type: 'dialog', male: `${n2}! Like dulu sebelum nonton!`, female: `Like-nya bikin semangat, ${n1}!` },
-      { cat: 'cta', type: 'dialog', male: `Kalian mau lihat jurus baru?`, female: `Follow dulu baru kasih lihat!` },
-      { cat: 'cta', type: 'dialog', male: `${n2}! Comment dong di bawah!`, female: `Ayo interaksi, ${n1}! Jangan diem aja!` },
-      { cat: 'cta', type: 'dialog', male: `Yang suka battle, follow ya!`, female: `Setiap hari ada pertarungan seru, ${n1}!` },
-      { cat: 'cta', type: 'dialog', male: `${n2}! Ajak keluarga nonton bareng!`, female: `Makin rame makin heboh, ${n1}!` },
-      { cat: 'cta', type: 'narrator', text: `Follow akun ini buat nonton pertarungan seru setiap hari! Jangan sampai ketinggalan!` },
+      // === Chamadas para a live ===
+      d('cta', `${n2}! Segue a gente para ganhar mais força!`, `Concordo, ${n1}! Todo mundo segue!`),
+      d('cta', `Ei, ${n2}! Vocês ainda não seguiram?`, `Segue logo, ${n1}! É de graça!`),
+      d('cta', `${n2}! Chama os amigos para assistir!`, `Quanto mais gente, mais divertido, ${n1}!`),
+      d('cta', `Quem ainda não seguiu, segue aí!`, `Assim você não perde nenhuma luta, ${n1}!`),
+      d('cta', `${n2}! Compartilha essa live!`, `Vamos lá, ${n1}! Para bombar!`),
+      d('cta', `Olha, chegou gente nova! Dá um oi!`, `Oi! Não esqueça de seguir!`),
+      d('cta', `${n2}! Deixa o seu like antes de assistir!`, `O like dá ânimo, ${n1}!`),
+      d('cta', `${n2}! Comenta aí embaixo!`, `Vamos interagir, ${n1}! Não fica quieto!`),
+      nr('cta', `Siga este perfil para assistir a lutas incríveis todos os dias! Não fique de fora!`),
 
-      // === KATEGORI 14: Ngobrolin Kehidupan (12) ===
-      { cat: 'hidup', type: 'dialog', male: `${n2}! Kamu bangun jam berapa?`, female: `Bangun jam kemenangan, ${n1}!` },
-      { cat: 'hidup', type: 'dialog', male: `Tadi aku lihat kucing lucu!`, female: `Kucing mana bisa lebih lucu dari aku, ${n1}!` },
-      { cat: 'hidup', type: 'dialog', male: `${n2}! Kamu suka musim apa?`, female: `Musim menang, ${n1}! Setiap hari!` },
-      { cat: 'hidup', type: 'dialog', male: `Aku pengen jalan-jalan ke pantai!`, female: `Pantai mana? Pantai kemenangan, ${n1}?` },
-      { cat: 'hidup', type: 'dialog', male: `${n2}! Kamu tim kopi atau teh?`, female: `Tim semangat, ${n1}!` },
-      { cat: 'hidup', type: 'dialog', male: `Tadi hujan deras ya!`, female: `Hujan nggak bisa padamkan semangatku, ${n1}!` },
-      { cat: 'hidup', type: 'dialog', male: `${n2}! Kamu suka masak?`, female: `Masak strategi buat kalahkan kamu, ${n1}!` },
-      { cat: 'hidup', type: 'dialog', male: `Aku baru selesai olahraga!`, female: `Olahraga terbaik ya bertarung, ${n1}!` },
-      { cat: 'hidup', type: 'dialog', male: `${n2}! Pernah ke Jakarta?`, female: `Pernah! Tapi arena ini lebih seru, ${n1}!` },
-      { cat: 'hidup', type: 'dialog', male: `Aku suka sunrise!`, female: `Sunset lebih bagus, ${n1}! Kayak kemenangan kita!` },
-      { cat: 'hidup', type: 'dialog', male: `${n2}! Kamu takut hantu?`, female: `Hantu yang takut sama aku, ${n1}!` },
-      { cat: 'hidup', type: 'dialog', male: `Tadi aku mimpi aneh!`, female: `Mimpi menang lawan aku, ${n1}? Haha!` },
+      // === Vida ===
+      d('vida', `${n2}! Qual estação você prefere?`, `A estação da vitória, ${n1}! O ano inteiro!`),
+      d('vida', `Quero ir à praia!`, `Praia da vitória, ${n1}?`),
+      d('vida', `Choveu forte hoje!`, `Chuva não apaga a minha garra, ${n1}!`),
+      d('vida', `${n2}! Você gosta de cozinhar?`, `Cozinho estratégias para te vencer, ${n1}!`),
+      d('vida', `Acabei de fazer exercício!`, `O melhor exercício é lutar, ${n1}!`),
+      d('vida', `${n2}! Você tem medo de fantasma?`, `São os fantasmas que têm medo de mim, ${n1}!`),
+      d('vida', `Tive um sonho estranho!`, `Sonhou que ganhava de mim, ${n1}? Ha ha!`),
+      d('vida', `Gosto do nascer do sol!`, `O pôr do sol é melhor, ${n1}! Parece a nossa vitória!`),
 
-      // === KATEGORI 15: Sport / Olahraga (10) ===
-      { cat: 'sport', type: 'dialog', male: `${n2}! Kamu suka sepak bola?`, female: `Suka! Tapi tinju lebih seru, ${n1}!` },
-      { cat: 'sport', type: 'dialog', male: `Siapa tim favoritmu?`, female: `Tim pemenang, ${n1}! Seperti kita!` },
-      { cat: 'sport', type: 'dialog', male: `${n2}! Kamu pernah nonton UFC?`, female: `Ini UFC versi kita, ${n1}!` },
-      { cat: 'sport', type: 'dialog', male: `Aku suka lari pagi!`, female: `Lari dari kekalahan, ${n1}? Haha!` },
-      { cat: 'sport', type: 'dialog', male: `${n2}! Badminton atau basket?`, female: `Battle! Itu olahraga terbaik, ${n1}!` },
-      { cat: 'sport', type: 'dialog', male: `Siapa atlet favoritmu?`, female: `Kamu, ${n1}! Hahaha! Bercanda!` },
-      { cat: 'sport', type: 'dialog', male: `${n2}! Kamu suka renang?`, female: `Renang di lautan kemenangan, ${n1}!` },
-      { cat: 'sport', type: 'dialog', male: `Olahraga apa yang paling susah?`, female: `Lawan aku, ${n1}!` },
-      { cat: 'sport', type: 'dialog', male: `${n2}! Kamu pernah ikut kompetisi?`, female: `Ini kompetisi terbaik, ${n1}!` },
-      { cat: 'sport', type: 'dialog', male: `Aku mau push up seribu!`, female: `Push up lawan aku dulu, ${n1}!` },
+      // === Esporte ===
+      d('esporte', `${n2}! Você gosta de futebol?`, `Gosto! Mas luta é mais emocionante, ${n1}!`),
+      d('esporte', `Qual é o seu time?`, `O time dos campeões, ${n1}!`),
+      d('esporte', `${n2}! Você já assistiu a uma luta de UFC?`, `Isso aqui é o nosso UFC, ${n1}!`),
+      d('esporte', `Eu gosto de correr de manhã!`, `Correndo da derrota, ${n1}? Ha ha!`),
+      d('esporte', `${n2}! Vôlei ou basquete?`, `Luta! Melhor esporte, ${n1}!`),
+      d('esporte', `Quem é o seu atleta favorito?`, `Você, ${n1}! Brincadeira!`),
+      d('esporte', `${n2}! Você gosta de natação?`, `Nado no mar da vitória, ${n1}!`),
+      d('esporte', `Vou fazer mil flexões!`, `Faz comigo primeiro, ${n1}!`),
 
-      // === KATEGORI 16: Teknologi / AI (8) ===
-      { cat: 'tech', type: 'dialog', male: `${n2}! Kamu kenal AI?`, female: `Kenal! AI yang bantu kita bertarung, ${n1}!` },
-      { cat: 'tech', type: 'dialog', male: `Teknologi makin canggih ya!`, female: `Tapi semangat manusia tetap nomor satu, ${n1}!` },
-      { cat: 'tech', type: 'dialog', male: `${n2}! Kamu main Mobile Legends?`, female: `Main! Tapi ini lebih seru, ${n1}!` },
-      { cat: 'tech', type: 'dialog', male: `Aku mau bikin game sendiri!`, female: `Game tentang kita, ${n1}?` },
-      { cat: 'tech', type: 'dialog', male: `${n2}! Kamu punya TikTok?`, female: `Punya! Sekarang lagi live, ${n1}!` },
-      { cat: 'tech', type: 'dialog', male: `HP-ku baterainya habis!`, female: `Semangatmu jangan habis juga, ${n1}!` },
-      { cat: 'tech', type: 'dialog', male: `${n2}! Kamu suka edit video?`, female: `Edit video kemenangan, ${n1}!` },
-      { cat: 'tech', type: 'dialog', male: `Aku mau belajar coding!`, female: `Coding jurus baru, ${n1}?` },
+      // === Tecnologia ===
+      d('tech', `${n2}! Você conhece inteligência artificial?`, `Conheço! Ela ajuda a gente a lutar, ${n1}!`),
+      d('tech', `A tecnologia está cada vez mais avançada!`, `Mas a garra humana vem primeiro, ${n1}!`),
+      d('tech', `${n2}! Você tem TikTok?`, `Tenho! E agora estamos ao vivo, ${n1}!`),
+      d('tech', `A bateria do meu celular acabou!`, `A sua garra não pode acabar, ${n1}!`),
+      d('tech', `${n2}! Você gosta de editar vídeo?`, `Edito vídeos de vitória, ${n1}!`),
+      d('tech', `Quero aprender a programar!`, `Programa um golpe novo, ${n1}!`),
 
-      // === KATEGORI 17: Indonesia / Lokal (10) ===
-      { cat: 'lokal', type: 'dialog', male: `${n2}! Kamu dari mana?`, female: `Dari arena pertarungan, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `Makanan favorit apa?`, female: `Nasi goreng pemenang, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `${n2}! Kamu suka rendang?`, female: `Suka! Rendang bikin kuat, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `Aku kangen kampung halaman!`, female: `Kampung halaman kita ya arena ini, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `${n2}! Batik atau songket?`, female: `Kostum pertarungan, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `Lagu Indonesia favorit?`, female: `Lagu semangat juang, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `${n2}! Kamu suka sate?`, female: `Sate enak! Tapi menang lebih enak, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `Aku mau ke Bali!`, female: `Bali bagus! Tapi arena ini lebih bagus, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `${n2}! Bahasa daerahmu apa?`, female: `Bahasa kemenangan, ${n1}!` },
-      { cat: 'lokal', type: 'dialog', male: `Indonesia itu indah ya!`, female: `Paling indah, ${n1}! Seperti pertarungan kita!` },
+      // === Brasil ===
+      d('brasil', `${n2}! De onde você é?`, `Do ringue, ${n1}!`),
+      d('brasil', `Qual é a sua comida favorita?`, `Feijoada de campeão, ${n1}!`),
+      d('brasil', `${n2}! Você gosta de pão de queijo?`, `Gosto! Dá força, ${n1}!`),
+      d('brasil', `Estou com saudade de casa!`, `Aqui no ringue é a nossa casa, ${n1}!`),
+      d('brasil', `${n2}! Você prefere samba ou forró?`, `Música de luta, ${n1}!`),
+      d('brasil', `Qual é a sua música brasileira favorita?`, `A de garra, ${n1}!`),
+      d('brasil', `${n2}! Já foi ao Rio de Janeiro?`, `Já! Mas esse ringue é mais emocionante, ${n1}!`),
+      d('brasil', `O Brasil é lindo, né?`, `O mais lindo, ${n1}! Igual à nossa luta!`),
 
-      // === KATEGORI 18: Tips / Nasihat (10) ===
-      { cat: 'tips', type: 'dialog', male: `${n2}! Tips menang apa?`, female: `Jangan pernah menyerah, ${n1}!` },
-      { cat: 'tips', type: 'dialog', male: `Gimana cara jadi kuat?`, female: `Latihan terus, ${n1}! Seperti kita!` },
-      { cat: 'tips', type: 'dialog', male: `${n2}! Kamu pernah gagal?`, female: `Pernah! Tapi bangkit lagi, ${n1}!` },
-      { cat: 'tips', type: 'dialog', male: `Aku lagi butuh motivasi!`, female: `Kamu sudah di sini, ${n1}! Itu sudah hebat!` },
-      { cat: 'tips', type: 'dialog', male: `${n2}! Gimana ngadapi musuh kuat?`, female: `Fokus dan tenang, ${n1}!` },
-      { cat: 'tips', type: 'dialog', male: `Aku sering kalah!`, female: `Kalah itu belajar, ${n1}! Bangkit terus!` },
-      { cat: 'tips', type: 'dialog', male: `${n2}! Rahasia kemenangan?`, female: `Percaya diri, ${n1}! Seperti kamu sekarang!` },
-      { cat: 'tips', type: 'dialog', male: `Gimana cara fokus?`, female: `Hilangkan ragu, ${n1}! Maju terus!` },
-      { cat: 'tips', type: 'dialog', male: `${n2}! Kamu inspirasiku!`, female: `Kamu juga inspirasiku, ${n1}!` },
-      { cat: 'tips', type: 'dialog', male: `Aku mau jadi lebih baik!`, female: `Setiap hari adalah kesempatan, ${n1}!` },
+      // === Dicas ===
+      d('dicas', `${n2}! Qual é a dica para vencer?`, `Nunca desistir, ${n1}!`),
+      d('dicas', `Como fazer para ficar forte?`, `Treinar sempre, ${n1}! Igual a nós!`),
+      d('dicas', `${n2}! Você já falhou?`, `Já! Mas levantei de novo, ${n1}!`),
+      d('dicas', `Estou precisando de motivação!`, `Você já está aqui, ${n1}! Isso já é muito!`),
+      d('dicas', `${n2}! Como enfrentar um adversário forte?`, `Foco e calma, ${n1}!`),
+      d('dicas', `Eu perco muito!`, `Perder é aprender, ${n1}! Levanta de novo!`),
+      d('dicas', `${n2}! Qual é o segredo da vitória?`, `Confiança, ${n1}! Como a sua agora!`),
+      d('dicas', `${n2}! Você me inspira!`, `Você também me inspira, ${n1}!`),
 
-      // === KATEGORI 19: Hype / Support (10) ===
-      { cat: 'hype', type: 'dialog', male: `${n2}! KITA BISA!`, female: `BISA BANGET, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `SIAPA YANG KUAT?`, female: `KITA YANG KUAT, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `${n2}! SEMANGAT!`, female: `SEMANGAT JUGA, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `AYO MAJU TERUS!`, female: `MAJU TANPA RAGU, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `${n2}! JANGAN TAKUT!`, female: `TIDAK PERNAH TAKUT, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `KITA PETARUNG SEJATI!`, female: `SEJATI, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `${n2}! SHOW TIME!`, female: `LET'S GO, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `SIAPA JUARANYA?`, female: `KITA JUARANYA, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `${n2}! ENERGI PENUH!`, female: `FULL POWER, ${n1}!` },
-      { cat: 'hype', type: 'dialog', male: `TIDAK ADA YANG BISA STOP KITA!`, female: `TIDAK ADA, ${n1}! KITA TAK TERBEKALUKAN!` },
+      // === Empolgação ===
+      d('hype', `${n2}! A GENTE CONSEGUE!`, `CONSEGUE MESMO, ${n1}!`),
+      d('hype', `QUEM É FORTE?`, `NÓS SOMOS FORTES, ${n1}!`),
+      d('hype', `${n2}! ÂNIMO!`, `ÂNIMO TAMBÉM, ${n1}!`),
+      d('hype', `BORA SEMPRE EM FRENTE!`, `SEM DÚVIDA, ${n1}!`),
+      d('hype', `${n2}! SEM MEDO!`, `NUNCA TIVE MEDO, ${n1}!`),
+      d('hype', `SOMOS LUTADORES DE VERDADE!`, `DE VERDADE, ${n1}!`),
+      d('hype', `${n2}! HORA DO SHOW!`, `VAMOS NESSA, ${n1}!`),
+      d('hype', `QUEM É O CAMPEÃO?`, `NÓS SOMOS, ${n1}!`),
 
-      // === KATEGORI 20: Lucu / Absurd (10) ===
-      { cat: 'absurd', type: 'dialog', male: `${n2}! Aku lupa nama sendiri!`, female: `Nama kamu kalah, ${n1}! Haha!` },
-      { cat: 'absurd', type: 'dialog', male: `Tadi aku ketemu alien!`, female: `Alien juga takut sama kamu, ${n1}!` },
-      { cat: 'absurd', type: 'dialog', male: `${n2}! Kamu bisa terbang?`, female: `Bisa! Terbang tinggi, ${n1}!` },
-      { cat: 'absurd', type: 'dialog', male: `Aku punya kekuatan super!`, female: `Kekuatan super kalah, ${n1}? Haha!` },
-      { cat: 'absurd', type: 'dialog', male: `${n2}! Kamu robot ya?`, female: `Robot pemenang, ${n1}!` },
-      { cat: 'absurd', type: 'dialog', male: `Aku bisa baca pikiran!`, female: `Baca ini: aku menang, ${n1}!` },
-      { cat: 'absurd', type: 'dialog', male: `${n2}! Kamu dari masa depan?`, female: `Dari masa depan yang penuh kemenangan, ${n1}!` },
-      { cat: 'absurd', type: 'dialog', male: `Aku mimpi bisa teleport!`, female: `Teleport ke kemenangan, ${n1}!` },
-      { cat: 'absurd', type: 'dialog', male: `${n2}! Kamu punya jubah super?`, female: `Jubah kemenangan, ${n1}!` },
-      { cat: 'absurd', type: 'dialog', male: `Aku mau jadi superhero!`, female: `Superhero arena, ${n1}!` },
+      // === Absurdo ===
+      d('absurdo', `${n2}! Esqueci o meu próprio nome!`, `O seu nome é derrota, ${n1}! Ha ha!`),
+      d('absurdo', `Hoje encontrei um alienígena!`, `Até alienígena tem medo de você, ${n1}!`),
+      d('absurdo', `${n2}! Você sabe voar?`, `Sei! Voo alto, ${n1}!`),
+      d('absurdo', `Tenho superpoderes!`, `Superpoder de perder, ${n1}? Ha ha!`),
+      d('absurdo', `${n2}! Você é um robô?`, `Um robô campeão, ${n1}!`),
+      d('absurdo', `Eu leio pensamentos!`, `Então leia: eu vou ganhar, ${n1}!`),
+      d('absurdo', `${n2}! Você veio do futuro?`, `De um futuro cheio de vitórias, ${n1}!`),
+      d('absurdo', `Quero ser super-herói!`, `Super-herói do ringue, ${n1}!`),
 
-      // === KATEGORI 21: Penonton Interaktif (10) ===
-      { cat: 'interaktif', type: 'narrator', text: `Kalian yang nonton, siapa yang jagoin? Kasih tahu di chat!` },
-      { cat: 'interaktif', type: 'narrator', text: `Yang baru masuk, jangan lupa follow ya! Gratis kok!` },
-      { cat: 'interaktif', type: 'narrator', text: `Chat rame dong! Siapa yang mau lihat jurus baru?` },
-      { cat: 'interaktif', type: 'narrator', text: `Yang sudah follow, kasih like ya! Biar makin semangat!` },
-      { cat: 'interaktif', type: 'narrator', text: `Kalian mau lihat pertarungan lebih seru? Ajak teman!` },
-      { cat: 'interaktif', type: 'narrator', text: `Siapa yang lagi nonton sambil makan? Jangan tersedak ya!` },
-      { cat: 'interaktif', type: 'narrator', text: `Yang belum follow, follow dulu! Nanti nyesel lho!` },
-      { cat: 'interaktif', type: 'narrator', text: `Kalian seru-seru! Terima kasih sudah nonton!` },
-      { cat: 'interaktif', type: 'narrator', text: `Mau lihat pertarungan epik? Stay terus ya!` },
-      { cat: 'interaktif', type: 'narrator', text: `Yang suka battle, share live ini ke teman-teman kalian!` },
+      // === Interação com a plateia ===
+      nr('interativo', `Quem está assistindo, quem é o seu favorito? Conta aí no chat!`),
+      nr('interativo', `Quem acabou de chegar, não esquece de seguir! É de graça!`),
+      nr('interativo', `Vamos movimentar o chat! Quem quer ver um golpe novo?`),
+      nr('interativo', `Quem já segue, deixa o like! Assim a gente ganha mais ânimo!`),
+      nr('interativo', `Quer ver uma luta ainda mais emocionante? Chama os amigos!`),
+      nr('interativo', `Quem está assistindo comendo alguma coisa? Cuidado para não engasgar!`),
+      nr('interativo', `Quem ainda não seguiu, segue agora! Depois não vai querer perder!`),
+      nr('interativo', `Vocês são demais! Obrigado por assistir!`),
+      nr('interativo', `Quer ver uma luta épica? Fica com a gente!`),
+      nr('interativo', `Quem gosta de luta, compartilha essa live com os amigos!`),
 
-      // === KATEGORI 22: Waktu / Jam (4) - context-aware ===
-      { cat: 'jam', type: 'dialog', male: `Aku ngantuk nih!`, female: `Jangan ngantuk, ${n1}! Pertarungan belum selesai!` },
-      { cat: 'jam', type: 'dialog', male: `Waktu berlalu cepat!`, female: `Karena seru, ${n1}!` },
-      { cat: 'jam', type: 'dialog', male: `${n2}! Kita sudah lama bertarung!`, female: `Belum selesai, ${n1}!` },
-      { cat: 'jam', type: 'dialog', male: `${n2}! Istirahat dulu?`, female: `Istirahat setelah menang, ${n1}!` },
+      // === Hora ===
+      d('hora', `Estou com sono!`, `Não dorme, ${n1}! A luta ainda não acabou!`),
+      d('hora', `O tempo passou rápido!`, `Porque está divertido, ${n1}!`),
+      d('hora', `${n2}! A gente lutou por muito tempo!`, `Ainda não acabou, ${n1}!`),
+      d('hora', `${n2}! Vamos descansar um pouco?`, `Descansamos depois de ganhar, ${n1}!`),
 
-      // === KATEGORI 23: Pertanyaan ke Penonton (8) ===
-      { cat: 'tanya', type: 'narrator', text: `Kalian pilih mana: serangan cepat atau pertahanan kuat?` },
-      { cat: 'tanya', type: 'narrator', text: `Siapa yang pernah lihat pertarungan lebih seru dari ini?` },
-      { cat: 'tanya', type: 'narrator', text: `Kalau kalian yang di arena, pilih karakter mana?` },
-      { cat: 'tanya', type: 'narrator', text: `Menurut kalian, siapa yang bakal menang?` },
-      { cat: 'tanya', type: 'narrator', text: `Kalian mau lihat arena apa nanti?` },
-      { cat: 'tanya', type: 'narrator', text: `Siapa yang sudah nonton dari tadi? Setia banget!` },
-      { cat: 'tanya', type: 'narrator', text: `Kalian suka pertarungan tadi?` },
-      { cat: 'tanya', type: 'narrator', text: `Yang baru masuk, dari mana kalian?` },
+      // === Perguntas para a plateia ===
+      nr('pergunta', `O que vocês preferem: ataque rápido ou defesa firme?`),
+      nr('pergunta', `Quem já viu uma luta mais emocionante do que essa?`),
+      nr('pergunta', `Se vocês estivessem no ringue, qual personagem escolheriam?`),
+      nr('pergunta', `Na opinião de vocês, quem vai ganhar?`),
+      nr('pergunta', `Que arena vocês querem ver agora?`),
+      nr('pergunta', `Quem está assistindo desde o começo? Que fiéis!`),
+      nr('pergunta', `Vocês gostaram da luta de agora?`),
+      nr('pergunta', `Quem acabou de entrar, de onde vocês são?`),
     ];
   }
 
@@ -4681,7 +4760,7 @@ class BanterTTS {
     }
     const utterance = new SpeechSynthesisUtterance(text);
     if (voice) utterance.voice = voice;
-    utterance.lang = voice?.lang || 'id-ID';
+    utterance.lang = voice?.lang || 'pt-BR';
     utterance.rate = rate;
     utterance.pitch = pitch;
     utterance.volume = 0.8;
@@ -4697,19 +4776,30 @@ window.banter = banter;  // Expose untuk debug
 
 function toggleTTS() {
   const enabled = announcer.toggle();
-  banter.enabled = enabled;
   const btn = document.getElementById("ttsToggleBtn");
   btn.textContent = enabled ? "Announcer: ON" : "Announcer: OFF";
   btn.style.background = enabled ? "#ff8800" : "#222";
   btn.style.color = enabled ? "#fff" : "#ccc";
-  addNotification(enabled ? "Announcer aktif!" : "Announcer nonaktif");
+  addNotification(enabled ? "Anunciante ligado!" : "Anunciante desligado");
 }
 
 function testAnnouncer() {
   if (!announcer.enabled) toggleTTS();
-  announcer.announce("Ladies and gentlemen! Welcome to Battle Ring! Let the fight begin!", true);
+  announcer.announce("Senhoras e senhores! Bem-vindos ao Battle Ring! Que comece a luta!", true);
 }
 
+// Liga e desliga só a conversa entre os lutadores (balões e vozes do navegador)
+function toggleBanter() {
+  banter.enabled = !banter.enabled;
+  if (!banter.enabled && banter.synth) { banter.synth.cancel(); banter.isSpeaking = false; }
+  const btn = document.getElementById("banterToggleBtn");
+  btn.textContent = banter.enabled ? "Conversa dos lutadores: ON" : "Conversa dos lutadores: OFF";
+  btn.style.background = banter.enabled ? "#ff8800" : "#222";
+  btn.style.color = banter.enabled ? "#fff" : "#ccc";
+  addNotification(banter.enabled ? "Conversa dos lutadores ligada" : "Conversa dos lutadores desligada");
+  if (typeof updateStatusBox === 'function') updateStatusBox();
+}
+window.toggleBanter = toggleBanter;
 window.toggleTTS = toggleTTS;
 window.testAnnouncer = testAnnouncer;
 
@@ -4742,7 +4832,7 @@ window.connectFromGame = async function() {
   if (!username) return;
   
   const statusEl = document.getElementById('connectStatus');
-  statusEl.textContent = 'Menghubungkan...';
+  statusEl.textContent = 'Conectando...';
   statusEl.style.color = '#888';
   
   // Clear old players first (with proper dispose)
@@ -4750,7 +4840,7 @@ window.connectFromGame = async function() {
   for (const id of oldIds) {
     removePlayer(id);
   }
-  addNotification('Menghapus data pemain lama...', '');
+  addNotification('Apagando jogadores antigos...', '');
   
   // Update ROOM
   window.ROOM = username;
@@ -4802,13 +4892,13 @@ window.connectFromGame = async function() {
       socket.on('connection-status', (data) => {
         console.log('Connection status:', data);
         if (data.connected) {
-          statusEl.textContent = `✅ Terhubung ke @${username}!`;
+          statusEl.textContent = `✅ Conectado a @${username}!`;
           statusEl.style.color = '#00ff88';
-          addNotification(`Live terhubung! Room: ${data.roomId}`, 'power');
+          addNotification(`Live conectada! Sala: ${data.roomId}`, 'power');
         } else if (data.error) {
           statusEl.textContent = `❌ ${data.error}`;
           statusEl.style.color = '#ff4444';
-          addNotification(`Error: ${data.error}`, '');
+          addNotification(`Erro: ${data.error}`, '');
         }
       });
       
@@ -4816,7 +4906,7 @@ window.connectFromGame = async function() {
       socket.on('viewer-list', async (viewers) => {
         if (!viewers || viewers.length === 0) return;
         console.log(`Viewer list received: ${viewers.length} viewers`);
-        addNotification(`${viewers.length} penonton terdeteksi!`, 'power');
+        addNotification(`${viewers.length} espectadores encontrados!`, 'power');
         
         const existingPlayers = players.size;
         const toJoin = viewers.slice(0, Math.max(3, 5 - existingPlayers));
@@ -4824,7 +4914,7 @@ window.connectFromGame = async function() {
           if (!players.has(viewer.uniqueId) && !pendingPlayers.has(viewer.uniqueId)) {
             const p = await createPlayer(viewer);
             if (p) {
-              addNotification(`${viewer.nickname} masuk arena!`, '');
+              addNotification(`${viewer.nickname} entrou na arena!`, '');
             }
           }
         }
@@ -4839,16 +4929,16 @@ window.connectFromGame = async function() {
           if (!players.has(viewer.uniqueId) && !pendingPlayers.has(viewer.uniqueId)) {
             const p = await createPlayer(viewer);
             if (p) {
-              addNotification(`${viewer.nickname} masuk arena!`, '');
+              addNotification(`${viewer.nickname} entrou na arena!`, '');
             }
           }
         }
       });
       
       // Update UI
-      statusEl.textContent = 'Terhubung!';
+      statusEl.textContent = 'Conectado!';
       statusEl.style.color = '#00ff88';
-      addNotification(`Terhubung ke @${username}!`, 'power');
+      addNotification(`Conectado a @${username}!`, 'power');
       
       // Update URL without reload
       const url = new URL(window.location);
@@ -4861,11 +4951,11 @@ window.connectFromGame = async function() {
         statusEl.textContent = '';
       }, 2000);
     } else {
-      statusEl.textContent = 'Error: ' + (data.error || 'Gagal');
+      statusEl.textContent = 'Erro: ' + (data.error || 'Falhou');
       statusEl.style.color = '#ff4444';
     }
   } catch (err) {
-    statusEl.textContent = 'Error: ' + err.message;
+    statusEl.textContent = 'Erro: ' + err.message;
     statusEl.style.color = '#ff4444';
   }
 }
@@ -4904,7 +4994,7 @@ function setupDebugPanel() {
   // Spawn all button
   const allBtn = document.createElement('button');
   allBtn.className = 'dbtn spawn';
-  allBtn.textContent = 'ALL (1 each)';
+  allBtn.textContent = 'TODOS (1 de cada)';
   allBtn.onclick = async () => {
     for (const mc of MESHY_CHARACTERS) {
       const id = mc.id.toLowerCase() + '_' + Math.floor(Math.random() * 10000);
@@ -4942,7 +5032,7 @@ function setupFocusButtons() {
       focusCamEnabled = true;
       setupFocusButtons(); // refresh highlight
       showAnimButtons(p);
-      addNotification(`Focused on ${p.nickname}`);
+      addNotification(`Câmera em ${p.nickname}`);
     };
     container.appendChild(btn);
   });
@@ -4951,14 +5041,14 @@ function setupFocusButtons() {
   if (focusPlayer) {
     const ufBtn = document.createElement('button');
     ufBtn.className = 'dbtn';
-    ufBtn.textContent = 'Unfocus';
+    ufBtn.textContent = 'Soltar câmera';
     ufBtn.style.color = '#ff8800';
     ufBtn.onclick = () => {
       focusPlayer = null;
       focusCamEnabled = false;
       document.getElementById('animSection').style.display = 'none';
       setupFocusButtons();
-      addNotification('Camera unfocused');
+      addNotification('Câmera solta');
     };
     container.appendChild(ufBtn);
   }
@@ -5021,17 +5111,18 @@ window._debugAction = function(action) {
       if ((roundState === 'WAITING' || roundState === 'INTERMISSION') && players.size >= MIN_PLAYERS_TO_START) {
         setRoundState('COUNTDOWN');
       } else {
-        addNotification(`Need ${MIN_PLAYERS_TO_START}+ players (${players.size} now)`);
+        addNotification(`Precisa de ${MIN_PLAYERS_TO_START}+ jogadores (${players.size} agora)`);
       }
       break;
     case 'auto':
       autoPlay = !autoPlay;
-      addNotification(autoPlay ? 'Auto-play ON' : 'Auto-play OFF');
+      addNotification(autoPlay ? 'Jogo automático ligado' : 'Jogo automático desligado');
+      updateAutoPlayBtn();
       break;
     case 'shrink':
       arenaRadius = Math.max(ARENA_END_RADIUS, arenaRadius - 2);
       updateArenaVisuals();
-      addNotification(`Arena shrunk to ${arenaRadius.toFixed(1)}`);
+      addNotification(`Arena encolheu para ${arenaRadius.toFixed(1)}`);
       break;
     case 'autocam':
       autoCamEnabled = !autoCamEnabled;
@@ -5039,7 +5130,7 @@ window._debugAction = function(action) {
       acBtn.textContent = autoCamEnabled ? 'AutoCam: ON' : 'AutoCam: OFF';
       acBtn.style.background = autoCamEnabled ? '#44aaff' : '#222';
       acBtn.style.color = autoCamEnabled ? '#fff' : '#ccc';
-      addNotification(autoCamEnabled ? 'Auto Camera ON' : 'Auto Camera OFF');
+      addNotification(autoCamEnabled ? 'Câmera automática ligada' : 'Câmera automática desligada');
       break;
   }
 };
@@ -5054,25 +5145,29 @@ const voiceRecentContext = [];
 const MAX_VOICE_CONTEXT = 5;
 const MAX_VOICE_QUEUE = 4;
 const VOICE_COOLDOWN = 3000; // min gap between API calls
-const SUMO_VOICE_ID = 'INmScOFtmeMGA4p0XRr1'; // Nurin — Malaysian female, upbeat & cheerful
+const SUMO_VOICE_ID = null; // null = o servidor usa ELEVENLABS_VOICE_ID do .env (narrador padrão)
 let lastVoiceTime = 0;
 let voiceSubtitleTimer = null;
+let voiceCurrent = null; // { audio, item } da fala que está tocando
 
 function toggleVoiceCommentary() {
   voiceEnabled = !voiceEnabled;
   const btn = document.getElementById('voiceToggleBtn');
   const indicator = document.getElementById('voiceIndicator');
-  btn.textContent = voiceEnabled ? 'Voice: ON' : 'Voice: OFF';
-  btn.style.background = voiceEnabled ? '#ec4899' : '#222';
-  btn.style.color = voiceEnabled ? '#fff' : '#ccc';
-  indicator.style.display = voiceEnabled ? 'block' : 'none';
+  if (btn) {
+    btn.textContent = voiceEnabled ? 'Voice: ON' : 'Voice: OFF';
+    btn.style.background = voiceEnabled ? '#ec4899' : '#222';
+    btn.style.color = voiceEnabled ? '#fff' : '#ccc';
+  }
+  if (indicator) indicator.style.display = voiceEnabled ? 'block' : 'none';
+  if (typeof updateStatusBox === 'function') updateStatusBox();
   if (voiceEnabled) {
     // Unlock audio context for autoplay
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const buf = ctx.createBuffer(1, 1, 22050);
     const src = ctx.createBufferSource();
     src.buffer = buf; src.connect(ctx.destination); src.start();
-    document.getElementById('voiceStatusText').textContent = 'Voice Ready';
+    document.getElementById('voiceStatusText').textContent = 'Narrador pronto';
   }
 }
 
@@ -5085,24 +5180,98 @@ function testVoice() {
 }
 
 // Queue a game event for voice commentary
+// ===== Registro do narrador (diagnóstico) =====
+// Cada fala ganha um número. Cada etapa fica registrada com o horário e o estado do jogo naquele momento.
+// No console aparece como [NARRADOR]. Para ver tudo em tabela: narradorTabela() no console.
+const NARRADOR_T0 = Date.now();
+let narradorSeq = 0;
+window.narradorLog = [];
+function narradorLog(id, etapa, info = {}) {
+  const estado = `${roundState} r${roundNumber} vivos=${typeof countAlivePlayers === 'function' ? countAlivePlayers() : '?'}`;
+  const e = { s: +((Date.now() - NARRADOR_T0) / 1000).toFixed(1), id, etapa, estado, ...info };
+  window.narradorLog.push(e);
+  if (window.narradorLog.length > 500) window.narradorLog.shift();
+  console.log(`[NARRADOR] ${e.s}s #${id} ${etapa} | ${estado}` + (info.tipo ? ` | ${info.tipo}` : '') + (info.texto ? ` | "${info.texto}"` : '') + (info.obs ? ` | ${info.obs}` : ''));
+}
+window.narradorTabela = () => console.table(window.narradorLog);
+// ?ensaio (falas de 3 s) ou ?ensaio=10 (falas de 10 s, para imitar o modo 2): não chama o servidor nem o ElevenLabs
+const NARRADOR_ENSAIO = new URLSearchParams(location.search).has('ensaio')
+  ? (parseFloat(new URLSearchParams(location.search).get('ensaio')) || 3) : 0;
+function audioMudo(seg) {
+  const rate = 8000, n = Math.round(rate * seg);
+  const buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+  const str = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+  str(0, 'RIFF'); v.setUint32(4, 36 + n, true); str(8, 'WAVE'); str(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+  str(36, 'data'); v.setUint32(40, n, true);
+  new Uint8Array(buf, 44).fill(128);
+  return new Blob([buf], { type: 'audio/wav' });
+}
+
+// Quanto tempo (ms) uma fala ainda faz sentido depois do evento. Passou disso, é descartada.
+const VOICE_MAX_AGE = { battle_ring_elimination: 7000, battle_ring_elimination_group: 8000, battle_ring_join: 9000, battle_ring_join_group: 10000, battle_ring_shrink_warning: 6000, battle_ring_fight: 8000, battle_ring_round_start: 12000, battle_ring_winner: 20000, battle_ring_draw: 15000 };
+const voiceMaxAge = type => VOICE_MAX_AGE[type] || 15000;
+// Nova rodada: joga fora o que ficou na fila (o que já está tocando termina normalmente)
+function clearStaleVoice() {
+  if (voiceQueue.length || voiceAudioQueue.length) narradorLog(0, 'limpeza', { obs: `nova rodada: ${voiceQueue.length} pedidos e ${voiceAudioQueue.length} áudios descartados` });
+  voiceQueue.length = 0;
+  while (voiceAudioQueue.length) URL.revokeObjectURL(voiceAudioQueue.shift().url);
+  // Esquece as falas da rodada anterior, para a IA não comentar lutas que já acabaram
+  voiceRecentContext.length = 0;
+}
+// Acontecimentos que viram uma fala só quando vários chegam juntos (enquanto o narrador ainda está ocupado).
+// Ex.: 3 quedas seguidas → "Olha quanta gente caindo!" em vez de 3 falas com nomes.
+// Para agrupar outro tipo de evento, acrescente aqui e crie as falas "<tipo>_group" no server.js.
+const VOICE_GROUPABLE = { battle_ring_elimination: 'battle_ring_elimination_group', battle_ring_join: 'battle_ring_join_group' };
 function queueVoiceEvent(eventType, eventData, priority = 1) {
   if (!voiceEnabled) return;
+  // Vitória ou empate: quedas que ainda não foram narradas perderam o sentido
+  if (eventType === 'battle_ring_winner' || eventType === 'battle_ring_draw') {
+    for (let i = voiceQueue.length - 1; i >= 0; i--) {
+      if (/^battle_ring_elimination/.test(voiceQueue[i].eventType)) {
+        narradorLog(voiceQueue[i].id, 'descartado', { tipo: voiceQueue[i].eventType, obs: 'a rodada acabou antes de narrar' });
+        voiceQueue.splice(i, 1);
+      }
+    }
+  }
+  // Já tem um evento do mesmo tipo esperando? Junta os dois numa fala de grupo.
+  if (VOICE_GROUPABLE[eventType]) {
+    const igual = voiceQueue.find(q => q.eventType === eventType || q.eventType === VOICE_GROUPABLE[eventType]);
+    if (igual) {
+      const count = (igual.eventData.count || 1) + 1;
+      igual.eventType = VOICE_GROUPABLE[eventType];
+      igual.eventData = { count, remaining: eventData.remaining ?? igual.eventData.remaining };
+      igual.t = Date.now();
+      igual.priority = Math.max(igual.priority, priority);
+      narradorLog(igual.id, 'agrupado', { tipo: igual.eventType, obs: `${count} juntos` });
+      processVoiceQueue();
+      return;
+    }
+  }
   // Drop low priority events if queue is full
   if (voiceQueue.length >= MAX_VOICE_QUEUE) {
     const lowIdx = voiceQueue.findIndex(q => q.priority < priority);
     if (lowIdx !== -1) {
-      voiceQueue.splice(lowIdx, 1);
+      const fora = voiceQueue.splice(lowIdx, 1)[0];
+      narradorLog(fora.id, 'descartado', { tipo: fora.eventType, obs: 'fila cheia, saiu para dar lugar a um mais importante' });
     } else {
+      narradorLog(++narradorSeq, 'descartado', { tipo: eventType, obs: 'fila cheia' });
       return; // queue full with higher priority
     }
   }
-  voiceQueue.push({ eventType, eventData, priority });
+  const id = ++narradorSeq;
+  narradorLog(id, 'pedido', { tipo: eventType, obs: `prioridade ${priority}, fila ${voiceQueue.length}, dados ${JSON.stringify(eventData).slice(0, 80)}` });
+  voiceQueue.push({ id, eventType, eventData, priority, t: Date.now() });
   processVoiceQueue();
 }
 
 async function processVoiceQueue() {
   if (voiceIsGenerating) return;
   if (voiceQueue.length === 0) return;
+  // Já tem uma fala pronta esperando para tocar: espera. Assim, o que acontecer nesse meio tempo
+  // ainda pode ser agrupado ("olha quanta gente caindo") em vez de virar várias falas atrasadas.
+  if (voiceAudioQueue.length >= 1) { setTimeout(processVoiceQueue, 300); return; }
   if (Date.now() - lastVoiceTime < VOICE_COOLDOWN) {
     setTimeout(processVoiceQueue, VOICE_COOLDOWN - (Date.now() - lastVoiceTime));
     return;
@@ -5111,11 +5280,21 @@ async function processVoiceQueue() {
   // Pick highest priority event
   voiceQueue.sort((a, b) => b.priority - a.priority);
   const event = voiceQueue.shift();
+  if (Date.now() - event.t > voiceMaxAge(event.eventType)) { // fala velha: pula
+    narradorLog(event.id, 'descartado', { tipo: event.eventType, obs: `velha antes de gerar (${((Date.now() - event.t) / 1000).toFixed(1)}s)` });
+    if (voiceQueue.length) setTimeout(processVoiceQueue, 50);
+    return;
+  }
+  const evRound = roundNumber;
+  const tGera = Date.now();
+  narradorLog(event.id, 'gerando', { tipo: event.eventType, obs: `esperou ${((tGera - event.t) / 1000).toFixed(1)}s na fila` });
   voiceIsGenerating = true;
-  document.getElementById('voiceStatusText').textContent = 'Generating...';
+  document.getElementById('voiceStatusText').textContent = 'Gerando fala...';
 
   try {
-    const res = await fetch('/api/voice/generate', {
+    const res = NARRADOR_ENSAIO ? new Response(audioMudo(NARRADOR_ENSAIO), { headers: {
+      'X-Commentary-Text': encodeURIComponent(`[ensaio] ${event.eventType} ${JSON.stringify(event.eventData).slice(0, 60)}`),
+      'X-Voice-Cache': 'ensaio' } }) : await fetch('/api/voice/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -5127,9 +5306,22 @@ async function processVoiceQueue() {
       }),
     });
 
+    if (res.status === 204) { // modo só cache: fala sem áudio salvo. Não ocupa a vez nem corta outra fala
+      narradorLog(event.id, 'pulado', { tipo: event.eventType, obs: 'sem áudio salvo' });
+      return;
+    }
+    if (res.status === 402) {
+      // Limite de gasto de teste do ElevenLabs atingido: desliga o narrador
+      console.warn('Limite de gasto do narrador atingido');
+      voiceQueue.length = 0;
+      if (voiceEnabled) toggleVoiceCommentary();
+      addNotification('Narrador desligado: limite de gasto de teste atingido', 'power');
+      document.getElementById('voiceStatusText').textContent = 'Limite atingido';
+      return;
+    }
     if (!res.ok) {
       console.error('Voice API error:', res.status);
-      document.getElementById('voiceStatusText').textContent = 'API Error';
+      document.getElementById('voiceStatusText').textContent = 'Erro no serviço';
       return;
     }
 
@@ -5141,10 +5333,12 @@ async function processVoiceQueue() {
     if (voiceRecentContext.length > MAX_VOICE_CONTEXT) voiceRecentContext.shift();
 
     lastVoiceTime = Date.now();
-    enqueueVoiceAudio(blob, text);
+    narradorLog(event.id, 'gerado', { tipo: event.eventType, texto: text, obs: `${((Date.now() - tGera) / 1000).toFixed(1)}s para gerar, cache=${res.headers.get('X-Voice-Cache') || '?'}` });
+    if (evRound !== roundNumber && event.eventType !== 'battle_ring_winner') { narradorLog(event.id, 'descartado', { tipo: event.eventType, obs: 'rodada mudou durante a geração' }); return; } // rodada mudou durante a geração
+    enqueueVoiceAudio(blob, text, event);
   } catch (err) {
     console.error('Voice commentary error:', err);
-    document.getElementById('voiceStatusText').textContent = 'Error';
+    document.getElementById('voiceStatusText').textContent = 'Erro';
   } finally {
     voiceIsGenerating = false;
     // Process next in queue
@@ -5154,37 +5348,61 @@ async function processVoiceQueue() {
   }
 }
 
-function enqueueVoiceAudio(blob, text) {
+function enqueueVoiceAudio(blob, text, event) {
   if (voiceAudioQueue.length >= 3) {
     // Drop oldest
     const old = voiceAudioQueue.shift();
+    narradorLog(old.id, 'descartado', { tipo: old.type, texto: old.text, obs: 'fila de áudio cheia' });
     URL.revokeObjectURL(old.url);
   }
   const url = URL.createObjectURL(blob);
-  voiceAudioQueue.push({ url, text });
+  const item = { url, text, t: event ? event.t : Date.now(), type: event ? event.eventType : '', id: event ? event.id : 0, priority: event ? event.priority : 1 };
+  // Fala mais importante (queda, vitória, início) corta a que está tocando, para narrar o que acabou de acontecer
+  if (voiceIsPlaying && voiceCurrent && item.priority > (voiceCurrent.item.priority || 1)) {
+    narradorLog(voiceCurrent.item.id, 'cortado', { tipo: voiceCurrent.item.type, obs: `interrompido por #${item.id} (${item.type})` });
+    voiceAudioQueue.unshift(item);
+    const cur = voiceCurrent;
+    voiceCurrent = null;
+    cur.audio.onended = null;
+    cur.audio.onerror = null;
+    cur.audio.pause();
+    URL.revokeObjectURL(cur.item.url);
+    playNextVoice();
+    return;
+  }
+  voiceAudioQueue.push(item);
   if (!voiceIsPlaying) playNextVoice();
 }
 
 function playNextVoice() {
   if (voiceAudioQueue.length === 0) {
     voiceIsPlaying = false;
-    document.getElementById('voiceStatusText').textContent = 'Voice Ready';
+    document.getElementById('voiceStatusText').textContent = 'Narrador pronto';
     document.getElementById('voiceSubtitle').style.display = 'none';
     return;
   }
-  voiceIsPlaying = true;
   const item = voiceAudioQueue.shift();
+  if (Date.now() - item.t > voiceMaxAge(item.type)) { // áudio que passou do prazo do evento
+    narradorLog(item.id, 'descartado', { tipo: item.type, texto: item.text, obs: `áudio velho (${((Date.now() - item.t) / 1000).toFixed(1)}s)` });
+    URL.revokeObjectURL(item.url);
+    return playNextVoice();
+  }
+  voiceIsPlaying = true;
+  narradorLog(item.id, 'tocando', { tipo: item.type, texto: item.text, obs: `${((Date.now() - item.t) / 1000).toFixed(1)}s depois do evento` });
 
   // Show subtitle
   const subtitleEl = document.getElementById('voiceSubtitle');
   subtitleEl.textContent = item.text;
   subtitleEl.style.display = 'block';
-  document.getElementById('voiceStatusText').textContent = 'Speaking...';
+  document.getElementById('voiceStatusText').textContent = 'Falando...';
   document.getElementById('voiceSpeakerIcon').textContent = '🔊';
 
   const audio = new Audio(item.url);
   audio.volume = 0.85;
+  voiceCurrent = { audio, item };
   audio.onended = () => {
+    voiceCurrent = null;
+    narradorLog(item.id, 'fim', { tipo: item.type, obs: `${((Date.now() - item.t) / 1000).toFixed(1)}s depois do evento` });
     URL.revokeObjectURL(item.url);
     document.getElementById('voiceSpeakerIcon').textContent = '🎙️';
     // Keep subtitle visible for 1 second after audio ends
@@ -5195,11 +5413,46 @@ function playNextVoice() {
     playNextVoice();
   };
   audio.onerror = () => {
+    voiceCurrent = null;
     URL.revokeObjectURL(item.url);
     playNextVoice();
   };
   audio.play().catch(() => playNextVoice());
 }
+
+// ===== PAINEL DE STATUS =====
+let voiceBudgetInfo = null;
+async function refreshVoiceBudget() {
+  try {
+    const r = await fetch('/api/voice/budget');
+    if (r.ok) voiceBudgetInfo = await r.json();
+  } catch (e) { voiceBudgetInfo = null; }
+  updateStatusBox();
+}
+function updateStatusBox() {
+  const box = document.getElementById('statusBox');
+  if (!box) return;
+  const estados = { WAITING: 'aguardando', COUNTDOWN: 'contagem', ACTIVE: 'em luta', ENDED: 'fim da rodada', INTERMISSION: 'intervalo' };
+  const vivos = typeof countAlivePlayers === 'function' ? countAlivePlayers() : 0;
+  const lines = [];
+  lines.push(`<b>Jogo:</b> rodada ${roundNumber || 0}, ${estados[roundState] || roundState}`);
+  lines.push(`<b>Lutadores:</b> ${players.size} (${vivos} vivos)`);
+  lines.push(`<b>Narrador:</b> ` + (voiceEnabled ? `<span class="ok">LIGADO</span> · ${document.getElementById('voiceStatusText')?.textContent || ''}` : `<span class="off">DESLIGADO</span> (aperte Voice: OFF)`));
+  if (voiceBudgetInfo) {
+    const pct = voiceBudgetInfo.limitUsd > 0 ? voiceBudgetInfo.spentUsd / voiceBudgetInfo.limitUsd : 0;
+    const cls = pct >= 1 ? 'off' : pct >= 0.8 ? 'warn' : 'ok';
+    lines.push(`<b>Gasto ElevenLabs:</b> <span class="${cls}">US$ ${voiceBudgetInfo.spentUsd.toFixed(2)} de ${voiceBudgetInfo.limitUsd.toFixed(2)}</span>`);
+    lines.push(`<b>Falas:</b> modo ${voiceBudgetInfo.mode}, texto por ${voiceBudgetInfo.llm}`);
+  } else {
+    lines.push(`<b>Gasto ElevenLabs:</b> <span class="warn">sem resposta do servidor</span>`);
+  }
+  lines.push(`<b>Anunciante:</b> ` + (window.announcer && window.announcer.enabled ? `<span class="ok">ligado</span>` : `<span class="off">desligado</span>`));
+  lines.push(`<b>Conversa dos lutadores:</b> ` + (window.banter && window.banter.enabled ? `<span class="ok">ligada</span>` : `<span class="off">desligada</span>`));
+  box.innerHTML = lines.join('<br>');
+}
+setInterval(updateStatusBox, 1500);
+setInterval(refreshVoiceBudget, 5000);
+refreshVoiceBudget();
 
 // ===== PROACTIVE VIEWER GREETING =====
 const viewerJoinBatch = [];
@@ -5238,7 +5491,7 @@ function flushViewerBatch() {
   const names = batch.map(v => v.nickname);
   const nameStr = names.length <= 4
     ? names.join(', ')
-    : names.slice(0, 3).join(', ') + ` dan ${names.length - 3} lagi`;
+    : names.slice(0, 3).join(', ') + ` e mais ${names.length - 3}`;
 
   queueVoiceEvent('battle_ring_viewers_welcome', {
     count: batch.length,
@@ -5255,7 +5508,7 @@ function updateInviteTimer(dt) {
     inviteTimer = INVITE_INTERVAL;
 
     // Pick a random language to invite in
-    const languages = ['BM pasar', 'English casual', 'Bahasa Indonesia santai', 'Thai friendly'];
+    const languages = ['português do Brasil'];
     const lang = languages[Math.floor(Math.random() * languages.length)];
 
     queueVoiceEvent('battle_ring_invite_friends', {
@@ -5279,6 +5532,8 @@ window.handleViewerJoin = handleViewerJoin;
 window.testGift = testGift;
 window.spawnBots = spawnBots;
 window.removeBots = removeBots;
+window.toggleVoiceCommentary = toggleVoiceCommentary;
+window.testVoice = testVoice;
 window.socket = null;
 
 // ===== INIT =====
@@ -5302,7 +5557,7 @@ async function init() {
         const data = await res.json();
         if (data.ok) {
           console.log('Auto-connect success:', data);
-          addNotification(`Auto-connect ke @${ROOM}!`, 'power');
+          addNotification(`Conectando automático a @${ROOM}!`, 'power');
         } else {
           console.warn('Auto-connect failed:', data.error);
         }

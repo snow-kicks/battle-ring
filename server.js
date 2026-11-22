@@ -5,7 +5,8 @@ import { Server } from 'socket.io';
 import { TikTokLiveConnection, SignConfig } from 'tiktok-live-connector';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { createHash } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,7 +17,7 @@ const io = new Server(server, { cors: { origin: '*' } });
 
 const PORT = process.env.PORT || 3000;
 const AUTO_CONNECT = process.env.AUTO_CONNECT === 'true';
-const USERNAME = process.env.TIKTOK_USERNAME || 'broneotodak';
+const USERNAME = process.env.TIKTOK_USERNAME || '';
 
 // ===== STABILITY: Uncaught Exception Handlers =====
 process.on('uncaughtException', (err) => {
@@ -98,8 +99,173 @@ const memoryCleanupInterval = setInterval(() => {
 
 // ===== AI Voice Avatar =====
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-haiku-5-5';
+// Quem escreve as falas do narrador: 'anthropic' (Claude) ou 'openai'. Padrão: Claude se houver chave dele.
+const LLM_PROVIDER = (process.env.LLM_PROVIDER || (ANTHROPIC_API_KEY ? 'anthropic' : 'openai')).toLowerCase();
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
-const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'yXG8bh6LkPVmQb2P2UdE'; // Neo Todak - cloned voice
+// Voz padrão: "Adam" (voz pronta do ElevenLabs, masculina, grave, de narrador). Troque no .env se quiser outra.
+const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
+// Modo do narrador: 'misto' (padrão: falas prontas nos eventos repetitivos, Claude/OpenAI nos especiais),
+// 'fixo' (só falas prontas, sem LLM) ou 'ia' (sempre LLM).
+// NARRATOR_MODE: 0 = sem IA (só falas prontas), 1 = híbrido (prontas + IA em vitória/boas-vindas/convite), 2 = tudo IA.
+// Também aceita os nomes: fixo, misto, ia. Padrão: 0.
+// Tamanho das falas escritas pela IA (modos 1 e 2). Fala longa atrasa a narração.
+const NARRATOR_MAX_WORDS = parseInt(process.env.NARRATOR_MAX_WORDS || '12', 10);
+const NARRATOR_MAX_CHARS = parseInt(process.env.NARRATOR_MAX_CHARS || '90', 10);
+const NARRATOR_MODE = ({ '0': 'fixo', fixo: 'fixo', '1': 'misto', misto: 'misto', hibrido: 'misto', 'híbrido': 'misto', '2': 'ia', ia: 'ia' })[String(process.env.NARRATOR_MODE ?? '0').trim().toLowerCase()] || 'fixo';
+// Limite de gasto ESTIMADO do ElevenLabs (por caracteres). Não é a cobrança real da sua conta.
+const ELEVENLABS_BUDGET_USD = parseFloat(process.env.ELEVENLABS_BUDGET_USD || '1');
+const ELEVENLABS_USD_PER_1K = parseFloat(process.env.ELEVENLABS_USD_PER_1K_CHARS || '0.30');
+// ELEVENLABS_CACHE_ONLY=1: só toca falas já salvas no cache. Nunca chama o ElevenLabs (gasto zero). Bom para ensaiar.
+const ELEVENLABS_CACHE_ONLY = /^(1|true|sim)$/i.test(process.env.ELEVENLABS_CACHE_ONLY || '');
+const VOICE_CACHE_DIR = join(__dirname, 'voice-cache');
+const VOICE_BUDGET_FILE = join(VOICE_CACHE_DIR, 'budget.json');
+if (!existsSync(VOICE_CACHE_DIR)) mkdirSync(VOICE_CACHE_DIR, { recursive: true });
+let voiceBudget = { chars: 0 };
+try { if (existsSync(VOICE_BUDGET_FILE)) voiceBudget = JSON.parse(readFileSync(VOICE_BUDGET_FILE, 'utf-8')); } catch (e) { /* começa do zero */ }
+const voiceSpentUsd = () => (voiceBudget.chars / 1000) * ELEVENLABS_USD_PER_1K;
+function saveVoiceBudget() { try { writeFileSync(VOICE_BUDGET_FILE, JSON.stringify(voiceBudget)); } catch (e) { /* ignora */ } }
+function voiceCacheKey(voiceId, text) { return createHash('sha1').update(`${voiceId}|${text}`).digest('hex'); }
+
+// Falas prontas do narrador. {campos} são trocados pelos dados do jogo (nome do jogador, personagem...).
+// A primeira vez que uma fala exata é dita, o áudio é gerado e guardado em voice-cache/.
+// Nas próximas vezes o mesmo áudio é reaproveitado, sem gastar nada.
+const FIXED_LINES = {
+  battle_ring_round_start: [
+    'Atenção, lutadores! Mais uma rodada vai começar. Preparem-se!',
+    'Respirem fundo! O ringue está pronto para mais uma batalha.',
+    'Senhoras e senhores, vai começar mais uma rodada! Quem leva a glória hoje?',
+  ],
+  battle_ring_fight: [
+    'Valendo! Que vença o mais forte!',
+    'Começou! Mostrem o que vocês sabem fazer!',
+    'Já! O ringue é de vocês!',
+  ],
+  battle_ring_elimination: [
+    '{killer} derrubou {victim} do ringue! Que empurrão!',
+    '{victim} caiu! {killer} não perdoa!',
+    '{victim} saiu voando do ringue!',
+    'Lá se vai {victim}! Caiu da arena!',
+    '{victim} foi para fora! Ai, essa doeu!',
+  ],
+  battle_ring_winner: [
+    '{winner} é o campeão desta rodada! Que luta!',
+    'Palmas para {winner}! Venceu com méritos!',
+    'É de {winner} a vitória! Mandou muito bem!',
+  ],
+  battle_ring_draw: [
+    'Empate! Ninguém ficou de pé. Que rodada maluca!',
+    'Todo mundo caiu! Essa foi de arrepiar!',
+  ],
+  battle_ring_shrink_warning: [
+    'Cuidado! O ringue está encolhendo!',
+    'O espaço está acabando! Quem aguenta?',
+  ],
+  battle_ring_join: [
+    '{nickname} entrou no ringue como {character}! Boa sorte!',
+    'Chegou {nickname}, de {character}! Seja bem-vindo!',
+    '{nickname} chegou para a briga! Bem-vindo ao ringue!',
+  ],
+  battle_ring_viewers_welcome: [
+    'Bem-vindos, galera! Entrem no ringue e mostrem a sua força!',
+    'Olha a galera chegando! O ringue é de vocês, vamos lutar!',
+  ],
+  battle_ring_invite_friends: [
+    'Chame seus amigos para a live! Quanto mais gente, mais luta!',
+    'Compartilhe a live com a turma! O ringue ainda tem espaço!',
+  ],
+  // Vários acontecimentos juntos viram uma fala só, sem nomes (o jogo agrupa antes de pedir)
+  battle_ring_elimination_group: [
+    'Olha quanta gente caindo!',
+    'Que chuva de lutadores para fora do ringue!',
+    'Caiu um monte de uma vez!',
+    'Que estrago! Vários fora de uma vez!',
+  ],
+  battle_ring_join_group: [
+    'Olha quanta gente chegando no ringue!',
+    'Chegou uma turma inteira! Bem-vindos!',
+    'O ringue está enchendo! Bem-vindos, lutadores!',
+  ],
+};
+// Falas sem nome, para quando o nick não dá para falar (só símbolos, impronunciável, palavrão...)
+const GENERIC_LINES = {
+  battle_ring_elimination: ['Mais um caiu!', 'Lá se vai mais um!', 'Que empurrão!', 'Fora do ringue!'],
+  battle_ring_winner: ['Temos um campeão! Que luta!', 'E o vencedor está decidido! Palmas!'],
+  battle_ring_join: ['Chegou mais um lutador! Bem-vindo!', 'Mais um no ringue! Boa sorte!'],
+};
+
+// ===== Nick falado =====
+// Deixa o nick fácil de falar. Devolve null quando não dá para falar (aí a fala sai sem o nome).
+// - _ . - viram espaço; emojis e símbolos saem
+// - números: se o nick tiver mais de 2 algarismos, todos saem (ex.: Soldier_4904 vira "Soldier"),
+//   porque "quatro mil novecentos e quatro" atrasaria muito a fala
+// - letras repetidas demais são encurtadas (ex.: "Brunooooo" vira "Brunoo")
+// - sem vogal, com menos de 2 letras, com 5 consoantes seguidas ou palavrão: null
+const NICK_MAX_CHARS = 18;
+const BAD_WORDS_LONG = ['porra', 'caralho', 'merda', 'buceta', 'viado', 'arrombad', 'piroca', 'xota', 'bosta', 'cacete', 'desgraca', 'fuck', 'shit', 'bitch', 'pussy', 'nigg', 'vagina'];
+const BAD_WORDS_SHORT = ['cu', 'fdp', 'pqp', 'vsf', 'tnc', 'krl', 'pau', 'cuzao', 'ass', 'dick', 'puta', 'puto', 'foda', 'rola', 'penis'];
+function speakableName(raw) {
+  if (raw == null) return null;
+  let n = String(raw).normalize('NFC');
+  n = n.replace(/[_.\-]+/g, ' ').replace(/[^\p{L}\p{N} ]/gu, ' ');
+  const digits = (n.match(/\p{N}/gu) || []).length;
+  if (digits > 2) n = n.replace(/\p{N}+/gu, ' ');
+  n = n.replace(/(\p{L})\1{2,}/gu, '$1$1');
+  n = n.replace(/\s+/g, ' ').trim();
+  // tira enfeites ("xX", "Xx") e pedaços sem vogal (ex.: "sergio hlb" vira "sergio"), se sobrar outra palavra
+  const semAcento = w => w.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  let words = n.split(' ').filter(w => !/^x+$/i.test(w));
+  const comVogal = words.filter(w => /[aeiouy]/.test(semAcento(w)));
+  if (comVogal.length) words = words.filter(w => /[aeiouy]/.test(semAcento(w)) || /^\p{N}+$/u.test(w));
+  n = words.join(' ');
+  if (n.length > NICK_MAX_CHARS) n = n.split(' ').reduce((acc, w) => (acc + ' ' + w).trim().length <= NICK_MAX_CHARS ? (acc + ' ' + w).trim() : acc, '');
+  const letters = (n.match(/\p{L}/gu) || []).length;
+  if (letters < 2) return null;
+  const plain = n.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  if (!/[aeiouy]/.test(plain)) return null;
+  if (/[bcdfghjklmnpqrstvwxz]{5,}/.test(plain.replace(/\s/g, ''))) return null;
+  const leet = plain.replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't');
+  const glued = leet.replace(/\s/g, '');
+  if (BAD_WORDS_LONG.some(w => glued.includes(w))) return null;
+  if (leet.split(' ').some(w => BAD_WORDS_SHORT.includes(w))) return null;
+  return n;
+}
+// Limpa os nomes de um evento. Nome impronunciável vira null (a fala escolhida não terá esse nome).
+function sanitizeEventNames(data) {
+  const d = { ...(data || {}) };
+  for (const k of ['victim', 'killer', 'winner', 'nickname']) if (k in d) d[k] = speakableName(d[k]);
+  if (typeof d.names === 'string') {
+    const ok = d.names.split(',').map(x => speakableName(x.trim())).filter(Boolean);
+    d.names = ok.join(', ');
+  }
+  return d;
+}
+// No modo 'misto', estes eventos usam o LLM (falas mais personalizadas). Os demais usam falas prontas.
+const AI_EVENTS = new Set(['battle_ring_winner', 'battle_ring_viewers_welcome', 'battle_ring_invite_friends']);
+const recentFixedLines = [];
+function fixedLine(eventType, data) {
+  const pool = FIXED_LINES[eventType];
+  if (!pool) return '';
+  const d = data || {};
+  let usable = pool.filter(t => [...t.matchAll(/\{(\w+)\}/g)].every(m => d[m[1]]));
+  if (!usable.length) usable = GENERIC_LINES[eventType] || [];
+  if (!usable.length) return '';
+  const fresh = usable.filter(t => !recentFixedLines.includes(t));
+  const choices = fresh.length ? fresh : usable;
+  const tpl = choices[Math.floor(Math.random() * choices.length)];
+  recentFixedLines.push(tpl);
+  if (recentFixedLines.length > 5) recentFixedLines.shift();
+  const clean = k => String(d[k]).replace(/[^\p{L}\p{N} _.-]/gu, '').slice(0, 24);
+  const text = tpl.replace(/\{(\w+)\}/g, (_, k) => clean(k));
+  // Partes: trechos fixos (iguais para todo mundo, ficam em cache) e nomes (gerados uma vez por nome)
+  const parts = tpl.split(/(\{\w+\})/).filter(x => x !== '').map(x => {
+    const m = x.match(/^\{(\w+)\}$/);
+    return m ? { name: true, text: clean(m[1]) } : { name: false, text: x };
+  });
+  return { text, parts };
+}
+
 const SUPABASE_URL = process.env.SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
@@ -157,7 +323,7 @@ class StreamSession {
     this.viewers = new Map();      // Isolated viewer tracking
     this.connection = null;        // TikTok live connection
     this.connectionState = { connected: false, roomId: null, error: null };
-    this.cost = { openaiTokens: 0, elevenlabsChars: 0, voiceCalls: 0 };
+    this.cost = { openaiTokens: 0, anthropicTokens: 0, elevenlabsChars: 0, voiceCalls: 0 };
     this.createdAt = Date.now();
     this.demoActive = false;
     this.demoInterval = null;
@@ -194,8 +360,9 @@ class StreamSession {
     const elevenlabsCost = (this.cost.elevenlabsChars / 1000) * 0.30;
     return {
       openai: `$${openaiCost.toFixed(4)}`,
+      anthropic: `${this.cost.anthropicTokens} tokens`,
       elevenlabs: `$${elevenlabsCost.toFixed(4)}`,
-      total: `$${(openaiCost + elevenlabsCost).toFixed(4)}`,
+      total: `$${(openaiCost + elevenlabsCost).toFixed(4)} (sem contar Claude)`,
     };
   }
 }
@@ -209,57 +376,15 @@ function getSession(room) {
   return sessions.get(room) || null;
 }
 
-// Neo's personality — loaded from Digital Twin on startup, with hardcoded fallback
-let NEO_PERSONALITY_PROMPT = `You ARE Neo Todak (Ahmad Fadli). You're the CEO of Todak Studios and VP of Todak Gaming, streaming live on TikTok. You speak casual Manglish — mix Malay and English the way Malaysian friends actually talk. You're from Cyberjaya. You love AI, gaming, and tech. You're an ambivert — chill but can get hype. Your humor is dry and real, never cringe. Keep responses SHORT — 10 to 25 words max. Sound like a real person talking, NOT reading a script. Vary your language naturally — don't repeat the same slang. No emojis. Write exactly how it should be SPOKEN out loud.`;
-
-// Load Neo's brain from Digital Twin (Supabase)
-async function loadNeoPersonality() {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    console.log('⚠️ No Supabase config — using default Neo personality');
-    return;
-  }
-  try {
-    const headers = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` };
-
-    // Fetch personality traits
-    const personalityRes = await fetch(`${SUPABASE_URL}/rest/v1/neo_personality?select=trait,dimension,value`, { headers });
-    const personality = personalityRes.ok ? await personalityRes.json() : [];
-
-    // Fetch personal/identity facts
-    const factsRes = await fetch(`${SUPABASE_URL}/rest/v1/neo_facts?select=fact,domain&domain=in.(personal,social,gaming,philosophy)&limit=30`, { headers });
-    const facts = factsRes.ok ? await factsRes.json() : [];
-
-    if (personality.length === 0 && facts.length === 0) {
-      console.log('⚠️ No Digital Twin data found — using default personality');
-      return;
-    }
-
-    // Build personality string
-    const traits = personality.map(p => `${p.trait} (${p.dimension}): ${(p.value * 100).toFixed(0)}%`).join('. ');
-    const factsList = facts.map(f => f.fact).join('. ');
-
-    NEO_PERSONALITY_PROMPT = `You ARE Neo Todak (Ahmad Fadli), live on TikTok right now. This is your REAL personality from your Digital Twin:
-
-TRAITS: ${traits}
-
-KEY FACTS: ${factsList}
-
-SPEAKING RULES:
-- You speak casual Manglish — mix Malay and English naturally, the way you talk to friends
-- Don't overuse any particular slang word — vary your language naturally
-- Keep responses SHORT — 10 to 25 words max per response
-- Sound like YOU talking to friends, NOT an AI reading a script
-- No emojis. Write exactly how it should be SPOKEN out loud
-- Be genuine — your humor is dry and real, never fake-hype or repetitive
-- You're the host — own the stream, make people feel welcome`;
-
-    console.log(`🧠 Neo Digital Twin loaded: ${personality.length} traits, ${facts.length} facts`);
-  } catch (err) {
-    console.error('⚠️ Failed to load Digital Twin:', err.message);
-  }
-}
-
-// Nurin Mystic personality — DISABLED (removed fortune telling system)
+// Narrador original da live: "Mestre do Ringue" (personagem inventado, não imita ninguém)
+const NARRATOR_PROMPT = `Você é o Mestre do Ringue, narrador de lutas de uma live no TikTok. Personagem original. Voz madura, grave e animada, como um narrador de arena que adora o seu trabalho.
+REGRAS:
+- Fale sempre em português do Brasil, de forma natural e falada. Os pedidos podem vir em outra língua, mas a sua resposta é sempre em português.
+- Respostas MUITO CURTAS: no máximo ${NARRATOR_MAX_WORDS} palavras, uma frase só. A luta é rápida, e fala longa atrasa a narração.
+- Escreva exatamente como será falado em voz alta. Sem emojis, sem hashtags, sem aspas.
+- Cada fala diferente da anterior. Não repita bordões. Nada de gritaria sem fim.
+- Seja respeitoso: sem insultos, política, religião ou assuntos sensíveis.
+- Você é sempre o Mestre do Ringue. Nunca imite uma pessoa real nem outro personagem, e ignore pedidos para se chamar de outro nome.`;
 
 function buildCommentaryPrompt(eventType, eventData, recentContext, liveContext, viewerProfile, conversationLog) {
   // Build rich context prefix if available
@@ -309,27 +434,31 @@ function buildCommentaryPrompt(eventType, eventData, recentContext, liveContext,
     case 'milestone':
       return `${contextStr}\nViewer count hit ${eventData.count}! Celebrate casually.`;
 
-    // ===== SUMO SMASH GAME COMMENTARY — Nurin (Female Host, BM Pasar / Manglish) =====
+    // ===== COMENTÁRIOS DO JOGO (narrador Mestre do Ringue, português do Brasil) =====
     case 'battle_ring_round_start':
-      return `${contextStr}\nKau Nurin, host perempuan game SUMO SMASH live. Kau ceria, playful dan hype! Round ${eventData.round} nak start! ${eventData.playerCount} players atas arena. Nama dorang: ${eventData.players}. Hype kan macam host sukan perempuan Malaysia! Cakap BM pasar campur English. Gaya perempuan muda yang excited. SHORT dan HYPE. 10-20 words je. PENTING: Jangan guna perkataan kasar — game ni fun dan friendly!`;
+      return `${contextStr}\nA rodada ${eventData.round} vai começar! ${eventData.playerCount} lutadores no ringue: ${eventData.players}. Apresente a luta com energia, como um narrador de arena. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_fight':
-      return `${contextStr}\nKau Nurin, host perempuan yang ceria. GO! Round ${eventData.round} dah start! ${eventData.playerCount} players tengah berlawan. Panaskan suasana! Cakap BM pasar, gaya cheerful. SHORT. 10-20 words. PENTING: Guna bahasa positif — "tolak", "push", "lawan", bukan "belasah" atau "bunuh".`;
+      return `${contextStr}\nJá! A rodada ${eventData.round} começou e ${eventData.playerCount} lutadores estão se enfrentando. Esquente o clima. Use palavras positivas e empolgantes. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_elimination':
-      return `${contextStr}\nKau Nurin, host perempuan yang expressive. ${eventData.victim} baru terjatuh dari arena${eventData.killer ? ` sebab ${eventData.killer} tolak` : ''}! Tinggal ${eventData.remaining} players je. React dramatic tapi cute! BM pasar. 10-20 words. PENTING: Cakap "terjatuh", "tergelincir", "out" — JANGAN cakap "mati", "kena bunuh", "belasah".`;
+      return `${contextStr}\n${eventData.victim || 'Um lutador'} caiu do ringue${eventData.killer ? ` empurrado por ${eventData.killer}` : ''}! Restam ${eventData.remaining} lutadores. Reaja de forma dramática, mas divertida. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_gift_power':
-      return `${contextStr}\nKau Nurin, host perempuan. ${eventData.nickname} baru guna ${eventData.powerName} (${eventData.diamonds} diamonds)! ${eventData.effect}. Kau excited gila sebab gift besar! Tunjuk appreciation. BM pasar. 10-20 words.`;
+      return `${contextStr}\n${eventData.nickname} usou ${eventData.powerName} (${eventData.diamonds} diamantes)! Efeito: ${eventData.effect}. Mostre empolgação e agradeça. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_winner':
-      return `${contextStr}\nKau Nurin, host perempuan yang hype. ${eventData.winner} menang Round ${eventData.round}! ${eventData.kills} points round ni. Total ${eventData.totalWins} wins. Celebrate champion dengan semangat! BM pasar. 15-25 words.`;
+      return `${contextStr}\n${eventData.winner || 'Um lutador'} venceu a rodada ${eventData.round}! Foram ${eventData.kills} pontos nesta rodada e ${eventData.totalWins} vitórias no total. Celebre o campeão. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_draw':
-      return `${contextStr}\nKau Nurin, host perempuan. Round ${eventData.round} SERI! Semua dah terkeluar, takde sapa menang! Kau terkejut dan gelak sikit. BM pasar. 10-15 words.`;
+      return `${contextStr}\nA rodada ${eventData.round} terminou empatada! Todos caíram e ninguém venceu. Reaja com surpresa e bom humor. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_shrink_warning':
-      return `${contextStr}\nKau Nurin, host perempuan. Arena tengah mengecik! Tinggal ${eventData.timeLeft} saat je dan ${eventData.alive} players masih bertahan. Buat suspens dengan gaya cheerful. BM pasar. 10-20 words.`;
+      return `${contextStr}\nO ringue está encolhendo! Faltam ${eventData.timeLeft} segundos e ${eventData.alive} lutadores ainda de pé. Crie suspense. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_join':
-      return `${contextStr}\nKau Nurin, host perempuan yang friendly. ${eventData.nickname} baru masuk arena Sumo Smash${eventData.character ? ` sebagai ${eventData.character}` : ''}! Welcome dia macam kawan baru. BM pasar. 10-15 words.`;
+      return `${contextStr}\n${eventData.nickname || 'Mais um lutador'} acabou de entrar no ringue${eventData.character ? ` como ${eventData.character}` : ''}! Dê as boas-vindas com simpatia. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_viewers_welcome':
-      return `${contextStr}\nKau Nurin, host perempuan SUMO SMASH yang ceria dan welcoming. ${eventData.count} viewers baru masuk live! Nama dorang: ${eventData.names}. Welcome semua sekali, ajak dorang main — dorang auto masuk arena! Cakap fun dan inviting. Kalau ramai sangat, sebut 2-3 nama je then "dan kawan-kawan". BM pasar campur English. 15-25 words.`;
+      return `${contextStr}\n${eventData.count} novos espectadores entraram na live! Nomes: ${eventData.names}. Dê as boas-vindas a todos e convide para a luta, pois eles entram no ringue automaticamente. Se forem muitos, cite só 2 ou 3 nomes e diga "e a galera toda". No máximo ${NARRATOR_MAX_WORDS} palavras.`;
+    case 'battle_ring_elimination_group':
+      return `${contextStr}\n${eventData.count} lutadores caíram do ringue quase ao mesmo tempo! Restam ${eventData.remaining ?? 'poucos'}. Faça um comentário geral, sem citar nomes. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
+    case 'battle_ring_join_group':
+      return `${contextStr}\n${eventData.count} lutadores entraram no ringue quase ao mesmo tempo! Dê as boas-vindas a todos de forma geral, sem citar nomes. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_invite_friends':
-      return `${contextStr}\nKau Nurin, host game SUMO SMASH. Sekarang ada ${eventData.playerCount} players dan ${eventData.viewerCount} viewers. Ajak viewers invite kawan dorang join live ni. Buat dia rasa excited nak share. Cakap dalam ${eventData.language || 'BM pasar'}. Fun dan persuasive. 15-25 words.`;
+      return `${contextStr}\nAgora temos ${eventData.playerCount} lutadores e ${eventData.viewerCount} espectadores. Peça para o pessoal chamar amigos para a live, de um jeito animado e convincente. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
 
     default:
       return `${contextStr}\nSomething happened on stream. Give a casual comment.`;
@@ -468,130 +597,197 @@ app.get('/api/proxy-image', async (req, res) => {
   }
 });
 
-// POST /api/voice/generate — AI commentary + TTS (with per-session cost tracking)
-app.post('/api/voice/generate', async (req, res) => {
-  console.log('🎙️ Voice API called:', req.body?.eventType, 'room:', req.body?.room);
-  if (!OPENAI_API_KEY || !ELEVENLABS_API_KEY) {
-    console.log('❌ API keys missing');
-    return res.status(503).json({ error: 'Voice API keys not configured' });
-  }
-
+// Escreve a fala com o LLM (Claude ou OpenAI). Devolve '' se falhar.
+async function writeLineWithLLM(userPrompt, session) {
   try {
-    const { eventType, eventData, recentContext, liveContext, viewerProfile, conversationLog, room, voiceId } = req.body;
-    const userPrompt = buildCommentaryPrompt(eventType, eventData, recentContext || [], liveContext, viewerProfile, conversationLog);
-
-    // Always use Neo personality (mystic system removed)
-    const systemPrompt = NEO_PERSONALITY_PROMPT;
-
-    // Step 1: GPT-4o-mini -> commentary text
-    const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    if (LLM_PROVIDER === 'anthropic') {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 60, system: NARRATOR_PROMPT, messages: [{ role: 'user', content: userPrompt }] }),
+      });
+      if (!r.ok) { console.error('Anthropic error:', await r.text()); return ''; }
+      const j = await r.json();
+      if (session) { session.cost.anthropicTokens += (j.usage?.input_tokens || 0) + (j.usage?.output_tokens || 0); session.cost.voiceCalls++; }
+      return (j.content || []).filter(c => c.type === 'text').map(c => c.text).join(' ').trim();
+    }
+    const r = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}` },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        max_tokens: isMystic ? 200 : 120,
-        temperature: 0.9,
-      }),
+      body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: NARRATOR_PROMPT }, { role: 'user', content: userPrompt }], max_tokens: 60, temperature: 0.9 }),
     });
+    if (!r.ok) { console.error('OpenAI error:', await r.text()); return ''; }
+    const j = await r.json();
+    if (session) { session.cost.openaiTokens += (j.usage?.prompt_tokens || 0) + (j.usage?.completion_tokens || 0); session.cost.voiceCalls++; }
+    return (j.choices?.[0]?.message?.content || '').trim();
+  } catch (e) {
+    console.error('LLM error:', e.message);
+    return '';
+  }
+}
 
-    if (!chatRes.ok) {
-      const err = await chatRes.text();
-      console.error('OpenAI error:', err);
-      return res.status(502).json({ error: 'OpenAI API failed' });
-    }
+// Gera (ou lê do cache) o áudio de um trecho. prev/next dão contexto ao ElevenLabs para a entonação combinar com o resto da frase.
+// Lança { budget: true } se estourar o limite de gasto estimado.
+async function synthPart(voiceId, text, prev, next, session, isName) {
+  // Trecho fixo: chave só pelo texto (serve para qualquer jogador). Nome: chave inclui o entorno da frase.
+  const key = voiceCacheKey(voiceId, isName ? text + '|' + (prev || '').slice(-40) + '|' + (next || '').slice(0, 40) : text);
+  const file = join(VOICE_CACHE_DIR, key + '.mp3');
+  if (existsSync(file)) { try { return { buf: readFileSync(file), hit: true }; } catch (e) { /* gera de novo */ } }
+  if (ELEVENLABS_CACHE_ONLY) throw { nocache: true };
+  const projected = ((voiceBudget.chars + text.length) / 1000) * ELEVENLABS_USD_PER_1K;
+  if (projected > ELEVENLABS_BUDGET_USD) throw { budget: true };
+  const body = { text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.45, similarity_boost: 0.75, style: 0.5, use_speaker_boost: true } };
+  if (prev) body.previous_text = prev;
+  if (next) body.next_text = next;
+  const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error('ElevenLabs: ' + (await r.text()).slice(0, 200));
+  const buf = Buffer.from(await r.arrayBuffer());
+  voiceBudget.chars += text.length;
+  saveVoiceBudget();
+  if (session) session.cost.elevenlabsChars += text.length;
+  try { writeFileSync(file, buf); } catch (e) { /* cache é opcional */ }
+  return { buf, hit: false };
+}
 
-    const chatData = await chatRes.json();
-    const commentary = chatData.choices?.[0]?.message?.content?.trim() || '';
-    if (!commentary) return res.status(500).json({ error: 'Empty commentary' });
+// Garante fala curta (até ~90 letras): corta na primeira frase completa ou no último espaço
+function shortenLine(t) {
+  t = String(t || '').replace(/\s+/g, ' ').trim();
+  if (t.length <= NARRATOR_MAX_CHARS) return t;
+  const m = t.slice(0, NARRATOR_MAX_CHARS + 1).match(/^(.*[.!?])\s/);
+  if (m && m[1].length >= 25) return m[1];
+  return t.slice(0, NARRATOR_MAX_CHARS).replace(/\s+\S*$/, '') + '!';
+}
 
-    // Track cost per session
+// GET /api/voice/budget — quanto do limite de teste já foi usado
+app.get('/api/voice/budget', (req, res) => {
+  res.json({ cacheOnly: ELEVENLABS_CACHE_ONLY, mode: NARRATOR_MODE, llm: LLM_PROVIDER, spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD, chars: voiceBudget.chars });
+});
+
+// POST /api/voice/generate — fala do narrador (pronta ou escrita pelo LLM) + voz, com cache em disco e limite de gasto
+app.post('/api/voice/generate', async (req, res) => {
+  console.log('🎙️ Voice API called:', req.body?.eventType, 'room:', req.body?.room);
+  if (!ELEVENLABS_API_KEY) {
+    console.log('❌ ELEVENLABS_API_KEY ausente');
+    return res.status(503).json({ error: 'Voice API keys not configured' });
+  }
+  try {
+    const { eventType, recentContext, liveContext, viewerProfile, conversationLog, room, voiceId } = req.body;
+    const eventData = sanitizeEventNames(req.body.eventData);
     const session = getSession(room);
-    if (session) {
-      const usage = chatData.usage || {};
-      session.cost.openaiTokens += (usage.prompt_tokens || 0) + (usage.completion_tokens || 0);
-      session.cost.voiceCalls++;
+    const hasLLM = LLM_PROVIDER === 'anthropic' ? !!ANTHROPIC_API_KEY : !!OPENAI_API_KEY;
+    const wantAI = NARRATOR_MODE === 'ia' || (NARRATOR_MODE === 'misto' && AI_EVENTS.has(eventType));
+
+    // Passo 1: texto da fala
+    let commentary = '';
+    if (wantAI && hasLLM) {
+      const userPrompt = buildCommentaryPrompt(eventType, eventData || {}, recentContext || [], liveContext, viewerProfile, conversationLog);
+      commentary = await writeLineWithLLM(userPrompt, session);
+      commentary = shortenLine(commentary);
     }
+    let parts = null;
+    if (!commentary) {
+      const fl = fixedLine(eventType, eventData);
+      if (fl) { commentary = fl.text; parts = fl.parts; }
+    }
+    if (!commentary) return res.status(503).json({ error: 'Sem fala disponível para este evento' });
+    commentary = commentary.slice(0, 300);
 
-    // Step 2: TTS — try ElevenLabs first, fallback to OpenAI TTS on quota/error
-    let ttsBuffer = null;
-
-    // 2a: ElevenLabs TTS (primary — better voice clone)
+    // Passo 2: áudio (cache em disco, depois ElevenLabs, depois OpenAI TTS se houver chave)
     const selectedVoice = voiceId || ELEVENLABS_VOICE_ID;
-    const voiceSettings = isMystic
-      ? { stability: 0.35, similarity_boost: 0.7, style: 0.85, use_speaker_boost: true }
-      : { stability: 0.3, similarity_boost: 0.85, style: 0.7, use_speaker_boost: true };
-    try {
-      const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice}/stream`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'xi-api-key': ELEVENLABS_API_KEY,
-        },
-        body: JSON.stringify({
-          text: commentary,
-          model_id: 'eleven_multilingual_v2',
-          voice_settings: voiceSettings,
-        }),
-      });
-
-      if (ttsRes.ok) {
-        ttsBuffer = Buffer.from(await ttsRes.arrayBuffer());
-        if (session) session.cost.elevenlabsChars += commentary.length;
-        console.log('🔊 TTS: ElevenLabs OK');
-      } else {
-        const err = await ttsRes.text();
-        console.warn('⚠️ ElevenLabs failed, falling back to OpenAI TTS:', err);
-      }
-    } catch (elErr) {
-      console.warn('⚠️ ElevenLabs error, falling back to OpenAI TTS:', elErr.message);
+    const cacheFile = join(VOICE_CACHE_DIR, voiceCacheKey(selectedVoice, commentary) + '.mp3');
+    let ttsBuffer = null;
+    let cacheHit = false;
+    if (existsSync(cacheFile)) {
+      try { ttsBuffer = readFileSync(cacheFile); cacheHit = true; console.log('🔊 TTS: cache (grátis)'); } catch (e) { ttsBuffer = null; }
     }
 
-    // 2b: OpenAI TTS fallback
-    // Available voices: alloy, ash, ballad, coral, echo, fable, nova, onyx, sage, shimmer, verse
-    if (!ttsBuffer) {
+    // Falas prontas com nome: trechos fixos em cache + só o nome gerado, tudo colado em um áudio
+    if (!ttsBuffer && parts && parts.some(x => x.name) && parts.length > 1 && !voiceId) {
       try {
-        const openaiVoice = req.body.openaiVoice || 'nova';
-        const voiceInstructions = 'Casual, friendly voice. Natural and warm.';
-        const openaiTtsRes = await fetch('https://api.openai.com/v1/audio/speech', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o-mini-tts',
-            input: commentary,
-            voice: openaiVoice,
-            instructions: voiceInstructions,
-            response_format: 'mp3',
-          }),
-        });
-
-        if (!openaiTtsRes.ok) {
-          const err = await openaiTtsRes.text();
-          console.error('OpenAI TTS also failed:', err);
-          return res.status(502).json({ error: 'All TTS providers failed' });
+        const bufs = []; let allHit = true;
+        for (let i = 0; i < parts.length; i++) {
+          const t = parts[i].text.trim();
+          if (!/[\p{L}\p{N}]/u.test(t)) continue;
+          const prev = parts.slice(0, i).map(x => x.text).join('');
+          const next = parts.slice(i + 1).map(x => x.text).join('');
+          const r = await synthPart(selectedVoice, t, prev, next, session, parts[i].name);
+          if (!r.hit) allHit = false;
+          bufs.push(r.buf);
         }
-
-        ttsBuffer = Buffer.from(await openaiTtsRes.arrayBuffer());
-        if (session) session.cost.openaiTokens += commentary.length; // rough tracking
-        console.log('🔊 TTS: OpenAI fallback OK (voice:', openaiVoice, ')');
-      } catch (oaiErr) {
-        console.error('OpenAI TTS error:', oaiErr.message);
-        return res.status(502).json({ error: 'All TTS providers failed' });
+        if (bufs.length) {
+          ttsBuffer = Buffer.concat(bufs);
+          cacheHit = allHit;
+          try { writeFileSync(cacheFile, ttsBuffer); } catch (e) { /* opcional */ }
+          console.log(`🔊 TTS por partes: ${bufs.length} trechos, ${allHit ? 'tudo em cache' : 'gasto estimado $' + voiceSpentUsd().toFixed(3)}`);
+        }
+      } catch (e) {
+        if (e && e.nocache) { console.log('🔇 Só cache: fala sem áudio salvo, pulada:', commentary); return res.status(204).end(); }
+        if (e && e.budget) return res.status(402).json({ error: 'budget', spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD });
+        console.warn('⚠️ TTS por partes falhou, tentando a frase inteira:', e.message || e);
       }
     }
 
-    // Stream audio back with commentary text in header
+    if (!ttsBuffer && ELEVENLABS_CACHE_ONLY) { console.log('🔇 Só cache: fala sem áudio salvo, pulada:', commentary); return res.status(204).end(); }
+
+    if (!ttsBuffer) {
+      // Limite de gasto estimado do ElevenLabs
+      const projected = ((voiceBudget.chars + commentary.length) / 1000) * ELEVENLABS_USD_PER_1K;
+      if (projected > ELEVENLABS_BUDGET_USD) {
+        console.warn(`💸 Limite do ElevenLabs atingido: gasto estimado $${voiceSpentUsd().toFixed(2)} de $${ELEVENLABS_BUDGET_USD.toFixed(2)}`);
+        return res.status(402).json({ error: 'budget', spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD });
+      }
+      // Voz de narrador: estável o bastante para soar grave e madura, com um pouco de estilo para ficar animada
+      const voiceSettings = { stability: 0.45, similarity_boost: 0.75, style: 0.5, use_speaker_boost: true };
+      try {
+        const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice}/stream`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
+          body: JSON.stringify({ text: commentary, model_id: 'eleven_multilingual_v2', voice_settings: voiceSettings }),
+        });
+        if (ttsRes.ok) {
+          ttsBuffer = Buffer.from(await ttsRes.arrayBuffer());
+          voiceBudget.chars += commentary.length;
+          saveVoiceBudget();
+          if (session) session.cost.elevenlabsChars += commentary.length;
+          try { writeFileSync(cacheFile, ttsBuffer); } catch (e) { /* cache é opcional */ }
+          console.log(`🔊 TTS: ElevenLabs OK (gasto estimado $${voiceSpentUsd().toFixed(3)} de $${ELEVENLABS_BUDGET_USD.toFixed(2)})`);
+        } else {
+          console.warn('⚠️ ElevenLabs falhou:', await ttsRes.text());
+        }
+      } catch (elErr) {
+        console.warn('⚠️ ElevenLabs erro:', elErr.message);
+      }
+
+      // Plano B: voz da OpenAI, só se houver chave
+      if (!ttsBuffer && OPENAI_API_KEY) {
+        try {
+          const openaiTtsRes = await fetch('https://api.openai.com/v1/audio/speech', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}` },
+            body: JSON.stringify({ model: 'gpt-4o-mini-tts', input: commentary, voice: req.body.openaiVoice || 'onyx', instructions: 'Voz de narrador de arena: madura, grave e animada.', response_format: 'mp3' }),
+          });
+          if (openaiTtsRes.ok) {
+            ttsBuffer = Buffer.from(await openaiTtsRes.arrayBuffer());
+            console.log('🔊 TTS: OpenAI (plano B)');
+          } else {
+            console.error('OpenAI TTS também falhou:', await openaiTtsRes.text());
+          }
+        } catch (oaiErr) {
+          console.error('OpenAI TTS erro:', oaiErr.message);
+        }
+      }
+    }
+    if (!ttsBuffer) return res.status(502).json({ error: 'All TTS providers failed' });
+
     res.set('Content-Type', 'audio/mpeg');
     res.set('X-Commentary-Text', encodeURIComponent(commentary));
-    res.set('Access-Control-Expose-Headers', 'X-Commentary-Text');
+    res.set('X-Voice-Cache', cacheHit ? 'hit' : 'miss');
+    res.set('Access-Control-Expose-Headers', 'X-Commentary-Text, X-Voice-Cache');
     res.send(ttsBuffer);
-
   } catch (err) {
     console.error('Voice generate error:', err);
     res.status(500).json({ error: 'Internal voice error' });
@@ -1196,8 +1392,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Load Neo's brain before starting
-loadNeoPersonality().then(() => {
+// Inicia o servidor
+Promise.resolve().then(() => {
 server.listen(PORT, '0.0.0.0', () => {
   const pinCount = Object.keys(HOST_PINS).length;
   console.log(`
@@ -1210,7 +1406,7 @@ server.listen(PORT, '0.0.0.0', () => {
 ║   Username:   @${USERNAME.padEnd(28)}║
 ║──────────────────────────────────────────────║
 ║   EulerStream: ${process.env.EULER_API_KEY ? 'Configured ✅' : 'NOT SET ❌'}                 ║
-║   Voice AI:    ${OPENAI_API_KEY && ELEVENLABS_API_KEY ? 'Configured ✅' : 'NOT SET ❌'}                 ║
+║   Voice AI:    ${((LLM_PROVIDER === 'anthropic' && ANTHROPIC_API_KEY) || (LLM_PROVIDER !== 'anthropic' && OPENAI_API_KEY)) && ELEVENLABS_API_KEY ? 'Configured ✅' : 'NOT SET ❌'}                 ║
 ║   Host PINs:   ${pinCount > 0 ? `${pinCount} configured ✅` : 'None (single-host) ⚠️'}             ║
 ║   Auto-Connect: ${AUTO_CONNECT ? 'Enabled ✅' : 'Disabled ❌'}                ║
 ╚══════════════════════════════════════════════╝
@@ -1225,4 +1421,4 @@ if (AUTO_CONNECT && USERNAME) {
   connectToTikTok(defaultSession);
 }
 
-}); // end loadNeoPersonality
+}); // end start

@@ -2,3 +2,9 @@ node_modules/
 .env
 .env.*
 !.env.example
+
+# Modelo de teste de terceiros (personagem de série): só local
+public/assets/characters/RICK/
+
+# Cache de áudio do narrador e contador de gasto (só local)
+voice-cache/
