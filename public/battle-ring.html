@@ -192,9 +192,9 @@
     <!-- Loading Screen -->
     <div id="loadingScreen">
       <h1>BATTLE RING</h1>
-      <div class="subtitle">Dorong mereka keluar dari arena!</div>
+      <div class="subtitle">Empurre todo mundo para fora da arena!</div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      <div id="loadingText">Memuat aset...</div>
+      <div id="loadingText">Carregando...</div>
     </div>
 
     <!-- HUD -->
@@ -202,14 +202,14 @@
       <div class="top-pill live">
         <div class="live-dot"></div>
         <span id="playerCount">0</span>
-        <span class="label">players</span>
+        <span class="label">jogadores</span>
       </div>
       <div class="top-center">
-        <div class="round-pill" id="roundInfo">MENUNGGU</div>
+        <div class="round-pill" id="roundInfo">AGUARDANDO</div>
         <div class="timer-pill" id="roundTimer">--</div>
       </div>
       <div class="top-pill">
-        <span class="label">alive</span>
+        <span class="label">vivos</span>
         <span id="aliveCount">0</span>
       </div>
       <button id="dashboardBtn" class="top-pill dashboard-btn" style="cursor:pointer;transition:all 0.2s;pointer-events:auto;z-index:9999;border:1px solid rgba(37,244,238,0.4);position:relative;padding:5px 8px;" title="Dashboard">
@@ -227,13 +227,13 @@
         </svg>
       </button>
       <div id="connectPopup" onclick="event.stopPropagation()" style="display:none;position:fixed;top:50px;right:12px;z-index:99999;pointer-events:auto;;background:rgba(0,0,0,0.9);border:1px solid rgba(0,255,136,0.4);border-radius:12px;padding:16px;min-width:220px;backdrop-filter:blur(10px);">
-        <div style="color:#fff;font-size:14px;font-weight:600;margin-bottom:12px;">Connect TikTok</div>
+        <div style="color:#fff;font-size:14px;font-weight:600;margin-bottom:12px;">Conectar ao TikTok</div>
         <div style="display:flex;gap:8px;align-items:center;">
           <span style="color:#888;font-size:16px;">@</span>
           <input type="text" id="connectUsername" placeholder="username" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:8px 10px;color:#fff;font-size:14px;outline:none;">
         </div>
         <div style="display:flex;gap:8px;margin-top:12px;">
-          <button onclick="event.stopPropagation(); connectFromGame()" style="flex:1;background:rgba(0,255,136,0.2);border:1px solid rgba(0,255,136,0.4);border-radius:6px;padding:8px;color:#00ff88;font-size:13px;font-weight:600;cursor:pointer;">Connect</button>
+          <button onclick="event.stopPropagation(); connectFromGame()" style="flex:1;background:rgba(0,255,136,0.2);border:1px solid rgba(0,255,136,0.4);border-radius:6px;padding:8px;color:#00ff88;font-size:13px;font-weight:600;cursor:pointer;">Conectar</button>
           <button onclick="event.stopPropagation(); toggleConnectPopup()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:8px 12px;color:#888;font-size:13px;cursor:pointer;">✕</button>
         </div>
         <div id="connectStatus" style="margin-top:8px;font-size:13px;color:#888;text-align:center;"></div>
@@ -242,7 +242,7 @@
 
     <!-- Leaderboard -->
     <div id="leaderboard">
-      <div class="lb-title">Wins / Points</div>
+      <div class="lb-title">Vitórias / Pontos</div>
       <div id="lbRows"></div>
     </div>
 
@@ -259,43 +259,43 @@
     <div id="guidePanel">
       <div class="guide-item" style="border-color: rgba(68,255,68,0.4); background: rgba(68,255,68,0.15);">
         <div class="guide-icon">🎮</div>
-        <div><div class="guide-label" style="color:#44ff44;">AUTO JOIN</div><div class="guide-desc">enter live = play!</div></div>
+        <div><div class="guide-label" style="color:#44ff44;">AUTO JOIN</div><div class="guide-desc">entrou na live = joga!</div></div>
       </div>
       <div class="guide-item">
         <div class="guide-icon">❤️</div>
-        <div><div class="guide-label">LIKE</div><div class="guide-desc">DORONG Super!</div></div>
+        <div><div class="guide-label">LIKE</div><div class="guide-desc">Empurrão forte!</div></div>
       </div>
       <div class="guide-item">
         <div class="guide-icon">💬</div>
-        <div><div class="guide-label">CHAT</div><div class="guide-desc">Hindar!</div></div>
+        <div><div class="guide-label">CHAT</div><div class="guide-desc">Esquiva!</div></div>
       </div>
       <div class="guide-item">
         <div class="guide-icon">➕</div>
-        <div><div class="guide-label">FOLLOW</div><div class="guide-desc">+Kekuatan</div></div>
+        <div><div class="guide-label">FOLLOW</div><div class="guide-desc">+Força</div></div>
       </div>
       <div class="guide-item">
         <div class="guide-icon">🔄</div>
-        <div><div class="guide-label">SHARE</div><div class="guide-desc">Perisai</div></div>
+        <div><div class="guide-label">SHARE</div><div class="guide-desc">Escudo</div></div>
       </div>
       <div class="guide-divider"></div>
       <div class="guide-gift">
-        <span class="g-emoji">🌹</span><span class="g-label">= Power Up</span>
+        <span class="g-emoji">🌹</span><span class="g-label">= Força extra</span>
       </div>
       <div class="guide-gift">
-        <span class="g-emoji">🍩</span><span class="g-label">= Slam</span>
+        <span class="g-emoji">🍩</span><span class="g-label">= Pancada</span>
       </div>
       <div class="guide-gift">
-        <span class="g-emoji">🦁</span><span class="g-label">= Shockwave</span>
+        <span class="g-emoji">🦁</span><span class="g-label">= Onda de choque</span>
       </div>
       <div class="guide-gift">
-        <span class="g-emoji">🐋</span><span class="g-label">= Meteor!</span>
+        <span class="g-emoji">🐋</span><span class="g-label">= Meteoro!</span>
       </div>
     </div>
 
     <!-- Voice Commentary Indicator -->
     <div id="voiceIndicator" style="display:none; position:absolute; bottom:12px; left:50%; transform:translateX(-50%); z-index:50; background:rgba(0,0,0,0.7); border:1px solid #ec4899; border-radius:20px; padding:6px 14px; font-size:12px; color:#ec4899; pointer-events:none; white-space:nowrap;">
       <span id="voiceSpeakerIcon" style="margin-right:4px;">🎙️</span>
-      <span id="voiceStatusText">Voice Ready</span>
+      <span id="voiceStatusText">Narrador pronto</span>
     </div>
 
     <!-- Voice Commentary Text (shows what AI is saying) -->
@@ -345,6 +345,7 @@
     <div class="debug-title" style="margin-top:8px;">VOZES DO NAVEGADOR</div>
     <button class="dbtn" id="ttsToggleBtn" onclick="toggleTTS()" style="border-left:3px solid #ff8800;">Announcer: ON</button>
     <button class="dbtn" onclick="testAnnouncer()" style="border-left:3px solid #ff8800;">Testar anunciante</button>
+    <button class="dbtn" id="banterToggleBtn" onclick="toggleBanter()" style="border-left:3px solid #ff8800;">Conversa dos lutadores: OFF</button>
   </div>
   <style>
     #debugPanel {
@@ -474,7 +475,9 @@ const MESHY_CHARACTERS = [
       dodge: 2.2, block: 2.6, spin: 4.0, tantrum: 5.0, kick: 1.6, groundslam: 3.3
     }
   },
-  { id: 'Soldier', path: '/assets/characters/Soldier/Soldier.glb', animMap: { 'Idle': 'idle', 'Walk': 'walk', 'Run': 'run', 'TPose': 'punch', 'Idle': 'hit', 'Idle': 'death', 'Idle': 'dance', 'Idle': 'slam', 'Idle': 'dodge', 'Idle': 'block', 'Idle': 'spin', 'Idle': 'tantrum', 'Idle': 'kick', 'Idle': 'groundslam' }, animDurations: { punch: 2.0, hit: 2.0, death: 2.0, dance: 2.0, slam: 2.0, dodge: 2.0, block: 2.0, spin: 2.0, tantrum: 2.0, kick: 2.0, groundslam: 2.0 } },
+  // Soldier (modelo de exemplo): só tem as animações Idle, Walk e Run. Sem soco, usa o "parado".
+  // yawOffset: este modelo foi feito olhando para o lado oposto dos outros, por isso gira 180°.
+  { id: 'Soldier', path: '/assets/characters/Soldier/Soldier.glb', yawOffset: Math.PI, animMap: { 'Idle': 'idle', 'Walk': 'walk', 'Run': 'run' }, animDurations: { punch: 1.0, hit: 1.0, death: 1.0, dance: 2.0, slam: 1.0, dodge: 1.0, block: 1.0, spin: 1.0, tantrum: 1.0, kick: 1.0, groundslam: 1.0 } },
   {
     id: 'RICK', // TESTE local: o arquivo Rick.glb NÃO vai no GitHub (personagem de série). Se não existir, o jogo ignora este item.
     path: '/assets/characters/RICK/Rick.glb',
@@ -1188,7 +1191,7 @@ async function loadAssets() {
   for (const mc of MESHY_CHARACTERS) {
     try {
       const gltf = await loader.loadAsync(mc.path);
-      meshyTemplates[mc.id] = { path: mc.path, preloaded: true, animMap: mc.animMap, animDurations: mc.animDurations || {} };
+      meshyTemplates[mc.id] = { path: mc.path, preloaded: true, animMap: mc.animMap, animDurations: mc.animDurations || {}, yawOffset: mc.yawOffset || 0 };
       updateProgress(`${mc.id} (${gltf.animations.length} anims: ${gltf.animations.map(a => a.name).join(', ')})`);
       console.log(`Meshy ${mc.id} preloaded OK — ${gltf.animations.length} animations`);
     } catch (e) { console.warn(`Meshy ${mc.id} failed:`, e.message); loaded++; }
@@ -1208,29 +1211,21 @@ let botsEnabled = false;
 let botRespawnCount = 0;
 let botsReady = false;
 const BOT_NAMES = [
-  // Nama Indonesia populer
-  'Budi', 'Andi', 'Sari', 'Rizky', 'Putri', 'Agus', 'Rina', 'Dimas', 'Lestari',
-  'Bayu', 'Citra', 'Eka', 'Fitri', 'Gilang', 'Hana', 'Irfan', 'Joko', 'Kartika', 'Lukman',
-  'Maya', 'Nanda', 'Oscar', 'Putra', 'Qori', 'Sinta', 'Tono', 'Ulya', 'Vina',
-  'Wawan', 'Xena', 'Yoga', 'Zahra', 'Aldi', 'Bella', 'Cahya', 'Danu', 'Fajar',
-  'Gita', 'Hadi', 'Indra', 'Jihan', 'Kurnia', 'Lia', 'Mega', 'Nia', 'Omar', 'Prita',
-  // Nama tambahan Indonesia
-  'Adit', 'Bima', 'Citra', 'Deni', 'Eko', 'Fina', 'Gilang', 'Hendra', 'Imam', 'Jarwo',
-  'Kevin', 'Laras', 'Melati', 'Niko', 'Owi', 'Putri', 'Rahmat', 'Salsa', 'Tari', 'Udin',
-  'Vino', 'Wati', 'Yanti', 'Zidan', 'Amel', 'Bram', 'Cakra', 'Dian', 'Ervan', 'Farhan',
-  'Ghina', 'Hana', 'Ica', 'Jaka', 'Kania', 'Leo', 'Mega', 'Nabil', 'Opik', 'Putra',
-  // Nama panggilan/gaul
-  'Abe', 'Bowo', 'Coki', 'Dede', 'Emon', 'Fafa', 'Gugun', 'Hengky', 'Iwan', 'Jeki',
-  'Koko', 'Luki', 'Memet', 'Nopal', 'Ojon', 'Pepeng', 'Rian', 'Sultan', 'Tegar', 'Ucok',
-  'Vicky', 'Wira', 'Yusuf', 'Zaki', 'Aji', 'Beni', 'Candra', 'Dwiki', 'Erik', 'Fadli',
-  'Gerry', 'Heri', 'Ilham', 'Joni', 'Kiki', 'Lutfi', 'Maman', 'Nando', 'Opung', 'Pandu',
-  // Nama karakter/fun
-  'Raja_Banteng', 'Ratu_Lebah', 'Si_Ganteng', 'Si_Cantik', 'Jagoan_Kampung',
-  'Pemain_Pro', 'Master_Gaming', 'Sultan_Battle', 'Raja_Arena', 'Dewa_Fight',
-  'Pahlawan', 'Penantang', 'Petarung', 'Juara', 'Legenda',
-  'Ksatria_Hitam', 'Naga_Api', 'Elang_Laut', 'Harimau_Sumatra', 'Gajah_Perkasa',
-  'Serigala_Malam', 'Rajawali_Emas', 'Macan_Tutul', 'Burung_Garuda', 'Kuda_Lumping',
-  'Si_Badak', 'Kapten_Arena', 'Ratu_Selatan', 'Pangeran_Timur', 'Putri_Barat'
+  // Nomes brasileiros comuns
+  'Ana', 'Bruno', 'Carla', 'Diego', 'Eduarda', 'Felipe', 'Gabriela', 'Henrique', 'Isabela',
+  'João', 'Karina', 'Lucas', 'Mariana', 'Nicolas', 'Olívia', 'Pedro', 'Rafaela', 'Samuel',
+  'Tatiane', 'Vinícius', 'Yasmin', 'Arthur', 'Beatriz', 'Caio', 'Daniela', 'Enzo', 'Fernanda',
+  'Gustavo', 'Helena', 'Igor', 'Júlia', 'Larissa', 'Matheus', 'Natália', 'Otávio', 'Paula',
+  'Rodrigo', 'Sofia', 'Thiago', 'Valentina', 'Wesley', 'Alice', 'Breno', 'Camila', 'Davi',
+  'Elisa', 'Fábio', 'Giovana', 'Hugo', 'Ingrid', 'Juliano', 'Lívia', 'Marcelo', 'Nina',
+  // Apelidos
+  'Biel', 'Duda', 'Gui', 'Juju', 'Lelê', 'Malu', 'Nando', 'Rafa', 'Tavinho', 'Zé',
+  'Bia', 'Cadu', 'Dani', 'Fefe', 'Gabi', 'Lulu', 'Mari', 'Pepê', 'Teté', 'Vivi',
+  // Nomes de lutador
+  'Rei_da_Arena', 'Rainha_do_Ringue', 'Fera_Brava', 'Trovão', 'Tufão',
+  'Jogador_Pro', 'Mestre_dos_Games', 'Lenda_Viva', 'Campeão', 'Desafiante',
+  'Cavaleiro_Negro', 'Dragão_de_Fogo', 'Águia_Dourada', 'Onça_Pintada', 'Touro_Bravo',
+  'Lobo_da_Noite', 'Tubarão', 'Jacaré_Valente', 'Capitão_Arena', 'Furacão'
 ];
 let botCount = 0;
 let roundTimer = 0;
@@ -1249,10 +1244,10 @@ function setRoundState(state) {
       botsEnabled = false; // Reset supaya bot bisa spawn lagi
       botsReady = false;
       botRespawnCount = 0; // Reset respawn counter
-      info.textContent = 'MENUNGGU';
+      info.textContent = 'AGUARDANDO';
       timer.textContent = '--';
       timer.classList.remove('urgent');
-      showBanner('MENUNGGU', `Menunggu pemain...`);
+      showBanner('AGUARDANDO', `Esperando jogadores...`);
       arenaRadius = ARENA_START_RADIUS;
       updateArenaVisuals();
       waitingTimer = 0; // Reset timer
@@ -1262,8 +1257,8 @@ function setRoundState(state) {
       roundNumber++;
       clearStaleVoice(); // não deixa falas da rodada anterior tocarem na nova
       countdownValue = ROUND_COUNTDOWN;
-      info.textContent = `RONDE ${roundNumber}`;
-      showBanner(String(ROUND_COUNTDOWN), 'Bersiap!');
+      info.textContent = `RODADA ${roundNumber}`;
+      showBanner(String(ROUND_COUNTDOWN), 'Preparem-se!');
       announcer.announceRoundStart(roundNumber);
       // Voice: announce round start
       const pNames = [];
@@ -1297,10 +1292,10 @@ function setRoundState(state) {
       break;
 
     case 'ACTIVE':
-      info.textContent = `RONDE ${roundNumber}`;
+      info.textContent = `RODADA ${roundNumber}`;
       roundTimer = ROUND_DURATION;
       hideBanner();
-      showBanner('GO!', '');
+      showBanner('VALENDO!', '');
       SFX.fight();
       setTimeout(hideBanner, 1500);
       // Voice: round start call
@@ -1318,7 +1313,7 @@ function setRoundState(state) {
       if (winner) {
         winner.wins++;
         winner.score += 100;
-        showBanner(`${winner.nickname} MENANG!`, `${winner.wins} menang — ${winner.roundKills} poin`);
+        showBanner(`${winner.nickname} VENCEU!`, `${winner.wins} vitórias — ${winner.roundKills} pontos`);
         announcer.announceWinner(winner.nickname);
         // Teleport winner to arena center for victory dance
         winner.x = 0; winner.z = 0; winner.y = 0.25;
@@ -1379,7 +1374,7 @@ function setRoundState(state) {
           }, 2000);
         });
       } else {
-        showBanner('SERI!', 'Tidak ada yang selamat...');
+        showBanner('EMPATE!', 'Ninguém ficou na arena...');
         announcer.announceDraw();
         queueVoiceEvent('battle_ring_draw', { round: roundNumber }, 4);
         players.forEach(p => {
@@ -1403,7 +1398,7 @@ function setRoundState(state) {
 
     case 'INTERMISSION':
       roundTimer = INTERMISSION_TIME;
-      info.textContent = 'RONDE BERIKUTNYA';
+      info.textContent = 'PRÓXIMA RODADA';
       hideBanner();
       break;
   }
@@ -1420,7 +1415,7 @@ function spawnBot() {
     // random character
   };
   createPlayer(botData);
-  addNotification(`<strong>${name}</strong> masuk arena!`, 'power');
+  addNotification(`<strong>${name}</strong> entrou na arena!`, 'power');
   return botData;
 }
 
@@ -1431,7 +1426,7 @@ function spawnBots(count) {
   }
   botsEnabled = true;
   botsReady = true;
-  addNotification(`${actualCount} petarung masuk arena!`, 'power');
+  addNotification(`${actualCount} lutadores entraram na arena!`, 'power');
 }
 
 function removeBots() {
@@ -1447,14 +1442,14 @@ function removeBots() {
   botsEnabled = false;
   botCount = 0;
   updatePlayerCount();
-  addNotification('Bot dikeluarkan!', '');
+  addNotification('Bots removidos!', '');
 }
 
 // Test gift function
 function testGift(tier) {
   const alive = cachedAlivePlayers;
   if (alive.length === 0) {
-    addNotification('Tidak ada pemain!', '');
+    addNotification('Nenhum jogador!', '');
     return;
   }
   const target = alive[Math.floor(Math.random() * alive.length)];
@@ -1532,7 +1527,7 @@ function updateRoundState(dt) {
         const botsNeeded = MIN_PLAYERS_TO_START - alive;
         botsEnabled = true;
         spawnBots(botsNeeded);
-        addNotification(`${botsNeeded} bot masuk bantu!`, 'power');
+        addNotification(`${botsNeeded} bots entraram para ajudar!`, 'power');
       } else if (botsReady && countAlivePlayers() >= 1) {
         // Bot sudah siap + ada viewer, mulai
         setRoundState('COUNTDOWN');
@@ -1542,14 +1537,14 @@ function updateRoundState(dt) {
         // 5 detik habis, ga ada viewer → spawn bot aja
         botsEnabled = true;
         spawnBots(3);
-        addNotification('Bot masuk arena!', 'power');
+        addNotification('Bot entrou na arena!', 'power');
       } else if (botsReady) {
         // Bot sudah siap (walau ga ada viewer), mulai aja
         setRoundState('COUNTDOWN');
         waitingTimer = 0;
         botsReady = false;
       } else {
-        document.getElementById('roundTimer').textContent = botsEnabled ? 'Memuat...' : `Menunggu... (${Math.ceil(Math.max(0, 5 - waitingTimer))}s)`;
+        document.getElementById('roundTimer').textContent = botsEnabled ? 'Carregando...' : `Esperando... (${Math.ceil(Math.max(0, 5 - waitingTimer))}s)`;
       }
       break;
     }
@@ -1561,7 +1556,7 @@ function updateRoundState(dt) {
       } else {
         const v = Math.ceil(countdownValue);
         document.getElementById('roundTimer').textContent = v;
-        showBanner(String(v), v === 1 ? 'MAJU!' : 'Bersiap!');
+        showBanner(String(v), v === 1 ? 'VAI!' : 'Preparem-se!');
         SFX.countdown();
       }
       break;
@@ -1606,7 +1601,7 @@ function updateRoundState(dt) {
         if (botsNeeded > 0) {
           spawnBots(botsNeeded);
           botRespawnCount++;
-          addNotification(`${botsNeeded} petarung baru masuk!`, 'power');
+          addNotification(`${botsNeeded} novos lutadores entraram!`, 'power');
         }
       }
 
@@ -1632,7 +1627,7 @@ function updateRoundState(dt) {
           if (botsAlive === 0 && botRespawnCount < 5) {
             spawnBots(1 + Math.floor(Math.random() * 4));
             botRespawnCount++;
-            addNotification('Bot tambahan masuk!', 'power');
+            addNotification('Mais um bot entrou!', 'power');
           }
         }
       } else if (timeLeft <= 0) {
@@ -1666,7 +1661,7 @@ function updateRoundState(dt) {
           const botsNeeded = 3 - alive;
           spawnBots(botsNeeded);
           botsEnabled = true;
-          addNotification(`${botsNeeded} petarung baru masuk!`, 'power');
+          addNotification(`${botsNeeded} novos lutadores entraram!`, 'power');
         }
         if (countAlivePlayers() >= MIN_PLAYERS_TO_START || players.size >= MIN_PLAYERS_TO_START) {
           setRoundState('COUNTDOWN');
@@ -1925,7 +1920,7 @@ async function createPlayer(viewer) {
 
   players.set(viewer.uniqueId, player);
   updatePlayerCount();
-  addNotification(`<strong>${player.nickname}</strong> joined the arena!`);
+  addNotification(`<strong>${player.nickname}</strong> entrou na arena!`);
   setupFocusButtons(); // Refresh focus panel
   return player;
 }
@@ -2246,7 +2241,7 @@ function updatePhysics(dt) {
     p.model.position.set(p.x, p.y, p.z);
 
     // Face aim direction (toward nearest opponent)
-    p.model.rotation.y = p.aimAngle;
+    p.model.rotation.y = p.aimAngle + (meshyTemplates[p._meshyId]?.yawOffset || 0);
 
 
     // Determine walk/run/idle anim based on velocity
@@ -2311,13 +2306,13 @@ function eliminatePlayer(player) {
       killer.kills++;
       killer.roundKills++;
       killer.score += 25;
-      addNotification(`<strong>${killer.nickname}</strong> pushed <strong>${player.nickname}</strong> out!`, 'out');
+      addNotification(`<strong>${killer.nickname}</strong> empurrou <strong>${player.nickname}</strong> para fora!`, 'out');
     } else {
-      addNotification(`<strong>${player.nickname}</strong> terjatuh!`, 'out');
+      addNotification(`<strong>${player.nickname}</strong> caiu!`, 'out');
     announcer.announceElimination(player.nickname);
     }
   } else {
-    addNotification(`<strong>${player.nickname}</strong> terjatuh!`, 'out');
+    addNotification(`<strong>${player.nickname}</strong> caiu!`, 'out');
     announcer.announceElimination(player.nickname);
   }
 
@@ -2357,7 +2352,7 @@ async function handleLike(data) {
       if (bots.length > 0) {
         const botToRemove = bots[0];
         removePlayer(botToRemove.uniqueId);
-        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} digantikan oleh ${data.nickname}!`, '');
+        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} foi substituído por ${data.nickname}!`, '');
       }
     }
     p = await createPlayer(data);
@@ -2401,7 +2396,7 @@ async function handleLike(data) {
 
     spawnPushParticles(target.x, 1, target.z);
     SFX.punch();
-    addNotification(`<strong>${p.nickname}</strong> menabrak <strong>${target.nickname}</strong>!`);
+    addNotification(`<strong>${p.nickname}</strong> trombou em <strong>${target.nickname}</strong>!`);
   } else {
     // No one in range — lunge forward
     const force = BASE_PUSH * 0.5 * count;
@@ -2436,7 +2431,7 @@ async function handleChat(data) {
     if (p) {
       const charLabel = p._meshyId ? ` as ${p._meshyId}` : '';
       SFX.join();
-      addNotification(`<strong>${p.nickname}</strong> joined${charLabel}! 🎮`, 'power');
+      addNotification(`<strong>${p.nickname}</strong> entrou${charLabel}! 🎮`, 'power');
       queueVoiceEvent('battle_ring_join', { nickname: p.nickname, character: p._meshyId || null }, 1);
     }
     if (!p) return;
@@ -2475,7 +2470,7 @@ async function handleChat(data) {
     p.punchTimer = getAnimDuration(p, 'dodge');
   }
   SFX.dodge();
-  addNotification(`<strong>${p.nickname}</strong> menghindar!`);
+  addNotification(`<strong>${p.nickname}</strong> esquivou!`);
 }
 
 // ===== GIFT MAPPING =====
@@ -2535,7 +2530,7 @@ async function handleGift(data) {
       if (bots.length > 0) {
         const botToRemove = bots[0];
         removePlayer(botToRemove.uniqueId);
-        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} digantikan oleh ${data.nickname}!`, '');
+        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} foi substituído por ${data.nickname}!`, '');
       }
     }
     p = await createPlayer(data);
@@ -2579,7 +2574,7 @@ async function handleGift(data) {
     }, 800); // Delay untuk efek dramatis
     
     SFX.giftVIP();
-    addNotification(`☄️ <strong>${p.nickname}</strong> memanggil METEOR!`, 'gift');
+    addNotification(`☄️ <strong>${p.nickname}</strong> chamou um METEORO!`, 'gift');
     // Spin animation on gifter + bright purple aura
     if (p.alive) { setPlayerAnim(p, 'spin', 5); p.punchTimer = getAnimDuration(p, 'spin'); }
     highlightGifter(p, 0xff00ff, 4.0);
@@ -2627,7 +2622,7 @@ async function handleGift(data) {
       shakeCamera(1.5);
     }, 500);
     
-    addNotification(`🌪️ <strong>${p.nickname}</strong> memanggil TORNADO!`, 'gift');
+    addNotification(`🌪️ <strong>${p.nickname}</strong> chamou um TORNADO!`, 'gift');
     showPowerFlash();
     showGiftBanner(p.nickname, '🌪️ SHOCKWAVE SLAM', '#ff4400', diamonds);
     announcer.announceGift(p.nickname, 'SHOCKWAVE SLAM', 'big');
@@ -2667,9 +2662,9 @@ async function handleGift(data) {
         }
       });
       SFX.giftMedium();
-      addNotification(`⚡ <strong>${p.nickname}</strong> menyerang <strong>${nearest.nickname}</strong>!`, 'gift');
+      addNotification(`⚡ <strong>${p.nickname}</strong> atacou <strong>${nearest.nickname}</strong>!`, 'gift');
     } else {
-      addNotification(`⚡ <strong>${p.nickname}</strong> menggunakan GROUND SLAM!`, 'gift');
+      addNotification(`⚡ <strong>${p.nickname}</strong> deu uma PANCADA NO CHÃO!`, 'gift');
     }
     showGiftBanner(p.nickname, '⚡ GROUND SLAM', '#ffaa00', diamonds);
     announcer.announceGift(p.nickname, 'GROUND SLAM', 'medium');
@@ -2687,7 +2682,7 @@ async function handleGift(data) {
     if (p.alive) { setPlayerAnim(p, 'tantrum', 2); p.punchTimer = getAnimDuration(p, 'tantrum', 4.0); }
     highlightGifter(p, 0x44ff44, 2.0);
     SFX.giftSmall();
-    addNotification(`❤️ <strong>${p.nickname}</strong> dapat POWER UP!`, 'power');
+    addNotification(`❤️ <strong>${p.nickname}</strong> ganhou FORÇA EXTRA!`, 'power');
     announcer.announceGift(p.nickname, 'POWER UP', 'small');
   }
 }
@@ -2701,11 +2696,11 @@ async function handleFollow(data) {
       if (bots.length > 0) {
         const botToRemove = bots[0];
         removePlayer(botToRemove.uniqueId);
-        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} digantikan oleh ${data.nickname}!`, '');
+        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} foi substituído por ${data.nickname}!`, '');
       }
     }
     p = await createPlayer(data);
-    if (p) addNotification(`<strong>${p.nickname}</strong> followed & joined! 👊`, 'power');
+    if (p) addNotification(`<strong>${p.nickname}</strong> seguiu e entrou! 👊`, 'power');
     if (!p) return;
   }
   p.score += 10;
@@ -2717,8 +2712,8 @@ async function handleFollow(data) {
   
   // Tantrum flex animation
   if (p.alive && p.punchTimer <= 0) { setPlayerAnim(p, 'tantrum', 2); p.punchTimer = getAnimDuration(p, 'tantrum', 4.0); }
-  addNotification(`⭐ <strong>${p.nickname}</strong> followed! +30% POWER!`, 'power');
-  announcer.announce(`${p.nickname} follow! Kekuatan naik!`);
+  addNotification(`⭐ <strong>${p.nickname}</strong> seguiu! +30% de FORÇA!`, 'power');
+  announcer.announce(`${p.nickname} seguiu! A força aumentou!`);
 }
 
 async function handleShare(data) {
@@ -2731,7 +2726,7 @@ async function handleShare(data) {
       if (bots.length > 0) {
         const botToRemove = bots[0];
         removePlayer(botToRemove.uniqueId);
-        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} digantikan oleh ${data.nickname}!`, '');
+        addNotification(`🤖 ${botToRemove.nickname.replace('🤖 ', '')} foi substituído por ${data.nickname}!`, '');
       }
     }
     p = await createPlayer(data);
@@ -2747,7 +2742,7 @@ async function handleShare(data) {
   
   // Block/shield animation
   if (p.alive && p.punchTimer <= 0) { setPlayerAnim(p, 'block', 2); p.punchTimer = getAnimDuration(p, 'block'); }
-  addNotification(`🛡️ <strong>${p.nickname}</strong> shared! Speed + Perisai!`, 'power');
+  addNotification(`🛡️ <strong>${p.nickname}</strong> compartilhou! Velocidade + Escudo!`, 'power');
 }
 
 function getLeader() {
@@ -3824,13 +3819,13 @@ document.addEventListener('keydown', (e) => {
         if (players.size >= MIN_PLAYERS_TO_START) {
           setRoundState('COUNTDOWN');
         } else {
-          addNotification(`Need at least ${MIN_PLAYERS_TO_START} players! (${players.size}/${MIN_PLAYERS_TO_START})`);
+          addNotification(`Precisa de pelo menos ${MIN_PLAYERS_TO_START} jogadores! (${players.size}/${MIN_PLAYERS_TO_START})`);
         }
       }
       break;
     case 'A':
       autoPlay = !autoPlay;
-      addNotification(autoPlay ? 'Auto-play ON' : 'Auto-play OFF');
+      addNotification(autoPlay ? 'Jogo automático ligado' : 'Jogo automático desligado');
       break;
     case 'C': {
       // Simulate chat — if players exist, send chat bubble; otherwise join
@@ -3848,7 +3843,7 @@ document.addEventListener('keydown', (e) => {
     case 'S':
       arenaRadius = Math.max(ARENA_END_RADIUS, arenaRadius - 2);
       updateArenaVisuals();
-      addNotification(`Arena shrunk to ${arenaRadius.toFixed(1)}`);
+      addNotification(`Arena encolheu para ${arenaRadius.toFixed(1)}`);
       break;
     case 'V':
       window._debugAction('autocam');
@@ -3926,9 +3921,9 @@ function connectSocket() {
     socket.on('connection-status', (data) => {
       console.log('Connection status:', data);
       if (data.connected) {
-        addNotification(`Live terhubung! Room: ${data.roomId}`, 'power');
+        addNotification(`Live conectada! Sala: ${data.roomId}`, 'power');
       } else if (data.error) {
-        addNotification(`Koneksi: ${data.error}`, '');
+        addNotification(`Conexão: ${data.error}`, '');
       }
     });
 
@@ -3936,7 +3931,7 @@ function connectSocket() {
     socket.on('viewer-list', async (viewers) => {
       if (!viewers || viewers.length === 0) return;
       console.log(`Viewer list received: ${viewers.length} viewers`);
-      addNotification(`${viewers.length} penonton terdeteksi!`, 'power');
+      addNotification(`${viewers.length} espectadores encontrados!`, 'power');
       
       // Auto-join up to 5 viewers as players (if no players yet)
       const existingPlayers = players.size;
@@ -3945,7 +3940,7 @@ function connectSocket() {
         if (!players.has(viewer.uniqueId) && !pendingPlayers.has(viewer.uniqueId)) {
           const p = await createPlayer(viewer);
           if (p) {
-            addNotification(`${viewer.nickname} masuk arena!`, '');
+            addNotification(`${viewer.nickname} entrou na arena!`, '');
           }
         }
       }
@@ -3960,7 +3955,7 @@ function connectSocket() {
         if (!players.has(viewer.uniqueId) && !pendingPlayers.has(viewer.uniqueId)) {
           const p = await createPlayer(viewer);
           if (p) {
-            addNotification(`${viewer.nickname} masuk arena!`, '');
+            addNotification(`${viewer.nickname} entrou na arena!`, '');
           }
         }
       }
@@ -4038,7 +4033,7 @@ function animate() {
         if (now - p.lastActive > INACTIVE_MS) toRemove.push(p);
       });
       toRemove.forEach(p => {
-        addNotification(`<strong>${p.nickname}</strong> removed (inactive)`, '');
+        addNotification(`<strong>${p.nickname}</strong> saiu (inativo)`, '');
         removePlayer(p.uniqueId);
       });
     }
@@ -4247,7 +4242,7 @@ class BanterTTS {
     this.synth = window.speechSynthesis;
     this.maleVoice = null;
     this.femaleVoice = null;
-    this.enabled = LEGACY_TTS_DEFAULT;
+    this.enabled = false; // conversa entre lutadores: começa DESLIGADA (botão "Conversa dos lutadores")
     this.lastInteraction = Date.now();
     this.history = [];       // Track last 20 dialogue indices to avoid repeat
     this.maxHistory = 20;
@@ -4696,7 +4691,6 @@ window.banter = banter;  // Expose untuk debug
 
 function toggleTTS() {
   const enabled = announcer.toggle();
-  banter.enabled = enabled;
   const btn = document.getElementById("ttsToggleBtn");
   btn.textContent = enabled ? "Announcer: ON" : "Announcer: OFF";
   btn.style.background = enabled ? "#ff8800" : "#222";
@@ -4709,6 +4703,18 @@ function testAnnouncer() {
   announcer.announce("Senhoras e senhores! Bem-vindos ao Battle Ring! Que comece a luta!", true);
 }
 
+// Liga e desliga só a conversa entre os lutadores (balões e vozes do navegador)
+function toggleBanter() {
+  banter.enabled = !banter.enabled;
+  if (!banter.enabled && banter.synth) { banter.synth.cancel(); banter.isSpeaking = false; }
+  const btn = document.getElementById("banterToggleBtn");
+  btn.textContent = banter.enabled ? "Conversa dos lutadores: ON" : "Conversa dos lutadores: OFF";
+  btn.style.background = banter.enabled ? "#ff8800" : "#222";
+  btn.style.color = banter.enabled ? "#fff" : "#ccc";
+  addNotification(banter.enabled ? "Conversa dos lutadores ligada" : "Conversa dos lutadores desligada");
+  if (typeof updateStatusBox === 'function') updateStatusBox();
+}
+window.toggleBanter = toggleBanter;
 window.toggleTTS = toggleTTS;
 window.testAnnouncer = testAnnouncer;
 
@@ -4741,7 +4747,7 @@ window.connectFromGame = async function() {
   if (!username) return;
   
   const statusEl = document.getElementById('connectStatus');
-  statusEl.textContent = 'Menghubungkan...';
+  statusEl.textContent = 'Conectando...';
   statusEl.style.color = '#888';
   
   // Clear old players first (with proper dispose)
@@ -4749,7 +4755,7 @@ window.connectFromGame = async function() {
   for (const id of oldIds) {
     removePlayer(id);
   }
-  addNotification('Menghapus data pemain lama...', '');
+  addNotification('Apagando jogadores antigos...', '');
   
   // Update ROOM
   window.ROOM = username;
@@ -4801,13 +4807,13 @@ window.connectFromGame = async function() {
       socket.on('connection-status', (data) => {
         console.log('Connection status:', data);
         if (data.connected) {
-          statusEl.textContent = `✅ Terhubung ke @${username}!`;
+          statusEl.textContent = `✅ Conectado a @${username}!`;
           statusEl.style.color = '#00ff88';
-          addNotification(`Live terhubung! Room: ${data.roomId}`, 'power');
+          addNotification(`Live conectada! Sala: ${data.roomId}`, 'power');
         } else if (data.error) {
           statusEl.textContent = `❌ ${data.error}`;
           statusEl.style.color = '#ff4444';
-          addNotification(`Error: ${data.error}`, '');
+          addNotification(`Erro: ${data.error}`, '');
         }
       });
       
@@ -4815,7 +4821,7 @@ window.connectFromGame = async function() {
       socket.on('viewer-list', async (viewers) => {
         if (!viewers || viewers.length === 0) return;
         console.log(`Viewer list received: ${viewers.length} viewers`);
-        addNotification(`${viewers.length} penonton terdeteksi!`, 'power');
+        addNotification(`${viewers.length} espectadores encontrados!`, 'power');
         
         const existingPlayers = players.size;
         const toJoin = viewers.slice(0, Math.max(3, 5 - existingPlayers));
@@ -4823,7 +4829,7 @@ window.connectFromGame = async function() {
           if (!players.has(viewer.uniqueId) && !pendingPlayers.has(viewer.uniqueId)) {
             const p = await createPlayer(viewer);
             if (p) {
-              addNotification(`${viewer.nickname} masuk arena!`, '');
+              addNotification(`${viewer.nickname} entrou na arena!`, '');
             }
           }
         }
@@ -4838,16 +4844,16 @@ window.connectFromGame = async function() {
           if (!players.has(viewer.uniqueId) && !pendingPlayers.has(viewer.uniqueId)) {
             const p = await createPlayer(viewer);
             if (p) {
-              addNotification(`${viewer.nickname} masuk arena!`, '');
+              addNotification(`${viewer.nickname} entrou na arena!`, '');
             }
           }
         }
       });
       
       // Update UI
-      statusEl.textContent = 'Terhubung!';
+      statusEl.textContent = 'Conectado!';
       statusEl.style.color = '#00ff88';
-      addNotification(`Terhubung ke @${username}!`, 'power');
+      addNotification(`Conectado a @${username}!`, 'power');
       
       // Update URL without reload
       const url = new URL(window.location);
@@ -4860,11 +4866,11 @@ window.connectFromGame = async function() {
         statusEl.textContent = '';
       }, 2000);
     } else {
-      statusEl.textContent = 'Error: ' + (data.error || 'Gagal');
+      statusEl.textContent = 'Erro: ' + (data.error || 'Falhou');
       statusEl.style.color = '#ff4444';
     }
   } catch (err) {
-    statusEl.textContent = 'Error: ' + err.message;
+    statusEl.textContent = 'Erro: ' + err.message;
     statusEl.style.color = '#ff4444';
   }
 }
@@ -4903,7 +4909,7 @@ function setupDebugPanel() {
   // Spawn all button
   const allBtn = document.createElement('button');
   allBtn.className = 'dbtn spawn';
-  allBtn.textContent = 'ALL (1 each)';
+  allBtn.textContent = 'TODOS (1 de cada)';
   allBtn.onclick = async () => {
     for (const mc of MESHY_CHARACTERS) {
       const id = mc.id.toLowerCase() + '_' + Math.floor(Math.random() * 10000);
@@ -4941,7 +4947,7 @@ function setupFocusButtons() {
       focusCamEnabled = true;
       setupFocusButtons(); // refresh highlight
       showAnimButtons(p);
-      addNotification(`Focused on ${p.nickname}`);
+      addNotification(`Câmera em ${p.nickname}`);
     };
     container.appendChild(btn);
   });
@@ -4950,14 +4956,14 @@ function setupFocusButtons() {
   if (focusPlayer) {
     const ufBtn = document.createElement('button');
     ufBtn.className = 'dbtn';
-    ufBtn.textContent = 'Unfocus';
+    ufBtn.textContent = 'Soltar câmera';
     ufBtn.style.color = '#ff8800';
     ufBtn.onclick = () => {
       focusPlayer = null;
       focusCamEnabled = false;
       document.getElementById('animSection').style.display = 'none';
       setupFocusButtons();
-      addNotification('Camera unfocused');
+      addNotification('Câmera solta');
     };
     container.appendChild(ufBtn);
   }
@@ -5020,17 +5026,17 @@ window._debugAction = function(action) {
       if ((roundState === 'WAITING' || roundState === 'INTERMISSION') && players.size >= MIN_PLAYERS_TO_START) {
         setRoundState('COUNTDOWN');
       } else {
-        addNotification(`Need ${MIN_PLAYERS_TO_START}+ players (${players.size} now)`);
+        addNotification(`Precisa de ${MIN_PLAYERS_TO_START}+ jogadores (${players.size} agora)`);
       }
       break;
     case 'auto':
       autoPlay = !autoPlay;
-      addNotification(autoPlay ? 'Auto-play ON' : 'Auto-play OFF');
+      addNotification(autoPlay ? 'Jogo automático ligado' : 'Jogo automático desligado');
       break;
     case 'shrink':
       arenaRadius = Math.max(ARENA_END_RADIUS, arenaRadius - 2);
       updateArenaVisuals();
-      addNotification(`Arena shrunk to ${arenaRadius.toFixed(1)}`);
+      addNotification(`Arena encolheu para ${arenaRadius.toFixed(1)}`);
       break;
     case 'autocam':
       autoCamEnabled = !autoCamEnabled;
@@ -5038,7 +5044,7 @@ window._debugAction = function(action) {
       acBtn.textContent = autoCamEnabled ? 'AutoCam: ON' : 'AutoCam: OFF';
       acBtn.style.background = autoCamEnabled ? '#44aaff' : '#222';
       acBtn.style.color = autoCamEnabled ? '#fff' : '#ccc';
-      addNotification(autoCamEnabled ? 'Auto Camera ON' : 'Auto Camera OFF');
+      addNotification(autoCamEnabled ? 'Câmera automática ligada' : 'Câmera automática desligada');
       break;
   }
 };
@@ -5056,6 +5062,7 @@ const VOICE_COOLDOWN = 3000; // min gap between API calls
 const SUMO_VOICE_ID = null; // null = o servidor usa ELEVENLABS_VOICE_ID do .env (narrador padrão)
 let lastVoiceTime = 0;
 let voiceSubtitleTimer = null;
+let voiceCurrent = null; // { audio, item } da fala que está tocando
 
 function toggleVoiceCommentary() {
   voiceEnabled = !voiceEnabled;
@@ -5074,7 +5081,7 @@ function toggleVoiceCommentary() {
     const buf = ctx.createBuffer(1, 1, 22050);
     const src = ctx.createBufferSource();
     src.buffer = buf; src.connect(ctx.destination); src.start();
-    document.getElementById('voiceStatusText').textContent = 'Voice Ready';
+    document.getElementById('voiceStatusText').textContent = 'Narrador pronto';
   }
 }
 
@@ -5087,13 +5094,45 @@ function testVoice() {
 }
 
 // Queue a game event for voice commentary
+// ===== Registro do narrador (diagnóstico) =====
+// Cada fala ganha um número. Cada etapa fica registrada com o horário e o estado do jogo naquele momento.
+// No console aparece como [NARRADOR]. Para ver tudo em tabela: narradorTabela() no console.
+const NARRADOR_T0 = Date.now();
+let narradorSeq = 0;
+window.narradorLog = [];
+function narradorLog(id, etapa, info = {}) {
+  const estado = `${roundState} r${roundNumber} vivos=${typeof countAlivePlayers === 'function' ? countAlivePlayers() : '?'}`;
+  const e = { s: +((Date.now() - NARRADOR_T0) / 1000).toFixed(1), id, etapa, estado, ...info };
+  window.narradorLog.push(e);
+  if (window.narradorLog.length > 500) window.narradorLog.shift();
+  console.log(`[NARRADOR] ${e.s}s #${id} ${etapa} | ${estado}` + (info.tipo ? ` | ${info.tipo}` : '') + (info.texto ? ` | "${info.texto}"` : '') + (info.obs ? ` | ${info.obs}` : ''));
+}
+window.narradorTabela = () => console.table(window.narradorLog);
+// ?ensaio (falas de 3 s) ou ?ensaio=10 (falas de 10 s, para imitar o modo 2): não chama o servidor nem o ElevenLabs
+const NARRADOR_ENSAIO = new URLSearchParams(location.search).has('ensaio')
+  ? (parseFloat(new URLSearchParams(location.search).get('ensaio')) || 3) : 0;
+function audioMudo(seg) {
+  const rate = 8000, n = Math.round(rate * seg);
+  const buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+  const str = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+  str(0, 'RIFF'); v.setUint32(4, 36 + n, true); str(8, 'WAVE'); str(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+  str(36, 'data'); v.setUint32(40, n, true);
+  new Uint8Array(buf, 44).fill(128);
+  return new Blob([buf], { type: 'audio/wav' });
+}
+
 // Quanto tempo (ms) uma fala ainda faz sentido depois do evento. Passou disso, é descartada.
 const VOICE_MAX_AGE = { battle_ring_elimination: 7000, battle_ring_join: 9000, battle_ring_shrink_warning: 6000, battle_ring_fight: 8000, battle_ring_round_start: 12000, battle_ring_winner: 20000, battle_ring_draw: 15000 };
 const voiceMaxAge = type => VOICE_MAX_AGE[type] || 15000;
 // Nova rodada: joga fora o que ficou na fila (o que já está tocando termina normalmente)
 function clearStaleVoice() {
+  if (voiceQueue.length || voiceAudioQueue.length) narradorLog(0, 'limpeza', { obs: `nova rodada: ${voiceQueue.length} pedidos e ${voiceAudioQueue.length} áudios descartados` });
   voiceQueue.length = 0;
   while (voiceAudioQueue.length) URL.revokeObjectURL(voiceAudioQueue.shift().url);
+  // Esquece as falas da rodada anterior, para a IA não comentar lutas que já acabaram
+  voiceRecentContext.length = 0;
 }
 function queueVoiceEvent(eventType, eventData, priority = 1) {
   if (!voiceEnabled) return;
@@ -5101,12 +5140,16 @@ function queueVoiceEvent(eventType, eventData, priority = 1) {
   if (voiceQueue.length >= MAX_VOICE_QUEUE) {
     const lowIdx = voiceQueue.findIndex(q => q.priority < priority);
     if (lowIdx !== -1) {
-      voiceQueue.splice(lowIdx, 1);
+      const fora = voiceQueue.splice(lowIdx, 1)[0];
+      narradorLog(fora.id, 'descartado', { tipo: fora.eventType, obs: 'fila cheia, saiu para dar lugar a um mais importante' });
     } else {
+      narradorLog(++narradorSeq, 'descartado', { tipo: eventType, obs: 'fila cheia' });
       return; // queue full with higher priority
     }
   }
-  voiceQueue.push({ eventType, eventData, priority, t: Date.now() });
+  const id = ++narradorSeq;
+  narradorLog(id, 'pedido', { tipo: eventType, obs: `prioridade ${priority}, fila ${voiceQueue.length}, dados ${JSON.stringify(eventData).slice(0, 80)}` });
+  voiceQueue.push({ id, eventType, eventData, priority, t: Date.now() });
   processVoiceQueue();
 }
 
@@ -5122,15 +5165,20 @@ async function processVoiceQueue() {
   voiceQueue.sort((a, b) => b.priority - a.priority);
   const event = voiceQueue.shift();
   if (Date.now() - event.t > voiceMaxAge(event.eventType)) { // fala velha: pula
+    narradorLog(event.id, 'descartado', { tipo: event.eventType, obs: `velha antes de gerar (${((Date.now() - event.t) / 1000).toFixed(1)}s)` });
     if (voiceQueue.length) setTimeout(processVoiceQueue, 50);
     return;
   }
   const evRound = roundNumber;
+  const tGera = Date.now();
+  narradorLog(event.id, 'gerando', { tipo: event.eventType, obs: `esperou ${((tGera - event.t) / 1000).toFixed(1)}s na fila` });
   voiceIsGenerating = true;
-  document.getElementById('voiceStatusText').textContent = 'Generating...';
+  document.getElementById('voiceStatusText').textContent = 'Gerando fala...';
 
   try {
-    const res = await fetch('/api/voice/generate', {
+    const res = NARRADOR_ENSAIO ? new Response(audioMudo(NARRADOR_ENSAIO), { headers: {
+      'X-Commentary-Text': encodeURIComponent(`[ensaio] ${event.eventType} ${JSON.stringify(event.eventData).slice(0, 60)}`),
+      'X-Voice-Cache': 'ensaio' } }) : await fetch('/api/voice/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -5153,7 +5201,7 @@ async function processVoiceQueue() {
     }
     if (!res.ok) {
       console.error('Voice API error:', res.status);
-      document.getElementById('voiceStatusText').textContent = 'API Error';
+      document.getElementById('voiceStatusText').textContent = 'Erro no serviço';
       return;
     }
 
@@ -5165,11 +5213,12 @@ async function processVoiceQueue() {
     if (voiceRecentContext.length > MAX_VOICE_CONTEXT) voiceRecentContext.shift();
 
     lastVoiceTime = Date.now();
-    if (evRound !== roundNumber && event.eventType !== 'battle_ring_winner') return; // rodada mudou durante a geração
+    narradorLog(event.id, 'gerado', { tipo: event.eventType, texto: text, obs: `${((Date.now() - tGera) / 1000).toFixed(1)}s para gerar, cache=${res.headers.get('X-Voice-Cache') || '?'}` });
+    if (evRound !== roundNumber && event.eventType !== 'battle_ring_winner') { narradorLog(event.id, 'descartado', { tipo: event.eventType, obs: 'rodada mudou durante a geração' }); return; } // rodada mudou durante a geração
     enqueueVoiceAudio(blob, text, event);
   } catch (err) {
     console.error('Voice commentary error:', err);
-    document.getElementById('voiceStatusText').textContent = 'Error';
+    document.getElementById('voiceStatusText').textContent = 'Erro';
   } finally {
     voiceIsGenerating = false;
     // Process next in queue
@@ -5183,37 +5232,57 @@ function enqueueVoiceAudio(blob, text, event) {
   if (voiceAudioQueue.length >= 3) {
     // Drop oldest
     const old = voiceAudioQueue.shift();
+    narradorLog(old.id, 'descartado', { tipo: old.type, texto: old.text, obs: 'fila de áudio cheia' });
     URL.revokeObjectURL(old.url);
   }
   const url = URL.createObjectURL(blob);
-  voiceAudioQueue.push({ url, text, t: event ? event.t : Date.now(), type: event ? event.eventType : '' });
+  const item = { url, text, t: event ? event.t : Date.now(), type: event ? event.eventType : '', id: event ? event.id : 0, priority: event ? event.priority : 1 };
+  // Fala mais importante (queda, vitória, início) corta a que está tocando, para narrar o que acabou de acontecer
+  if (voiceIsPlaying && voiceCurrent && item.priority > (voiceCurrent.item.priority || 1)) {
+    narradorLog(voiceCurrent.item.id, 'cortado', { tipo: voiceCurrent.item.type, obs: `interrompido por #${item.id} (${item.type})` });
+    voiceAudioQueue.unshift(item);
+    const cur = voiceCurrent;
+    voiceCurrent = null;
+    cur.audio.onended = null;
+    cur.audio.onerror = null;
+    cur.audio.pause();
+    URL.revokeObjectURL(cur.item.url);
+    playNextVoice();
+    return;
+  }
+  voiceAudioQueue.push(item);
   if (!voiceIsPlaying) playNextVoice();
 }
 
 function playNextVoice() {
   if (voiceAudioQueue.length === 0) {
     voiceIsPlaying = false;
-    document.getElementById('voiceStatusText').textContent = 'Voice Ready';
+    document.getElementById('voiceStatusText').textContent = 'Narrador pronto';
     document.getElementById('voiceSubtitle').style.display = 'none';
     return;
   }
   const item = voiceAudioQueue.shift();
-  if (Date.now() - item.t > voiceMaxAge(item.type) + 6000) { // áudio que esperou demais na fila
+  if (Date.now() - item.t > voiceMaxAge(item.type)) { // áudio que passou do prazo do evento
+    narradorLog(item.id, 'descartado', { tipo: item.type, texto: item.text, obs: `áudio velho (${((Date.now() - item.t) / 1000).toFixed(1)}s)` });
     URL.revokeObjectURL(item.url);
     return playNextVoice();
   }
   voiceIsPlaying = true;
+  narradorLog(item.id, 'tocando', { tipo: item.type, texto: item.text, obs: `${((Date.now() - item.t) / 1000).toFixed(1)}s depois do evento` });
 
   // Show subtitle
   const subtitleEl = document.getElementById('voiceSubtitle');
   subtitleEl.textContent = item.text;
   subtitleEl.style.display = 'block';
-  document.getElementById('voiceStatusText').textContent = 'Speaking...';
+  document.getElementById('voiceStatusText').textContent = 'Falando...';
   document.getElementById('voiceSpeakerIcon').textContent = '🔊';
 
   const audio = new Audio(item.url);
   audio.volume = 0.85;
+  voiceCurrent = { audio, item };
   audio.onended = () => {
+    voiceCurrent = null;
+    narradorLog(item.id, 'fim', { tipo: item.type, obs: `${((Date.now() - item.t) / 1000).toFixed(1)}s depois do evento` });
     URL.revokeObjectURL(item.url);
     document.getElementById('voiceSpeakerIcon').textContent = '🎙️';
     // Keep subtitle visible for 1 second after audio ends
@@ -5224,6 +5293,7 @@ function playNextVoice() {
     playNextVoice();
   };
   audio.onerror = () => {
+    voiceCurrent = null;
     URL.revokeObjectURL(item.url);
     playNextVoice();
   };
@@ -5256,7 +5326,8 @@ function updateStatusBox() {
   } else {
     lines.push(`<b>Gasto ElevenLabs:</b> <span class="warn">sem resposta do servidor</span>`);
   }
-  lines.push(`<b>Vozes do navegador:</b> ` + (window.announcer && window.announcer.enabled ? `<span class="ok">ligadas</span>` : `<span class="off">desligadas</span>`));
+  lines.push(`<b>Anunciante:</b> ` + (window.announcer && window.announcer.enabled ? `<span class="ok">ligado</span>` : `<span class="off">desligado</span>`));
+  lines.push(`<b>Conversa dos lutadores:</b> ` + (window.banter && window.banter.enabled ? `<span class="ok">ligada</span>` : `<span class="off">desligada</span>`));
   box.innerHTML = lines.join('<br>');
 }
 setInterval(updateStatusBox, 1500);
@@ -5366,7 +5437,7 @@ async function init() {
         const data = await res.json();
         if (data.ok) {
           console.log('Auto-connect success:', data);
-          addNotification(`Auto-connect ke @${ROOM}!`, 'power');
+          addNotification(`Conectando automático a @${ROOM}!`, 'power');
         } else {
           console.warn('Auto-connect failed:', data.error);
         }
