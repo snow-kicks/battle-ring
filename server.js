@@ -170,7 +170,8 @@ const FIXED_LINES = {
   ],
 };
 // No modo 'misto', estes eventos usam o LLM (falas mais personalizadas). Os demais usam falas prontas.
-const AI_EVENTS = new Set(['battle_ring_winner', 'battle_ring_viewers_welcome', 'battle_ring_invite_friends']);
+// Vazio por padrão: todas as falas são prontas (baratas e sempre combinam com o momento). Para o Claude escrever alguma, ponha o evento aqui.
+const AI_EVENTS = new Set([]);
 const recentFixedLines = [];
 function fixedLine(eventType, data) {
   const pool = FIXED_LINES[eventType];
