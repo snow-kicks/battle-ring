@@ -5135,6 +5135,15 @@ async function processVoiceQueue() {
       }),
     });
 
+    if (res.status === 402) {
+      // Limite de gasto de teste do ElevenLabs atingido: desliga o narrador
+      console.warn('Limite de gasto do narrador atingido');
+      voiceQueue.length = 0;
+      if (voiceEnabled) toggleVoiceCommentary();
+      addNotification('Narrador desligado: limite de gasto de teste atingido', 'power');
+      document.getElementById('voiceStatusText').textContent = 'Limite atingido';
+      return;
+    }
     if (!res.ok) {
       console.error('Voice API error:', res.status);
       document.getElementById('voiceStatusText').textContent = 'API Error';

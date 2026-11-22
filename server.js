@@ -5,7 +5,8 @@ import { Server } from 'socket.io';
 import { TikTokLiveConnection, SignConfig } from 'tiktok-live-connector';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { createHash } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -105,6 +106,86 @@ const LLM_PROVIDER = (process.env.LLM_PROVIDER || (ANTHROPIC_API_KEY ? 'anthropi
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
 // Voz padrão: "Adam" (voz pronta do ElevenLabs, masculina, grave, de narrador). Troque no .env se quiser outra.
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
+// Modo do narrador: 'misto' (padrão: falas prontas nos eventos repetitivos, Claude/OpenAI nos especiais),
+// 'fixo' (só falas prontas, sem LLM) ou 'ia' (sempre LLM).
+const NARRATOR_MODE = (process.env.NARRATOR_MODE || 'misto').toLowerCase();
+// Limite de gasto ESTIMADO do ElevenLabs (por caracteres). Não é a cobrança real da sua conta.
+const ELEVENLABS_BUDGET_USD = parseFloat(process.env.ELEVENLABS_BUDGET_USD || '1');
+const ELEVENLABS_USD_PER_1K = parseFloat(process.env.ELEVENLABS_USD_PER_1K_CHARS || '0.30');
+const VOICE_CACHE_DIR = join(__dirname, 'voice-cache');
+const VOICE_BUDGET_FILE = join(VOICE_CACHE_DIR, 'budget.json');
+if (!existsSync(VOICE_CACHE_DIR)) mkdirSync(VOICE_CACHE_DIR, { recursive: true });
+let voiceBudget = { chars: 0 };
+try { if (existsSync(VOICE_BUDGET_FILE)) voiceBudget = JSON.parse(readFileSync(VOICE_BUDGET_FILE, 'utf-8')); } catch (e) { /* começa do zero */ }
+const voiceSpentUsd = () => (voiceBudget.chars / 1000) * ELEVENLABS_USD_PER_1K;
+function saveVoiceBudget() { try { writeFileSync(VOICE_BUDGET_FILE, JSON.stringify(voiceBudget)); } catch (e) { /* ignora */ } }
+function voiceCacheKey(voiceId, text) { return createHash('sha1').update(`${voiceId}|${text}`).digest('hex'); }
+
+// Falas prontas do narrador. {campos} são trocados pelos dados do jogo (nome do jogador, personagem...).
+// A primeira vez que uma fala exata é dita, o áudio é gerado e guardado em voice-cache/.
+// Nas próximas vezes o mesmo áudio é reaproveitado, sem gastar nada.
+const FIXED_LINES = {
+  battle_ring_round_start: [
+    'Atenção, lutadores! Mais uma rodada vai começar. Preparem-se!',
+    'Respirem fundo! O ringue está pronto para mais uma batalha.',
+    'Senhoras e senhores, vai começar mais uma rodada! Quem leva a glória hoje?',
+  ],
+  battle_ring_fight: [
+    'Valendo! Que vença o mais forte!',
+    'Começou! Mostrem o que vocês sabem fazer!',
+    'Já! O ringue é de vocês!',
+  ],
+  battle_ring_elimination: [
+    '{killer} derrubou {victim} do ringue! Que empurrão!',
+    '{victim} caiu! {killer} não perdoa!',
+    '{victim} saiu voando do ringue!',
+    'Lá se vai {victim}! Caiu da arena!',
+    '{victim} foi para fora! Ai, essa doeu!',
+  ],
+  battle_ring_winner: [
+    '{winner} é o campeão desta rodada! Que luta!',
+    'Palmas para {winner}! Venceu com méritos!',
+    'É de {winner} a vitória! Mandou muito bem!',
+  ],
+  battle_ring_draw: [
+    'Empate! Ninguém ficou de pé. Que rodada maluca!',
+    'Todo mundo caiu! Essa foi de arrepiar!',
+  ],
+  battle_ring_shrink_warning: [
+    'Cuidado! O ringue está encolhendo!',
+    'O espaço está acabando! Quem aguenta?',
+  ],
+  battle_ring_join: [
+    '{nickname} entrou no ringue como {character}! Boa sorte!',
+    'Chegou {nickname}, de {character}! Seja bem-vindo!',
+    '{nickname} chegou para a briga! Bem-vindo ao ringue!',
+  ],
+  battle_ring_viewers_welcome: [
+    'Bem-vindos, galera! Entrem no ringue e mostrem a sua força!',
+    'Olha a galera chegando! O ringue é de vocês, vamos lutar!',
+  ],
+  battle_ring_invite_friends: [
+    'Chame seus amigos para a live! Quanto mais gente, mais luta!',
+    'Compartilhe a live com a turma! O ringue ainda tem espaço!',
+  ],
+};
+// No modo 'misto', estes eventos usam o LLM (falas mais personalizadas). Os demais usam falas prontas.
+const AI_EVENTS = new Set(['battle_ring_winner', 'battle_ring_viewers_welcome', 'battle_ring_invite_friends']);
+const recentFixedLines = [];
+function fixedLine(eventType, data) {
+  const pool = FIXED_LINES[eventType];
+  if (!pool) return '';
+  const d = data || {};
+  const usable = pool.filter(t => [...t.matchAll(/\{(\w+)\}/g)].every(m => d[m[1]]));
+  if (!usable.length) return '';
+  const fresh = usable.filter(t => !recentFixedLines.includes(t));
+  const choices = fresh.length ? fresh : usable;
+  const tpl = choices[Math.floor(Math.random() * choices.length)];
+  recentFixedLines.push(tpl);
+  if (recentFixedLines.length > 5) recentFixedLines.shift();
+  return tpl.replace(/\{(\w+)\}/g, (_, k) => String(d[k]).replace(/[^\p{L}\p{N} _.-]/gu, '').slice(0, 24));
+}
+
 const SUPABASE_URL = process.env.SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
@@ -432,156 +513,127 @@ app.get('/api/proxy-image', async (req, res) => {
   }
 });
 
-// POST /api/voice/generate — AI commentary + TTS (with per-session cost tracking)
+// Escreve a fala com o LLM (Claude ou OpenAI). Devolve '' se falhar.
+async function writeLineWithLLM(userPrompt, session) {
+  try {
+    if (LLM_PROVIDER === 'anthropic') {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 150, system: NARRATOR_PROMPT, messages: [{ role: 'user', content: userPrompt }] }),
+      });
+      if (!r.ok) { console.error('Anthropic error:', await r.text()); return ''; }
+      const j = await r.json();
+      if (session) { session.cost.anthropicTokens += (j.usage?.input_tokens || 0) + (j.usage?.output_tokens || 0); session.cost.voiceCalls++; }
+      return (j.content || []).filter(c => c.type === 'text').map(c => c.text).join(' ').trim();
+    }
+    const r = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}` },
+      body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: NARRATOR_PROMPT }, { role: 'user', content: userPrompt }], max_tokens: 120, temperature: 0.9 }),
+    });
+    if (!r.ok) { console.error('OpenAI error:', await r.text()); return ''; }
+    const j = await r.json();
+    if (session) { session.cost.openaiTokens += (j.usage?.prompt_tokens || 0) + (j.usage?.completion_tokens || 0); session.cost.voiceCalls++; }
+    return (j.choices?.[0]?.message?.content || '').trim();
+  } catch (e) {
+    console.error('LLM error:', e.message);
+    return '';
+  }
+}
+
+// GET /api/voice/budget — quanto do limite de teste já foi usado
+app.get('/api/voice/budget', (req, res) => {
+  res.json({ mode: NARRATOR_MODE, llm: LLM_PROVIDER, spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD, chars: voiceBudget.chars });
+});
+
+// POST /api/voice/generate — fala do narrador (pronta ou escrita pelo LLM) + voz, com cache em disco e limite de gasto
 app.post('/api/voice/generate', async (req, res) => {
   console.log('🎙️ Voice API called:', req.body?.eventType, 'room:', req.body?.room);
-  const hasLLM = LLM_PROVIDER === 'anthropic' ? !!ANTHROPIC_API_KEY : !!OPENAI_API_KEY;
-  if (!hasLLM || !ELEVENLABS_API_KEY) {
-    console.log('❌ API keys missing');
+  if (!ELEVENLABS_API_KEY) {
+    console.log('❌ ELEVENLABS_API_KEY ausente');
     return res.status(503).json({ error: 'Voice API keys not configured' });
   }
-
   try {
     const { eventType, eventData, recentContext, liveContext, viewerProfile, conversationLog, room, voiceId } = req.body;
-    const userPrompt = buildCommentaryPrompt(eventType, eventData, recentContext || [], liveContext, viewerProfile, conversationLog);
-
-    const systemPrompt = NARRATOR_PROMPT;
-
-    // Passo 1: o LLM escreve a fala do narrador (Claude ou OpenAI)
     const session = getSession(room);
+    const hasLLM = LLM_PROVIDER === 'anthropic' ? !!ANTHROPIC_API_KEY : !!OPENAI_API_KEY;
+    const wantAI = NARRATOR_MODE === 'ia' || (NARRATOR_MODE === 'misto' && AI_EVENTS.has(eventType));
+
+    // Passo 1: texto da fala
     let commentary = '';
-    if (LLM_PROVIDER === 'anthropic') {
-      const chatRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: ANTHROPIC_MODEL,
-          max_tokens: 150,
-          temperature: 0.9,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userPrompt }],
-        }),
-      });
-      if (!chatRes.ok) {
-        console.error('Anthropic error:', await chatRes.text());
-        return res.status(502).json({ error: 'Anthropic API failed' });
-      }
-      const chatData = await chatRes.json();
-      commentary = (chatData.content || []).filter(c => c.type === 'text').map(c => c.text).join(' ').trim();
-      if (session) {
-        const usage = chatData.usage || {};
-        session.cost.anthropicTokens += (usage.input_tokens || 0) + (usage.output_tokens || 0);
-        session.cost.voiceCalls++;
-      }
-    } else {
-      const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}` },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ],
-          max_tokens: 120,
-          temperature: 0.9,
-        }),
-      });
-      if (!chatRes.ok) {
-        console.error('OpenAI error:', await chatRes.text());
-        return res.status(502).json({ error: 'OpenAI API failed' });
-      }
-      const chatData = await chatRes.json();
-      commentary = chatData.choices?.[0]?.message?.content?.trim() || '';
-      if (session) {
-        const usage = chatData.usage || {};
-        session.cost.openaiTokens += (usage.prompt_tokens || 0) + (usage.completion_tokens || 0);
-        session.cost.voiceCalls++;
-      }
+    if (wantAI && hasLLM) {
+      const userPrompt = buildCommentaryPrompt(eventType, eventData || {}, recentContext || [], liveContext, viewerProfile, conversationLog);
+      commentary = await writeLineWithLLM(userPrompt, session);
     }
-    if (!commentary) return res.status(500).json({ error: 'Empty commentary' });
+    if (!commentary) commentary = fixedLine(eventType, eventData);
+    if (!commentary) return res.status(503).json({ error: 'Sem fala disponível para este evento' });
+    commentary = commentary.slice(0, 300);
 
-    // Step 2: TTS — try ElevenLabs first, fallback to OpenAI TTS on quota/error
-    let ttsBuffer = null;
-
-    // 2a: ElevenLabs TTS (principal)
+    // Passo 2: áudio (cache em disco, depois ElevenLabs, depois OpenAI TTS se houver chave)
     const selectedVoice = voiceId || ELEVENLABS_VOICE_ID;
-    // Voz de narrador: estável o bastante para soar grave e madura, com um pouco de estilo para ficar animada
-    const voiceSettings = { stability: 0.45, similarity_boost: 0.75, style: 0.5, use_speaker_boost: true };
-    try {
-      const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice}/stream`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'xi-api-key': ELEVENLABS_API_KEY,
-        },
-        body: JSON.stringify({
-          text: commentary,
-          model_id: 'eleven_multilingual_v2',
-          voice_settings: voiceSettings,
-        }),
-      });
-
-      if (ttsRes.ok) {
-        ttsBuffer = Buffer.from(await ttsRes.arrayBuffer());
-        if (session) session.cost.elevenlabsChars += commentary.length;
-        console.log('🔊 TTS: ElevenLabs OK');
-      } else {
-        const err = await ttsRes.text();
-        console.warn('⚠️ ElevenLabs failed, falling back to OpenAI TTS:', err);
-      }
-    } catch (elErr) {
-      console.warn('⚠️ ElevenLabs error, falling back to OpenAI TTS:', elErr.message);
+    const cacheFile = join(VOICE_CACHE_DIR, voiceCacheKey(selectedVoice, commentary) + '.mp3');
+    let ttsBuffer = null;
+    let cacheHit = false;
+    if (existsSync(cacheFile)) {
+      try { ttsBuffer = readFileSync(cacheFile); cacheHit = true; console.log('🔊 TTS: cache (grátis)'); } catch (e) { ttsBuffer = null; }
     }
 
-    // 2b: OpenAI TTS fallback
-    // Available voices: alloy, ash, ballad, coral, echo, fable, nova, onyx, sage, shimmer, verse
-    if (!ttsBuffer && OPENAI_API_KEY) {
+    if (!ttsBuffer) {
+      // Limite de gasto estimado do ElevenLabs
+      const projected = ((voiceBudget.chars + commentary.length) / 1000) * ELEVENLABS_USD_PER_1K;
+      if (projected > ELEVENLABS_BUDGET_USD) {
+        console.warn(`💸 Limite do ElevenLabs atingido: gasto estimado $${voiceSpentUsd().toFixed(2)} de $${ELEVENLABS_BUDGET_USD.toFixed(2)}`);
+        return res.status(402).json({ error: 'budget', spentUsd: +voiceSpentUsd().toFixed(4), limitUsd: ELEVENLABS_BUDGET_USD });
+      }
+      // Voz de narrador: estável o bastante para soar grave e madura, com um pouco de estilo para ficar animada
+      const voiceSettings = { stability: 0.45, similarity_boost: 0.75, style: 0.5, use_speaker_boost: true };
       try {
-        const openaiVoice = req.body.openaiVoice || 'nova';
-        const voiceInstructions = 'Casual, friendly voice. Natural and warm.';
-        const openaiTtsRes = await fetch('https://api.openai.com/v1/audio/speech', {
+        const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice}/stream`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o-mini-tts',
-            input: commentary,
-            voice: openaiVoice,
-            instructions: voiceInstructions,
-            response_format: 'mp3',
-          }),
+          headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
+          body: JSON.stringify({ text: commentary, model_id: 'eleven_multilingual_v2', voice_settings: voiceSettings }),
         });
-
-        if (!openaiTtsRes.ok) {
-          const err = await openaiTtsRes.text();
-          console.error('OpenAI TTS also failed:', err);
-          return res.status(502).json({ error: 'All TTS providers failed' });
+        if (ttsRes.ok) {
+          ttsBuffer = Buffer.from(await ttsRes.arrayBuffer());
+          voiceBudget.chars += commentary.length;
+          saveVoiceBudget();
+          if (session) session.cost.elevenlabsChars += commentary.length;
+          try { writeFileSync(cacheFile, ttsBuffer); } catch (e) { /* cache é opcional */ }
+          console.log(`🔊 TTS: ElevenLabs OK (gasto estimado $${voiceSpentUsd().toFixed(3)} de $${ELEVENLABS_BUDGET_USD.toFixed(2)})`);
+        } else {
+          console.warn('⚠️ ElevenLabs falhou:', await ttsRes.text());
         }
+      } catch (elErr) {
+        console.warn('⚠️ ElevenLabs erro:', elErr.message);
+      }
 
-        ttsBuffer = Buffer.from(await openaiTtsRes.arrayBuffer());
-        if (session) session.cost.openaiTokens += commentary.length; // rough tracking
-        console.log('🔊 TTS: OpenAI fallback OK (voice:', openaiVoice, ')');
-      } catch (oaiErr) {
-        console.error('OpenAI TTS error:', oaiErr.message);
-        return res.status(502).json({ error: 'All TTS providers failed' });
+      // Plano B: voz da OpenAI, só se houver chave
+      if (!ttsBuffer && OPENAI_API_KEY) {
+        try {
+          const openaiTtsRes = await fetch('https://api.openai.com/v1/audio/speech', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}` },
+            body: JSON.stringify({ model: 'gpt-4o-mini-tts', input: commentary, voice: req.body.openaiVoice || 'onyx', instructions: 'Voz de narrador de arena: madura, grave e animada.', response_format: 'mp3' }),
+          });
+          if (openaiTtsRes.ok) {
+            ttsBuffer = Buffer.from(await openaiTtsRes.arrayBuffer());
+            console.log('🔊 TTS: OpenAI (plano B)');
+          } else {
+            console.error('OpenAI TTS também falhou:', await openaiTtsRes.text());
+          }
+        } catch (oaiErr) {
+          console.error('OpenAI TTS erro:', oaiErr.message);
+        }
       }
     }
-
     if (!ttsBuffer) return res.status(502).json({ error: 'All TTS providers failed' });
 
-    // Stream audio back with commentary text in header
     res.set('Content-Type', 'audio/mpeg');
     res.set('X-Commentary-Text', encodeURIComponent(commentary));
-    res.set('Access-Control-Expose-Headers', 'X-Commentary-Text');
+    res.set('X-Voice-Cache', cacheHit ? 'hit' : 'miss');
+    res.set('Access-Control-Expose-Headers', 'X-Commentary-Text, X-Voice-Cache');
     res.send(ttsBuffer);
-
   } catch (err) {
     console.error('Voice generate error:', err);
     res.status(500).json({ error: 'Internal voice error' });
