@@ -175,7 +175,72 @@ const FIXED_LINES = {
     'Chame seus amigos para a live! Quanto mais gente, mais luta!',
     'Compartilhe a live com a turma! O ringue ainda tem espaço!',
   ],
+  // Vários acontecimentos juntos viram uma fala só, sem nomes (o jogo agrupa antes de pedir)
+  battle_ring_elimination_group: [
+    'Olha quanta gente caindo!',
+    'Que chuva de lutadores para fora do ringue!',
+    'Caiu um monte de uma vez!',
+    'Que estrago! Vários fora de uma vez!',
+  ],
+  battle_ring_join_group: [
+    'Olha quanta gente chegando no ringue!',
+    'Chegou uma turma inteira! Bem-vindos!',
+    'O ringue está enchendo! Bem-vindos, lutadores!',
+  ],
 };
+// Falas sem nome, para quando o nick não dá para falar (só símbolos, impronunciável, palavrão...)
+const GENERIC_LINES = {
+  battle_ring_elimination: ['Mais um caiu!', 'Lá se vai mais um!', 'Que empurrão!', 'Fora do ringue!'],
+  battle_ring_winner: ['Temos um campeão! Que luta!', 'E o vencedor está decidido! Palmas!'],
+  battle_ring_join: ['Chegou mais um lutador! Bem-vindo!', 'Mais um no ringue! Boa sorte!'],
+};
+
+// ===== Nick falado =====
+// Deixa o nick fácil de falar. Devolve null quando não dá para falar (aí a fala sai sem o nome).
+// - _ . - viram espaço; emojis e símbolos saem
+// - números: se o nick tiver mais de 2 algarismos, todos saem (ex.: Soldier_4904 vira "Soldier"),
+//   porque "quatro mil novecentos e quatro" atrasaria muito a fala
+// - letras repetidas demais são encurtadas (ex.: "Brunooooo" vira "Brunoo")
+// - sem vogal, com menos de 2 letras, com 5 consoantes seguidas ou palavrão: null
+const NICK_MAX_CHARS = 18;
+const BAD_WORDS_LONG = ['porra', 'caralho', 'merda', 'buceta', 'viado', 'arrombad', 'piroca', 'xota', 'bosta', 'cacete', 'desgraca', 'fuck', 'shit', 'bitch', 'pussy', 'nigg', 'vagina'];
+const BAD_WORDS_SHORT = ['cu', 'fdp', 'pqp', 'vsf', 'tnc', 'krl', 'pau', 'cuzao', 'ass', 'dick', 'puta', 'puto', 'foda', 'rola', 'penis'];
+function speakableName(raw) {
+  if (raw == null) return null;
+  let n = String(raw).normalize('NFC');
+  n = n.replace(/[_.\-]+/g, ' ').replace(/[^\p{L}\p{N} ]/gu, ' ');
+  const digits = (n.match(/\p{N}/gu) || []).length;
+  if (digits > 2) n = n.replace(/\p{N}+/gu, ' ');
+  n = n.replace(/(\p{L})\1{2,}/gu, '$1$1');
+  n = n.replace(/\s+/g, ' ').trim();
+  // tira enfeites ("xX", "Xx") e pedaços sem vogal (ex.: "sergio hlb" vira "sergio"), se sobrar outra palavra
+  const semAcento = w => w.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  let words = n.split(' ').filter(w => !/^x+$/i.test(w));
+  const comVogal = words.filter(w => /[aeiouy]/.test(semAcento(w)));
+  if (comVogal.length) words = words.filter(w => /[aeiouy]/.test(semAcento(w)) || /^\p{N}+$/u.test(w));
+  n = words.join(' ');
+  if (n.length > NICK_MAX_CHARS) n = n.split(' ').reduce((acc, w) => (acc + ' ' + w).trim().length <= NICK_MAX_CHARS ? (acc + ' ' + w).trim() : acc, '');
+  const letters = (n.match(/\p{L}/gu) || []).length;
+  if (letters < 2) return null;
+  const plain = n.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  if (!/[aeiouy]/.test(plain)) return null;
+  if (/[bcdfghjklmnpqrstvwxz]{5,}/.test(plain.replace(/\s/g, ''))) return null;
+  const leet = plain.replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't');
+  const glued = leet.replace(/\s/g, '');
+  if (BAD_WORDS_LONG.some(w => glued.includes(w))) return null;
+  if (leet.split(' ').some(w => BAD_WORDS_SHORT.includes(w))) return null;
+  return n;
+}
+// Limpa os nomes de um evento. Nome impronunciável vira null (a fala escolhida não terá esse nome).
+function sanitizeEventNames(data) {
+  const d = { ...(data || {}) };
+  for (const k of ['victim', 'killer', 'winner', 'nickname']) if (k in d) d[k] = speakableName(d[k]);
+  if (typeof d.names === 'string') {
+    const ok = d.names.split(',').map(x => speakableName(x.trim())).filter(Boolean);
+    d.names = ok.join(', ');
+  }
+  return d;
+}
 // No modo 'misto', estes eventos usam o LLM (falas mais personalizadas). Os demais usam falas prontas.
 const AI_EVENTS = new Set(['battle_ring_winner', 'battle_ring_viewers_welcome', 'battle_ring_invite_friends']);
 const recentFixedLines = [];
@@ -183,7 +248,8 @@ function fixedLine(eventType, data) {
   const pool = FIXED_LINES[eventType];
   if (!pool) return '';
   const d = data || {};
-  const usable = pool.filter(t => [...t.matchAll(/\{(\w+)\}/g)].every(m => d[m[1]]));
+  let usable = pool.filter(t => [...t.matchAll(/\{(\w+)\}/g)].every(m => d[m[1]]));
+  if (!usable.length) usable = GENERIC_LINES[eventType] || [];
   if (!usable.length) return '';
   const fresh = usable.filter(t => !recentFixedLines.includes(t));
   const choices = fresh.length ? fresh : usable;
@@ -374,19 +440,23 @@ function buildCommentaryPrompt(eventType, eventData, recentContext, liveContext,
     case 'battle_ring_fight':
       return `${contextStr}\nJá! A rodada ${eventData.round} começou e ${eventData.playerCount} lutadores estão se enfrentando. Esquente o clima. Use palavras positivas e empolgantes. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_elimination':
-      return `${contextStr}\n${eventData.victim} caiu do ringue${eventData.killer ? ` empurrado por ${eventData.killer}` : ''}! Restam ${eventData.remaining} lutadores. Reaja de forma dramática, mas divertida. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
+      return `${contextStr}\n${eventData.victim || 'Um lutador'} caiu do ringue${eventData.killer ? ` empurrado por ${eventData.killer}` : ''}! Restam ${eventData.remaining} lutadores. Reaja de forma dramática, mas divertida. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_gift_power':
       return `${contextStr}\n${eventData.nickname} usou ${eventData.powerName} (${eventData.diamonds} diamantes)! Efeito: ${eventData.effect}. Mostre empolgação e agradeça. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_winner':
-      return `${contextStr}\n${eventData.winner} venceu a rodada ${eventData.round}! Foram ${eventData.kills} pontos nesta rodada e ${eventData.totalWins} vitórias no total. Celebre o campeão. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
+      return `${contextStr}\n${eventData.winner || 'Um lutador'} venceu a rodada ${eventData.round}! Foram ${eventData.kills} pontos nesta rodada e ${eventData.totalWins} vitórias no total. Celebre o campeão. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_draw':
       return `${contextStr}\nA rodada ${eventData.round} terminou empatada! Todos caíram e ninguém venceu. Reaja com surpresa e bom humor. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_shrink_warning':
       return `${contextStr}\nO ringue está encolhendo! Faltam ${eventData.timeLeft} segundos e ${eventData.alive} lutadores ainda de pé. Crie suspense. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_join':
-      return `${contextStr}\n${eventData.nickname} acabou de entrar no ringue${eventData.character ? ` como ${eventData.character}` : ''}! Dê as boas-vindas com simpatia. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
+      return `${contextStr}\n${eventData.nickname || 'Mais um lutador'} acabou de entrar no ringue${eventData.character ? ` como ${eventData.character}` : ''}! Dê as boas-vindas com simpatia. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_viewers_welcome':
       return `${contextStr}\n${eventData.count} novos espectadores entraram na live! Nomes: ${eventData.names}. Dê as boas-vindas a todos e convide para a luta, pois eles entram no ringue automaticamente. Se forem muitos, cite só 2 ou 3 nomes e diga "e a galera toda". No máximo ${NARRATOR_MAX_WORDS} palavras.`;
+    case 'battle_ring_elimination_group':
+      return `${contextStr}\n${eventData.count} lutadores caíram do ringue quase ao mesmo tempo! Restam ${eventData.remaining ?? 'poucos'}. Faça um comentário geral, sem citar nomes. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
+    case 'battle_ring_join_group':
+      return `${contextStr}\n${eventData.count} lutadores entraram no ringue quase ao mesmo tempo! Dê as boas-vindas a todos de forma geral, sem citar nomes. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
     case 'battle_ring_invite_friends':
       return `${contextStr}\nAgora temos ${eventData.playerCount} lutadores e ${eventData.viewerCount} espectadores. Peça para o pessoal chamar amigos para a live, de um jeito animado e convincente. No máximo ${NARRATOR_MAX_WORDS} palavras.`;
 
@@ -605,7 +675,8 @@ app.post('/api/voice/generate', async (req, res) => {
     return res.status(503).json({ error: 'Voice API keys not configured' });
   }
   try {
-    const { eventType, eventData, recentContext, liveContext, viewerProfile, conversationLog, room, voiceId } = req.body;
+    const { eventType, recentContext, liveContext, viewerProfile, conversationLog, room, voiceId } = req.body;
+    const eventData = sanitizeEventNames(req.body.eventData);
     const session = getSession(room);
     const hasLLM = LLM_PROVIDER === 'anthropic' ? !!ANTHROPIC_API_KEY : !!OPENAI_API_KEY;
     const wantAI = NARRATOR_MODE === 'ia' || (NARRATOR_MODE === 'misto' && AI_EVENTS.has(eventType));

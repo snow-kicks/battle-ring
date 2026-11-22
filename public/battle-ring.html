@@ -5133,7 +5133,7 @@ function audioMudo(seg) {
 }
 
 // Quanto tempo (ms) uma fala ainda faz sentido depois do evento. Passou disso, é descartada.
-const VOICE_MAX_AGE = { battle_ring_elimination: 7000, battle_ring_join: 9000, battle_ring_shrink_warning: 6000, battle_ring_fight: 8000, battle_ring_round_start: 12000, battle_ring_winner: 20000, battle_ring_draw: 15000 };
+const VOICE_MAX_AGE = { battle_ring_elimination: 7000, battle_ring_elimination_group: 8000, battle_ring_join: 9000, battle_ring_join_group: 10000, battle_ring_shrink_warning: 6000, battle_ring_fight: 8000, battle_ring_round_start: 12000, battle_ring_winner: 20000, battle_ring_draw: 15000 };
 const voiceMaxAge = type => VOICE_MAX_AGE[type] || 15000;
 // Nova rodada: joga fora o que ficou na fila (o que já está tocando termina normalmente)
 function clearStaleVoice() {
@@ -5143,8 +5143,35 @@ function clearStaleVoice() {
   // Esquece as falas da rodada anterior, para a IA não comentar lutas que já acabaram
   voiceRecentContext.length = 0;
 }
+// Acontecimentos que viram uma fala só quando vários chegam juntos (enquanto o narrador ainda está ocupado).
+// Ex.: 3 quedas seguidas → "Olha quanta gente caindo!" em vez de 3 falas com nomes.
+// Para agrupar outro tipo de evento, acrescente aqui e crie as falas "<tipo>_group" no server.js.
+const VOICE_GROUPABLE = { battle_ring_elimination: 'battle_ring_elimination_group', battle_ring_join: 'battle_ring_join_group' };
 function queueVoiceEvent(eventType, eventData, priority = 1) {
   if (!voiceEnabled) return;
+  // Vitória ou empate: quedas que ainda não foram narradas perderam o sentido
+  if (eventType === 'battle_ring_winner' || eventType === 'battle_ring_draw') {
+    for (let i = voiceQueue.length - 1; i >= 0; i--) {
+      if (/^battle_ring_elimination/.test(voiceQueue[i].eventType)) {
+        narradorLog(voiceQueue[i].id, 'descartado', { tipo: voiceQueue[i].eventType, obs: 'a rodada acabou antes de narrar' });
+        voiceQueue.splice(i, 1);
+      }
+    }
+  }
+  // Já tem um evento do mesmo tipo esperando? Junta os dois numa fala de grupo.
+  if (VOICE_GROUPABLE[eventType]) {
+    const igual = voiceQueue.find(q => q.eventType === eventType || q.eventType === VOICE_GROUPABLE[eventType]);
+    if (igual) {
+      const count = (igual.eventData.count || 1) + 1;
+      igual.eventType = VOICE_GROUPABLE[eventType];
+      igual.eventData = { count, remaining: eventData.remaining ?? igual.eventData.remaining };
+      igual.t = Date.now();
+      igual.priority = Math.max(igual.priority, priority);
+      narradorLog(igual.id, 'agrupado', { tipo: igual.eventType, obs: `${count} juntos` });
+      processVoiceQueue();
+      return;
+    }
+  }
   // Drop low priority events if queue is full
   if (voiceQueue.length >= MAX_VOICE_QUEUE) {
     const lowIdx = voiceQueue.findIndex(q => q.priority < priority);
@@ -5165,6 +5192,9 @@ function queueVoiceEvent(eventType, eventData, priority = 1) {
 async function processVoiceQueue() {
   if (voiceIsGenerating) return;
   if (voiceQueue.length === 0) return;
+  // Já tem uma fala pronta esperando para tocar: espera. Assim, o que acontecer nesse meio tempo
+  // ainda pode ser agrupado ("olha quanta gente caindo") em vez de virar várias falas atrasadas.
+  if (voiceAudioQueue.length >= 1) { setTimeout(processVoiceQueue, 300); return; }
   if (Date.now() - lastVoiceTime < VOICE_COOLDOWN) {
     setTimeout(processVoiceQueue, VOICE_COOLDOWN - (Date.now() - lastVoiceTime));
     return;
