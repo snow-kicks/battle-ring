@@ -551,8 +551,9 @@ async function writeLineWithLLM(userPrompt, session) {
 
 // Gera (ou lê do cache) o áudio de um trecho. prev/next dão contexto ao ElevenLabs para a entonação combinar com o resto da frase.
 // Lança { budget: true } se estourar o limite de gasto estimado.
-async function synthPart(voiceId, text, prev, next, session) {
-  const key = voiceCacheKey(voiceId, text + '|' + (prev || '').slice(-40) + '|' + (next || '').slice(0, 40));
+async function synthPart(voiceId, text, prev, next, session, isName) {
+  // Trecho fixo: chave só pelo texto (serve para qualquer jogador). Nome: chave inclui o entorno da frase.
+  const key = voiceCacheKey(voiceId, isName ? text + '|' + (prev || '').slice(-40) + '|' + (next || '').slice(0, 40) : text);
   const file = join(VOICE_CACHE_DIR, key + '.mp3');
   if (existsSync(file)) { try { return { buf: readFileSync(file), hit: true }; } catch (e) { /* gera de novo */ } }
   const projected = ((voiceBudget.chars + text.length) / 1000) * ELEVENLABS_USD_PER_1K;
@@ -624,7 +625,7 @@ app.post('/api/voice/generate', async (req, res) => {
           if (!/[\p{L}\p{N}]/u.test(t)) continue;
           const prev = parts.slice(0, i).map(x => x.text).join('');
           const next = parts.slice(i + 1).map(x => x.text).join('');
-          const r = await synthPart(selectedVoice, t, prev, next, session);
+          const r = await synthPart(selectedVoice, t, prev, next, session, parts[i].name);
           if (!r.hit) allHit = false;
           bufs.push(r.buf);
         }
