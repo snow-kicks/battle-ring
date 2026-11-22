@@ -1260,6 +1260,7 @@ function setRoundState(state) {
 
     case 'COUNTDOWN':
       roundNumber++;
+      clearStaleVoice(); // não deixa falas da rodada anterior tocarem na nova
       countdownValue = ROUND_COUNTDOWN;
       info.textContent = `RONDE ${roundNumber}`;
       showBanner(String(ROUND_COUNTDOWN), 'Bersiap!');
@@ -5082,6 +5083,14 @@ function testVoice() {
 }
 
 // Queue a game event for voice commentary
+// Quanto tempo (ms) uma fala ainda faz sentido depois do evento. Passou disso, é descartada.
+const VOICE_MAX_AGE = { battle_ring_elimination: 7000, battle_ring_join: 9000, battle_ring_shrink_warning: 6000, battle_ring_fight: 8000, battle_ring_round_start: 12000, battle_ring_winner: 20000, battle_ring_draw: 15000 };
+const voiceMaxAge = type => VOICE_MAX_AGE[type] || 15000;
+// Nova rodada: joga fora o que ficou na fila (o que já está tocando termina normalmente)
+function clearStaleVoice() {
+  voiceQueue.length = 0;
+  while (voiceAudioQueue.length) URL.revokeObjectURL(voiceAudioQueue.shift().url);
+}
 function queueVoiceEvent(eventType, eventData, priority = 1) {
   if (!voiceEnabled) return;
   // Drop low priority events if queue is full
@@ -5093,7 +5102,7 @@ function queueVoiceEvent(eventType, eventData, priority = 1) {
       return; // queue full with higher priority
     }
   }
-  voiceQueue.push({ eventType, eventData, priority });
+  voiceQueue.push({ eventType, eventData, priority, t: Date.now() });
   processVoiceQueue();
 }
 
@@ -5108,6 +5117,11 @@ async function processVoiceQueue() {
   // Pick highest priority event
   voiceQueue.sort((a, b) => b.priority - a.priority);
   const event = voiceQueue.shift();
+  if (Date.now() - event.t > voiceMaxAge(event.eventType)) { // fala velha: pula
+    if (voiceQueue.length) setTimeout(processVoiceQueue, 50);
+    return;
+  }
+  const evRound = roundNumber;
   voiceIsGenerating = true;
   document.getElementById('voiceStatusText').textContent = 'Generating...';
 
@@ -5147,7 +5161,8 @@ async function processVoiceQueue() {
     if (voiceRecentContext.length > MAX_VOICE_CONTEXT) voiceRecentContext.shift();
 
     lastVoiceTime = Date.now();
-    enqueueVoiceAudio(blob, text);
+    if (evRound !== roundNumber && event.eventType !== 'battle_ring_winner') return; // rodada mudou durante a geração
+    enqueueVoiceAudio(blob, text, event);
   } catch (err) {
     console.error('Voice commentary error:', err);
     document.getElementById('voiceStatusText').textContent = 'Error';
@@ -5160,14 +5175,14 @@ async function processVoiceQueue() {
   }
 }
 
-function enqueueVoiceAudio(blob, text) {
+function enqueueVoiceAudio(blob, text, event) {
   if (voiceAudioQueue.length >= 3) {
     // Drop oldest
     const old = voiceAudioQueue.shift();
     URL.revokeObjectURL(old.url);
   }
   const url = URL.createObjectURL(blob);
-  voiceAudioQueue.push({ url, text });
+  voiceAudioQueue.push({ url, text, t: event ? event.t : Date.now(), type: event ? event.eventType : '' });
   if (!voiceIsPlaying) playNextVoice();
 }
 
@@ -5178,8 +5193,12 @@ function playNextVoice() {
     document.getElementById('voiceSubtitle').style.display = 'none';
     return;
   }
-  voiceIsPlaying = true;
   const item = voiceAudioQueue.shift();
+  if (Date.now() - item.t > voiceMaxAge(item.type) + 6000) { // áudio que esperou demais na fila
+    URL.revokeObjectURL(item.url);
+    return playNextVoice();
+  }
+  voiceIsPlaying = true;
 
   // Show subtitle
   const subtitleEl = document.getElementById('voiceSubtitle');
@@ -5277,7 +5296,7 @@ function flushViewerBatch() {
   const names = batch.map(v => v.nickname);
   const nameStr = names.length <= 4
     ? names.join(', ')
-    : names.slice(0, 3).join(', ') + ` dan ${names.length - 3} lagi`;
+    : names.slice(0, 3).join(', ') + ` e mais ${names.length - 3}`;
 
   queueVoiceEvent('battle_ring_viewers_welcome', {
     count: batch.length,
